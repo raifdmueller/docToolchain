@@ -9,9 +9,51 @@ and this project tries to adhere to https://semver.org/spec/v2.0.0.html[Semantic
 
 === fixed
 
+* https://github.com/docToolchain/docToolchain/issues/1447[publishToConfluence: Internal links broken with v3.4.1]
+* fixed an issue with ConfluenceClientV2 pagination traversal / cursor extraction
+
 === added
 
+* possibiblity to change the search form
+
 === changed
+
+* upgrade dependencies
+** 'org.asciidoctor:asciidoctorj-diagram:2.3.1'
+
+== 3.4.1 - 2024-09-05
+
+=== fixed
+
+* Missing alt attributes in site templates (found by HTML Sanity Checker 2.0.0-rc0, see below).
+* https://github.com/docToolchain/docToolchain/issues/1411[Jira links substitution is not working]
+* https://github.com/docToolchain/docToolchain/issues/1421[publishToConfluence fails with "No such property: attachmentPrefix for class: org.docToolchain.tasks.Asciidoc2ConfluenceTask"]
+* DTCW should preferably use DTC from the local installation and only rely on `+${PATH}+` otherwise
+* https://github.com/docToolchain/docToolchain/issues/1438[Task :exportEA FAILED because of unknown property 'imageFormat']
+
+=== added
+
+* Add an environment variable `DTC_SHELL_DEBUG` (which could be set to `-x` or `-xv`) to let `dtcw` run the DTC script in a more verbose way.
+
+=== changed
+
+* Use https://github.com/aim42/htmlSanityCheck/releases/tag/2.0.0-rc0[Release 2.0.0-rc0] of HTML Sanity Checker
+* https://github.com/docToolchain/docToolchain/issues/1411[removed legacy `jiraRoot` config property]
+
+== 3.4.0 - 2024-07-18
+
+=== fixed
+
+* https://github.com/docToolchain/docToolchain/issues/1414[Build suddenly fails (since changes to Gradle plugin portal)]
+
+=== added
+* Collapsible left menu (see https://doctoolchain.org/docToolchain/v2.0.x/030_news/index.html for an example)
+* https://github.com/docToolchain/docToolchain/pull/1389[exportEA: Add additional option to set the image format]
+* https://github.com/docToolchain/docToolchain/pull/1391[#1391: Update collectIncludes.gradle]
+
+=== changed
+
+* removed link to plausible.io on docs site
 
 == 3.3.1 - 2024-03-01
 

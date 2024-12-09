@@ -21,7 +21,7 @@ The use of this setup has the following advantages:
 - Ensures that everyone in the project uses the same docToolchain version.
 - Keeps all docToolchain technology out of your project repository.
 - Facilitates the installation of the docToolchain if not installed.
-- Makes it easier to upgrade to never versions of docToolchain.
+- Makes it easier to upgrade to newer versions of docToolchain.
 
 == Install `dtcw` in your project directory
 
@@ -94,7 +94,7 @@ TIP: In case your development team uses different operating systems, put the wra
 
 Once the docToolchain wrapper is installed in your project directory you have to decide how to install the toolchain:
 
-- <<run-dtc-in-container>> with the https://hub.docker.com/r/doctoolchain/doctoolchain[docToolchain container image] or <<run-dtc-in-costum-container>>.
+- <<run-dtc-in-container>> with the https://hub.docker.com/r/doctoolchain/doctoolchain[docToolchain container image] or <<run-dtc-in-custom-container>>.
 - <<install-dtc-with-dtcw>> in the users home directory `$HOME/.doctoolchain`
 - <<install-dtc-with-sdk>> a tool for managing parallel versions of multiple Software Development Kits.
 
@@ -120,8 +120,8 @@ If the container engine is installed you can <<first-command>>.
 The docToolchain wrapper script in your project directory will detect the
 container engine and pull the docToolchain image on the first invocation.
 
-[[run-dtc-in-costum-container]]
-=== Use your costum docker image
+[[run-dtc-in-custom-container]]
+=== Use your custom docker image
 Some might need to create their own docker image to add additional tooling or configurations, e.g. proxy settings.
 In this case you can pass the image name via parameter `image` directly after `docker`:
 
@@ -217,6 +217,14 @@ In that case, please switch to bash and make sure that a supported Java version 
 [role='secondary']
 --
 
+
+To install docToolchain in `$HOME/.doctoolchain` execute the following command.
+
+[source, bash]
+----
+./dtcw.ps1 install doctoolchain
+----
+
 In case you have no Java installed you can use `dtcw.ps1` to install Java:
 
 [source, powershell]
@@ -229,9 +237,20 @@ In case you have no Java installed you can use `dtcw.ps1` to install Java:
 .Windows with cmd.exe
 [role='secondary']
 --
-[source, cmd]
+
+
+To install docToolchain in `$HOME/.doctoolchain` execute the following command.
+
+[source, bash]
 ----
-dtcw.bat install java
+./dtcw.bat install doctoolchain
+----
+
+In case you have no Java installed you can use `dtcw.ps1` to install Java:
+
+[source, powershell]
+----
+.\dtcw.bat install java
 ----
 
 --
@@ -437,7 +456,7 @@ TIP: Blog-Posts: https://rdmueller.github.io/enterprise-edition/[Behind the grea
 
 If there is a new https://github.com/docToolchain/docToolchain/releases[docToolchain release] you wish to use, do the following:
 
-. Open the docToolchain wrapper script (`dtcw`, respective `dtcw.ps1` and `dtcw.bat`) in your favourite text editor and look for the line with `DTC_VERSION` which should be located near the start of the file:
+. Open the docToolchain wrapper script (`dtcw`, respective `dtcw.ps1` and `dtcw.bat`) in your favorite text editor and look for the line with `DTC_VERSION` which should be located near the start of the file:
 [source, bash]
 ----
 # See https://github.com/docToolchain/docToolchain/releases for available versions.
