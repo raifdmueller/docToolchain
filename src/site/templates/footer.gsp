@@ -91,3 +91,4 @@
     <script src="${content.rootpath}js/copy-n-paste.js"></script>
     <script src="${content.rootpath}js/highlightjs/highlight.min.js" ></script>
     <script>hljs.highlightAll();</script>
+    <script src="${content.rootpath}js/submenucollapse.js"></script>

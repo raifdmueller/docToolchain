@@ -3,6 +3,7 @@
  */
 buildscript {
     repositories {
+        mavenCentral()
         maven {
             credentials {
                 username mavenUsername
@@ -11,7 +12,25 @@ buildscript {
             url mavenRepository
         }
     }
-
+    configurations.all {
+        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+            if (details.requested.group == 'org.ysb33r.gradle' && details.requested.name == 'grolifant' && details.requested.version in ['0.12', '0.12.1']) {
+                details.useVersion '0.16.1'
+                details.because 'jcenter redirect'
+                System.out.println ">>>>>>>>> fix grolifant"
+            }
+            if (details.requested.group == 'org.codehaus.groovy.modules.http-builder' && details.requested.name == 'http-builder' && details.requested.version == '0.7.2') {
+                details.useVersion '0.7.1'
+                details.because 'jcenter redirect'
+                System.out.println ">>>>>>>>> fix http-builder"
+            }
+            if (details.requested.group == 'com.burgstaller' && details.requested.name == 'okhttp-digest') {
+               //changing the name:
+                details.useTarget group: 'io.github.rburgst', name: details.requested.name, version: '1.21'
+                System.out.println ">>>>>>>>> fix okhttp-digest"
+            }
+        }
+    }
     dependencies {
         classpath (libs.asciidoctor)
         classpath (libs.asciidoctor.pdf)
@@ -148,7 +167,7 @@ asciidoctorj {
     version = '2.5.7'
     modules {
         diagram.use()
-        diagram.version '2.2.7'
+        diagram.version '2.3.1'
     }
     fatalWarnings ~/image to embed not found or not readable/
 
@@ -177,14 +196,26 @@ asciidoctorj {
     }
 
     // Here we can add the code for extensions we write.
+    // be aware that the docToolchain config variable inside the extension is not available
+    def jiraBaseUrl
+
+    if(config.jira.api){
+        URL url = new URL(config.jira.api)
+        String portPart = url.port == -1 || url.port == url.defaultPort ? "" : ":${url.port}"
+        jiraBaseUrl = "${url.protocol}://${url.host}${portPart}"
+    }
+
     docExtensions {
-        block (name: "jira") {
+        inline_macro (name: "jira") {
             parent, target, attributes ->
-                options = [
+                def options = [
                     "type": ":link",
-                    "target": jiraRoot+"/browse/${target}".toString(),
+                    "target": "${jiraBaseUrl}/browse/${target}".toString(),
                     "id": "${target}"
                 ]
+                if(!jiraBaseUrl ){
+                    println(">>> WARN: No Jira API URL found in config, the Jira extension may not work as expected.")
+                }
 
                 // Create the link to the issue.
                 createPhraseNode(parent, "anchor", target, attributes, options).render()
@@ -255,7 +286,17 @@ tasks.withType(AbstractAsciidoctorTask) { docTask ->
             if(extension.endsWith('.rb')) {
                 def root= new File(projectDir.canonicalPath)
                 def full = new File(new File(docDir,extension).canonicalPath)
-                def relPath = root.toPath().relativize( full.toPath() ).toFile()
+                def rootPath = root.toPath()
+                def fullPath = full.toPath()
+
+                def relPath
+                if (rootPath.root == fullPath.root) {
+                    relPath = rootPath.relativize(fullPath).toFile()
+                } else {
+                    // Use the full path as relative path is not possible
+                    relPath = fullPath.toFile()
+                }
+
                 asciidoctorj.requires += [relPath.toString()]
                 println ("added required ruby extension '$full'")
             } else {

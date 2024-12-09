@@ -90,7 +90,7 @@ This most likely happens when you've taken photos with a mobile device and inclu
 A mobile device does not rotate the image itself, it only stores the orientation of the device in the metadata of the photo.
 Your operating system will show you the image as expected, but the rendered AsciiDoc will not.
 This can be „fixed“ with Imagemagick, by using `convert -auto-orient` or `mogrify -auto-orient` (thanx to https://twitter.com/RalfDMueller/status/920888868345384960[@rotnroll666] for this tip).
-You can also try to just open the image in your favourite editor and re-save it.
+You can also try to just open the image in your favorite editor and re-save it.
 
 == exportVisio
 ====

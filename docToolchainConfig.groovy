@@ -28,11 +28,11 @@ imageDirs = [
     /** imageDirs **/
 ]
 
-// folders in which asciidoc will find other resources with corrosponding target directory
+// folders in which asciidoc will find other resources with corresponding target directory
 // works with generateHTML (target is prepended with build/html5/)
 // and generateSite (target ist prepended with build/microsite/output/)
 resourceDirs = [
-    //[source: 'some/ohter/resource', target: 'target/directory']
+    //[source: 'some/other/resource', target: 'target/directory']
 	/** resourceDirs **/
 ]
 
@@ -97,16 +97,39 @@ microsite.with {
     // Slack Channel
     footerSlack = ''
     // general text for the footer
-    footerText = '<script defer data-domain="doctoolchain.org" src="https://plausible.io/js/script.js"></script><small class="text-white">built with <a href="https://doctoolchain.org">docToolchain</a> and <a href="https://jbake.org">jBake</a> <br /> theme: <a href="https://www.docsy.dev/">docsy</a></small>'
+    footerText = '<small class="text-white">built with <a href="https://doctoolchain.org">docToolchain</a> and <a href="https://jbake.org">jBake</a> <br /> theme: <a href="https://www.docsy.dev/">docsy</a></small>'
     // site title if no other title is given
     title = 'docToolchain'
     //
     // the url to create an issue in github (set to 'null' to hide the "Create an issue" link)
     issueUrl = 'https://github.com/docToolchain/docToolchain/issues/new'
+    issuesBaseUrl = 'https://api.github.com/repos/doctoolchain/doctoolchain/issues'
     //
     // the base url for code files in github (set to 'null' to hide the "Improve this doc" link)
     branch = System.getenv("DTC_PROJECT_BRANCH")?:'ng'
     gitRepoUrl = "https://github.com/doctoolchain/doctoolchain/edit/${branch}/src/docs"
+
+    rightColumnExtra = "training.html"
+
+    // define a custom search html
+    search = """<form id="searchForm" action="https://perplexity.ai" target="perplexity">
+        <input id="searchInput" aria-label="Search this site…" autocomplete="off" class="form-control td-search-input"
+               placeholder=" Search with perplexity" type="search" name="q">
+        </form>
+        <script>
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var input = document.getElementById('searchInput');
+            var searchTerm = input.value.trim();
+            if (searchTerm !== '') {
+                input.value = searchTerm + ' site:doctoolchain.org ';
+            }
+            this.submit();
+            input.value="";
+        });
+    </script>
+    """
+
 
     /** end:microsite **/
 }
@@ -116,7 +139,7 @@ jbake.with {
     // possibility to configure additional asciidoctorj plugins used by jbake
     plugins = [ ]
 
-    // possibiltiy to configure additional asciidoctor attributes passed to the jbake task
+    // possibility to configure additional asciidoctor attributes passed to the jbake task
     asciidoctorAttributes = [ ]
 
     /** end:jbake **/
@@ -152,7 +175,7 @@ changelog.with {
 //*****************************************************************************************
 
 //tag::confluenceConfig[]
-//Configureation for publishToConfluence
+//Configuration for publishToConfluence
 
 confluence = [:]
 
@@ -217,7 +240,7 @@ confluence.with {
     pageVersionComment = ''
 
     /*
-    WARNING: It is strongly recommended to store credentials securely instead of commiting plain text values to your git repository!!!
+    WARNING: It is strongly recommended to store credentials securely instead of committing plain text values to your git repository!!!
 
     Tool expects credentials that belong to an account which has the right permissions to to create and edit confluence pages in the given space.
     Credentials can be used in a form of:
@@ -303,7 +326,7 @@ jira.with {
     rateLimit = 10
 
     /*
-    WARNING: It is strongly recommended to store credentials securely instead of commiting plain text values to your git repository!!!
+    WARNING: It is strongly recommended to store credentials securely instead of committing plain text values to your git repository!!!
 
     Tool expects credentials that belong to an account which has the right permissions to read the JIRA issues for a given project.
     Credentials can be used in a form of:
@@ -341,7 +364,7 @@ jira.with {
     List of requests to Jira API:
     These are basically JQL expressions bundled with a filename in which results will be saved.
     User can configure custom fields IDs and name those for column header,
-    i.e. customfield_10026:'Story Points' for Jira instance that has custom field with that name and will be saved in a coloumn named "Story Points"
+    i.e. customfield_10026:'Story Points' for Jira instance that has custom field with that name and will be saved in a column named "Story Points"
     */
     exports = [
         [
