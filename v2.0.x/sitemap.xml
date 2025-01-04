@@ -207,12 +207,12 @@
     </url>
 
     <url>
-    	<loc>https://localhost/050_ADRs/ADR-1-Scripting-Languages.html</loc>
+    	<loc>https://localhost/050_ADRs/ADR-2-separate-core-logic-from-gradle.html</loc>
     	<lastmod>2025-01-04</lastmod>
     </url>
 
     <url>
-    	<loc>https://localhost/050_ADRs/ADR-2-separate-core-logic-from-gradle.html</loc>
+    	<loc>https://localhost/050_ADRs/ADR-1-Scripting-Languages.html</loc>
     	<lastmod>2025-01-04</lastmod>
     </url>
 
@@ -257,22 +257,22 @@
     </url>
 
     <url>
-    	<loc>https://localhost/ea/Use_Cases_notes.html</loc>
-    	<lastmod>2025-01-04</lastmod>
-    </url>
-
-    <url>
     	<loc>https://localhost/ea/Architect_notes_issue2.html</loc>
     	<lastmod>2025-01-04</lastmod>
     </url>
 
     <url>
-    	<loc>https://localhost/ea/readme.html</loc>
+    	<loc>https://localhost/ea/Use_Cases_notes.html</loc>
     	<lastmod>2025-01-04</lastmod>
     </url>
 
     <url>
     	<loc>https://localhost/ea/Architect_notes.html</loc>
+    	<lastmod>2025-01-04</lastmod>
+    </url>
+
+    <url>
+    	<loc>https://localhost/ea/readme.html</loc>
     	<lastmod>2025-01-04</lastmod>
     </url>
 
@@ -327,12 +327,12 @@
     </url>
 
     <url>
-    	<loc>https://localhost/015_tasks/03_task_generateHTML.html</loc>
+    	<loc>https://localhost/015_tasks/03_task_generateDeck.html</loc>
     	<lastmod>2025-01-04</lastmod>
     </url>
 
     <url>
-    	<loc>https://localhost/015_tasks/03_task_generateDeck.html</loc>
+    	<loc>https://localhost/015_tasks/03_task_generateHTML.html</loc>
     	<lastmod>2025-01-04</lastmod>
     </url>
 
@@ -382,12 +382,12 @@
     </url>
 
     <url>
-    	<loc>https://localhost/015_tasks/03_task_previewSite.html</loc>
+    	<loc>https://localhost/015_tasks/03_task_exportOpenApi.html</loc>
     	<lastmod>2025-01-04</lastmod>
     </url>
 
     <url>
-    	<loc>https://localhost/015_tasks/03_task_exportOpenApi.html</loc>
+    	<loc>https://localhost/015_tasks/03_task_previewSite.html</loc>
     	<lastmod>2025-01-04</lastmod>
     </url>
 

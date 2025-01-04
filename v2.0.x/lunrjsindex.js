@@ -330,18 +330,18 @@ var documents = [
 
 {
     "id": 41,
-    "uri": "050_ADRs/ADR-1-Scripting-Languages.html",
-    "menu": "ADRs",
-    "title": "ADR-01: Scripting",
-    "text": " Table of Contents ADR-01: Scripting Languages in docToolchain Status Problem and Context Decision Consequences ADR-01: Scripting Languages in docToolchain Status This decision is currently in effect. Problem and Context In the docToolchain project, we have a variety of scripts written in different languages. This has raised questions about the rationale behind the selection of different languages for different scripts, especially when it comes to managing and maintaining these scripts. Decision We have decided to primarily use Groovy for scripting tasks in the docToolchain project. This decision is based on the following reasons: Groovy is a language on the JVM, which is well-known and widely used in our team. Groovy is essentially Java on steroids, with 95% of Java code also being valid Groovy code, making it a versatile and powerful language for our needs. However, we also use other languages when necessary. For instance, we use Visual Basic when there are no suitable Java libraries for certain tasks, such as extracting PowerPoint slides or diagrams from Sparx Enterprise Architect. The interaction between scripts written in different languages is managed through a Gradle task, which is also written in Groovy. This task invokes the necessary scripts through the shell, using a \"streamingExecute\" helper to show the progress of long-running scripts on the console. Consequences As a result of this decision, most scripts are developed for a specific purpose at a given point in time and are updated only when necessary. Some scripts are updated on a regular basis due to their widespread use and the varying needs of users. Legacy scripts will be updated when there is a need for it. "
-},
-
-{
-    "id": 42,
     "uri": "050_ADRs/ADR-2-separate-core-logic-from-gradle.html",
     "menu": "ADRs",
     "title": "ADR-02: Separate core logic from Gradle",
     "text": " Table of Contents ADR-02: Separate core logic from Gradle Status Problem and Context Decision Alternatives Consequences :gradle-submoduleshttps://docs.gradle.org/current/userguide/multi_project_builds.html#sec:adding_subprojects ADR-02: Separate core logic from Gradle Status This decision is currently under ongoing discussion. Problem and Context The structure of the docToolchain project, is historically grown and has been adapted to the needs of the project. The project is built with Gradle. Although Gradle is a powerful build tool that allows for a lot of flexibility, there are some recommendation on how to setup and structure a project, docToolchains setup is quite customized only follows few conventions. The project setup is not very well documented, which makes it difficult for new developers to understand the build process. Furthermore, the build scripts have become increasingly complex over time, which makes it difficult to maintain them. Apart from the aforementioned problems, docToolchain is currently very tightly coupled to Gradle, which in some scenarios leads to high startup times, e.g. when running tests. Decision There has been a vital discussion on GitHub around docToolchain v3, which has led to the decision to separate the core logic from Gradle. The core logic will be implemented in Groovy and will be used by Gradle. Gradle, as a first-class citizen, is then considered as a tool to provide a convenient way to use the core logic. The core logic will be implemented in a way that it is in the first steps completely isolated from Gradle. This paves the road for even further decoupling from Gradle in the future. This decision has several advantages: Developer experience is improved, as the core logic is easier to understand and to maintain. IDE support is improved, as the core logic is like any other Groovy project, no custom setup required. Encapsulating business logic into a dedicated submodule that does not know anything about Gradle or any other buildtool, opens the door for non-Gradle usage. Core logic is not splattered over scripts and Gradle task definitions, but is concentrated in a single place. Dependencies are easier to manage, as they are defined in a single place. Gradle buildscripts only have a single dependency to the core logic. Tests can be executed without Gradle, which leads to faster test execution. Alternatives Keep the current setup We could keep the current setup, but this would block to the aforementioned improvements. Separate core logic into Gradle&#8217;s buildSrc We could separate the core logic into Gradle&#8217;s buildSrc . While this would improve the situation, it would still not solve the problem of having the core logic tightly coupled to Gradle. Furthermore, it would not solve the problem of having a complex/ slow test setup, since there is still the need for Gradle runner. On top buildSrc is meant for complex build logic and not for business logic. See this PR for an example Separate core logic into a separate project We could separate the core logic into a separate project. This would solve the problem of having the core logic tightly coupled to Gradle. While a submodule in the first step is still part of the current project, it relieves the core logic from the need to know about Gradle. However, some tasks rely on Gradle plugins, this would make it difficult to execute them without Gradle. See this PR for an example Consequences As a result of this decision, the setup needs to be migrated to the new structure. This includes: Migrating the core logic into a separate submodule Revise current implementation Logic that solely depends on Gradle plugins should be kept as is to avoid unnecessary effort and reduce the overall scope of the migration Migrating the tests into the new submodule Adopt the buildscripts to use the new submodule New features should be implemented in the new submodule. Gradle Task should only be used to provide a convenient default way to use the core logic. "
+},
+
+{
+    "id": 42,
+    "uri": "050_ADRs/ADR-1-Scripting-Languages.html",
+    "menu": "ADRs",
+    "title": "ADR-01: Scripting",
+    "text": " Table of Contents ADR-01: Scripting Languages in docToolchain Status Problem and Context Decision Consequences ADR-01: Scripting Languages in docToolchain Status This decision is currently in effect. Problem and Context In the docToolchain project, we have a variety of scripts written in different languages. This has raised questions about the rationale behind the selection of different languages for different scripts, especially when it comes to managing and maintaining these scripts. Decision We have decided to primarily use Groovy for scripting tasks in the docToolchain project. This decision is based on the following reasons: Groovy is a language on the JVM, which is well-known and widely used in our team. Groovy is essentially Java on steroids, with 95% of Java code also being valid Groovy code, making it a versatile and powerful language for our needs. However, we also use other languages when necessary. For instance, we use Visual Basic when there are no suitable Java libraries for certain tasks, such as extracting PowerPoint slides or diagrams from Sparx Enterprise Architect. The interaction between scripts written in different languages is managed through a Gradle task, which is also written in Groovy. This task invokes the necessary scripts through the shell, using a \"streamingExecute\" helper to show the progress of long-running scripts on the console. Consequences As a result of this decision, most scripts are developed for a specific purpose at a given point in time and are updated only when necessary. Some scripts are updated on a regular basis due to their widespread use and the varying needs of users. Legacy scripts will be updated when there is a need for it. "
 },
 
 {
@@ -410,14 +410,6 @@ var documents = [
 
 {
     "id": 51,
-    "uri": "ea/Use_Cases_notes.html",
-    "menu": "ea",
-    "title": "Use_Cases_notes.ad",
-    "text": " docToolchain is a gradle/maven build which turns asciidoc documentation into HTML5 rendered files. create stunning docs invoked by gradle or maven command "
-},
-
-{
-    "id": 52,
     "uri": "ea/Architect_notes_issue2.html",
     "menu": "ea",
     "title": "Architect_notes_issue2.ad",
@@ -425,19 +417,27 @@ var documents = [
 },
 
 {
-    "id": 53,
-    "uri": "ea/readme.html",
+    "id": 52,
+    "uri": "ea/Use_Cases_notes.html",
     "menu": "ea",
-    "title": "readme.ad",
-    "text": " Table of Contents Warning! This folder contains exported diagrams or notes from Enterprise Architect. Please note that these are generated files but reside in the src -folder in order to be versioned. This is to make sure that they can be used from environments other than windows. Warning! The contents of this folder will be overwritten with each re-export! use gradle exportEA to re-export files "
+    "title": "Use_Cases_notes.ad",
+    "text": " docToolchain is a gradle/maven build which turns asciidoc documentation into HTML5 rendered files. create stunning docs invoked by gradle or maven command "
 },
 
 {
-    "id": 54,
+    "id": 53,
     "uri": "ea/Architect_notes.html",
     "menu": "ea",
     "title": "Architect_notes.ad",
     "text": " "
+},
+
+{
+    "id": 54,
+    "uri": "ea/readme.html",
+    "menu": "ea",
+    "title": "readme.ad",
+    "text": " Table of Contents Warning! This folder contains exported diagrams or notes from Enterprise Architect. Please note that these are generated files but reside in the src -folder in order to be versioned. This is to make sure that they can be used from environments other than windows. Warning! The contents of this folder will be overwritten with each re-export! use gradle exportEA to re-export files "
 },
 
 {
@@ -522,18 +522,18 @@ var documents = [
 
 {
     "id": 65,
-    "uri": "015_tasks/03_task_generateHTML.html",
-    "menu": "tasks",
-    "title": "generateHTML",
-    "text": " Table of Contents generateHTML About This Task Generating Single-File HTML Output Creating Text-Based Diagrams Controlling Diagram Size Further Reading and Resources Source .gravatar img { margin-left: 3px; border-radius: 4px; } generateHTML 3 minutes to read About This Task This is the standard Asciidoctor generator which is supported out of the box. The result is written to build/html5 (the HTML files need the images folder to be in the same directory to display correctly). Generating Single-File HTML Output If you would like the generator to produce a single-file HTML, you can configure Asciidoctor to store the images inline as data-uri by setting :data-uri: in the config of your AsciiDoc file. But be warned. The file can quickly become very large and some browsers might struggle to render it. Creating Text-Based Diagrams docToolchain is configured to use the asciidoctor-diagram plugin to create PlantUML diagrams. The plugin also supports many other text-based diagrams, but PlantUML is the most common. To use the plugin, specify your PlantUML code like this: .example diagram [plantuml, \"{plantUMLDir}demoPlantUML\", png] # (1) ---- class BlockProcessor class DiagramBlock class DitaaBlock class PlantUmlBlock BlockProcessor &lt;|-- DiagramBlock DiagramBlock &lt;|-- DitaaBlock DiagramBlock &lt;|-- PlantUmlBlock ---- The element of this list specifies the diagram tool plantuml to be used. The second element is the name of the image to be created, and the third specifies the image type. Note {plantUMLDir} ensures that PlantUML also works for the generatePDF task. Without it, generateHTML works fine, but the PDF will not contain the generated images. Important Be sure to specify a unique image name for each diagram, otherwise they will overwrite each other. The above example renders as: Figure 1. example diagram Controlling Diagram Size If you want to control the size of the diagram in the output, configure the \"width\" attribute (in pixels) or the \"scale\" attribute (floating point ratio) passed to asciidoctor-diagram . The following example updates the diagram above by changing the declaration to one of the versions below: [plantuml, target=\"{plantUMLDir}demoPlantUMLWidth\", format=png, width=250] # rest of the diagram definition [plantuml, target=\"{plantUMLDir}demoPlantUMLScale\", format=png, scale=0.75] # rest of the diagram definition The output will render like this: Figure 2. example diagram (with specified width) Figure 3. example diagram (with specified scale) Note To work correctly, PlantUML needs Graphviz dot installed. If you can&#8217;t install it, use the Java-based version of the dot library instead. Just add !pragma layout smetana as the first line of your diagram definition. Further Reading and Resources This blog post explains more about single-file HTML. Read this blog post to understand how to use PlantUML without Graphviz dot. Other helpful posts related to the generateHTML task: PlantUML with Gradle PlantUML with Asciidoctor-pdf PlantUML Revisited Source Show source code of scripts/AsciiDocBasics.gradle or go directly to GitHub · docToolchain/scripts/AsciiDocBasics.gradle . scripts/AsciiDocBasics.gradle task generateHTML ( type: AsciidoctorTask, group: 'docToolchain', description: 'use html5 as asciidoc backend') { attributes ( 'plantUMLDir' : file(\"${docDir}/${config.outputPath}/html5\").toURI().relativize(new File(\"${docDir}/${config.outputPath}/html5/plantUML/\").toURI()).getPath(), ) // specify output folder explicitly to avoid cleaning targetDir from other generated content outputDir = file(targetDir + '/html5/') outputOptions { separateOutputDirs = false backends = ['html5'] } def sourceFilesHTML = findSourceFilesByType(['html']) // onlyIf { // sourceFilesHTML // } sources { sourceFilesHTML.each { include it.file File useFile = new File(srcDir, it.file) if (!useFile.exists()) { throw new Exception (\"\"\" The file $useFile in HTML config does not exist! Please check the configuration 'inputFiles' in $mainConfigFile.\"\"\") } } } resources { config.imageDirs.each { imageDir -&gt; from(new File(file(srcDir),imageDir)) logger.info ('imageDir: '+imageDir) into './images' } config.resourceDirs.each { resource -&gt; from(new File(file(srcDir),resource.source)) logger.info ('resource: '+resource.source) into resource.target } } doFirst { if (sourceFilesHTML.size()==0) { throw new Exception (\"\"\" &gt;&gt; No source files defined for type 'html'. &gt;&gt; Please specify at least one inputFile in your docToolchainConfig.groovy \"\"\") } } } "
-},
-
-{
-    "id": 66,
     "uri": "015_tasks/03_task_generateDeck.html",
     "menu": "tasks",
     "title": "generateDeck",
     "text": " Table of Contents generateDeck About This Task Source .gravatar img { margin-left: 3px; border-radius: 4px; } generateDeck 1 minute to read About This Task This task makes use of the asciidoctor-reveal.js backend to render your documents into an HTML-based presentation. It creates a PowerPoint presentation, then enriches it by adding reveal.js slide definitions in AsciiDoc to the speaker notes. For best results, use this task with the exportPPT task. Configure RevealJs docToolchain comes with some opinionated, sane defaults for RevealJs. You can overwrite any of them and provide further configuration as per asciidoctor-reveal.js documentation. Source Show source code of scripts/AsciiDocBasics.gradle or go directly to GitHub · docToolchain/scripts/AsciiDocBasics.gradle . scripts/AsciiDocBasics.gradle task generateDeck ( type: AsciidoctorJRevealJSTask, group: 'docToolchain', description: 'use revealJs as asciidoc backend to create a presentation') { // corresponding Asciidoctor reveal.js config // :revealjs_theme: theme = 'black' revealjsOptions { // :revealjs_hideAddressBar: hideAddressBarOnMobile = 'true' // :revealjs_history: pushToHistory = 'true' // :revealjs_progress: progressBar = 'true' // :revealjs_slideNumber: slideNumber = 'true' // :revealjs_touch: touchMode = 'true' // :revealjs_transition: transition = 'linear' } attributes ( 'idprefix': 'slide-', 'idseparator': '-', 'docinfo1': '', ) def sourceFilesREVEAL = findSourceFilesByType(['revealjs']) sources { sourceFilesREVEAL.each { include it.file logger.info it.file File useFile = new File(srcDir, it.file) if (!useFile.exists()) { throw new Exception (\"\"\" The file $useFile in REVEAL config does not exist! Please check the configuration 'inputFiles' in $mainConfigFile.\"\"\") } } } outputDir = file(targetDir+'/decks/') resources { from(sourceDir) { include 'images/**' } into(\"\") logger.info \"${docDir}/${config.outputPath}/images\" } doFirst { if (sourceFilesREVEAL.size()==0) { throw new Exception (\"\"\" &gt;&gt; No source files defined for type 'revealjs'. &gt;&gt; Please specify at least one inputFile in your docToolchainConfig.groovy \"\"\") } } } generateDeck.dependsOn asciidoctorGemsPrepare "
+},
+
+{
+    "id": 66,
+    "uri": "015_tasks/03_task_generateHTML.html",
+    "menu": "tasks",
+    "title": "generateHTML",
+    "text": " Table of Contents generateHTML About This Task Generating Single-File HTML Output Creating Text-Based Diagrams Controlling Diagram Size Further Reading and Resources Source .gravatar img { margin-left: 3px; border-radius: 4px; } generateHTML 3 minutes to read About This Task This is the standard Asciidoctor generator which is supported out of the box. The result is written to build/html5 (the HTML files need the images folder to be in the same directory to display correctly). Generating Single-File HTML Output If you would like the generator to produce a single-file HTML, you can configure Asciidoctor to store the images inline as data-uri by setting :data-uri: in the config of your AsciiDoc file. But be warned. The file can quickly become very large and some browsers might struggle to render it. Creating Text-Based Diagrams docToolchain is configured to use the asciidoctor-diagram plugin to create PlantUML diagrams. The plugin also supports many other text-based diagrams, but PlantUML is the most common. To use the plugin, specify your PlantUML code like this: .example diagram [plantuml, \"{plantUMLDir}demoPlantUML\", png] # (1) ---- class BlockProcessor class DiagramBlock class DitaaBlock class PlantUmlBlock BlockProcessor &lt;|-- DiagramBlock DiagramBlock &lt;|-- DitaaBlock DiagramBlock &lt;|-- PlantUmlBlock ---- The element of this list specifies the diagram tool plantuml to be used. The second element is the name of the image to be created, and the third specifies the image type. Note {plantUMLDir} ensures that PlantUML also works for the generatePDF task. Without it, generateHTML works fine, but the PDF will not contain the generated images. Important Be sure to specify a unique image name for each diagram, otherwise they will overwrite each other. The above example renders as: Figure 1. example diagram Controlling Diagram Size If you want to control the size of the diagram in the output, configure the \"width\" attribute (in pixels) or the \"scale\" attribute (floating point ratio) passed to asciidoctor-diagram . The following example updates the diagram above by changing the declaration to one of the versions below: [plantuml, target=\"{plantUMLDir}demoPlantUMLWidth\", format=png, width=250] # rest of the diagram definition [plantuml, target=\"{plantUMLDir}demoPlantUMLScale\", format=png, scale=0.75] # rest of the diagram definition The output will render like this: Figure 2. example diagram (with specified width) Figure 3. example diagram (with specified scale) Note To work correctly, PlantUML needs Graphviz dot installed. If you can&#8217;t install it, use the Java-based version of the dot library instead. Just add !pragma layout smetana as the first line of your diagram definition. Further Reading and Resources This blog post explains more about single-file HTML. Read this blog post to understand how to use PlantUML without Graphviz dot. Other helpful posts related to the generateHTML task: PlantUML with Gradle PlantUML with Asciidoctor-pdf PlantUML Revisited Source Show source code of scripts/AsciiDocBasics.gradle or go directly to GitHub · docToolchain/scripts/AsciiDocBasics.gradle . scripts/AsciiDocBasics.gradle task generateHTML ( type: AsciidoctorTask, group: 'docToolchain', description: 'use html5 as asciidoc backend') { attributes ( 'plantUMLDir' : file(\"${docDir}/${config.outputPath}/html5\").toURI().relativize(new File(\"${docDir}/${config.outputPath}/html5/plantUML/\").toURI()).getPath(), ) // specify output folder explicitly to avoid cleaning targetDir from other generated content outputDir = file(targetDir + '/html5/') outputOptions { separateOutputDirs = false backends = ['html5'] } def sourceFilesHTML = findSourceFilesByType(['html']) // onlyIf { // sourceFilesHTML // } sources { sourceFilesHTML.each { include it.file File useFile = new File(srcDir, it.file) if (!useFile.exists()) { throw new Exception (\"\"\" The file $useFile in HTML config does not exist! Please check the configuration 'inputFiles' in $mainConfigFile.\"\"\") } } } resources { config.imageDirs.each { imageDir -&gt; from(new File(file(srcDir),imageDir)) logger.info ('imageDir: '+imageDir) into './images' } config.resourceDirs.each { resource -&gt; from(new File(file(srcDir),resource.source)) logger.info ('resource: '+resource.source) into resource.target } } doFirst { if (sourceFilesHTML.size()==0) { throw new Exception (\"\"\" &gt;&gt; No source files defined for type 'html'. &gt;&gt; Please specify at least one inputFile in your docToolchainConfig.groovy \"\"\") } } } "
 },
 
 {
@@ -610,18 +610,18 @@ var documents = [
 
 {
     "id": 76,
-    "uri": "015_tasks/03_task_previewSite.html",
-    "menu": "tasks",
-    "title": "previewSite",
-    "text": " Table of Contents previewSite About This Task .gravatar img { margin-left: 3px; border-radius: 4px; } previewSite 1 minute to read About This Task Note This task has now been deprecated. When you use a build in a static site generator through generateSite , most site themes don&#8217;t need the static site server for general content. You can just preview the site by opening from the file system in your browser. However, some JavaScript features will not work because of CORS restrictions. In that case you need a server. You can start one by running e.g. python -m http.server or in case you have Python 3 python3 -m http.server . "
-},
-
-{
-    "id": 77,
     "uri": "015_tasks/03_task_exportOpenApi.html",
     "menu": "tasks",
     "title": "exportOpenAPI",
     "text": " Table of Contents exportOpenAPI About This Task Configuration Source .gravatar img { margin-left: 3px; border-radius: 4px; } exportOpenAPI 1 minute to read About This Task This task exports an OpenAPI Specification definition yaml file to a AsciiDoc document. Currently, this task depends on OpenAPI Generator (v4.3.1) and its gradle plugin . Configuration Config.groovy // Configuration for OpenAPI related task openApi = [:] // 'specFile' is the name of OpenAPI specification yaml file. Tool expects this file inside working dir (as a filename or relative path with filename) // 'infoUrl' and 'infoEmail' are specification metadata about further info related to the API. By default this values would be filled by openapi-generator plugin placeholders // openApi.with { specFile = 'src/docs/petstore-v2.0.yaml' // i.e. 'petstore.yaml', 'src/doc/petstore.yaml' infoUrl = 'https://my-api.company.com' infoEmail = 'info@company.com' } Source Show source code of scripts/exportOpenApi.gradle or go directly to GitHub · docToolchain/scripts/exportOpenApi.gradle . scripts/exportOpenApi.gradle task exportOpenApi ( type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask, group: 'docToolchain', description: 'exports OpenAPI specification to the asciidoc file') { if (!specFile) { logger.info(\"\\n---&gt; OpenAPI specification file not found in Config.groovy (https://doctoolchain.github.io/docToolchain/#_exportopenapi)\") return } else { logger.info(\"Found OpenAPI specification in Config.groovy\") } outputs.upToDateWhen { false } outputs.cacheIf { false } generatorName = 'asciidoc' outputDir = \"${targetDir}/OpenAPI\".toString() inputSpec = \"${docDir}/${specFile}\" // plugin is not able to find file if inputPath is defined as '.' logger.debug(\"\\n=====================\\nProject Config:\\n=====================\") logger.debug(\"Docdir: ${docDir}\") logger.debug(\"Target: ${targetDir}\") logger.info(\"\\n=====================\\nOpenAPI Config:\\n=====================\") logger.info(\"Specification file: ${specFile}\") logger.info(\"inputSpec: ${inputSpec}\") logger.info(\"outputDir: ${outputDir}\\n\") additionalProperties = [ infoEmail:\"${config.openApi.infoEmail}\", infoUrl:\"${config.openApi.infoUrl}\" ] } "
+},
+
+{
+    "id": 77,
+    "uri": "015_tasks/03_task_previewSite.html",
+    "menu": "tasks",
+    "title": "previewSite",
+    "text": " Table of Contents previewSite About This Task .gravatar img { margin-left: 3px; border-radius: 4px; } previewSite 1 minute to read About This Task Note This task has now been deprecated. When you use a build in a static site generator through generateSite , most site themes don&#8217;t need the static site server for general content. You can just preview the site by opening from the file system in your browser. However, some JavaScript features will not work because of CORS restrictions. In that case you need a server. You can start one by running e.g. python -m http.server or in case you have Python 3 python3 -m http.server . "
 },
 
 {
