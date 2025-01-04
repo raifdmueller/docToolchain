@@ -218,18 +218,18 @@ var documents = [
 
 {
     "id": 27,
-    "uri": "020_tutorial/040_microsite/index.html",
-    "menu": "tutorial",
-    "title": "Microsite",
-    "text": " This chapter lists tutorials related to publishing a microsite. "
-},
-
-{
-    "id": 28,
     "uri": "020_tutorial/040_microsite/040_generateSite.html",
     "menu": "tutorial",
     "title": "generateSite",
     "text": " Table of Contents generateSite generateSite The generateSite task is more advanced. In many cases, your goal will not be to create a single HTML document but a whole documentation website. This is where generateSite shines. It uses a static site generator to turn your document into a nice looking microsite with landing-page, local search and edit links. Linux / WSL2 with bash ./dtcw generateSite Windows with Powershell ./dtcw.ps1 generateSite output of generateSite $ ./dtcw docker generateSite dtcw - docToolchain wrapper V0.24 docToolchain V2.0.0 Bash is running on WSL this might cause problems with plantUML see https://doctoolchain.github.io/docToolchain/#wsl for more details Java Version 11 docker available home folder exists force use of docker /usr/bin/docker use docker installation Starting a Gradle Daemon (subsequent builds will be faster) &gt; Configure project : arc42/arc42.adoc &gt; Task :generateSite created /project/build/microsite/tmp copy internal theme /home/dtcuser/docToolchain/src/site copy project theme /project/src/site &gt; Task :copyImages &gt; Task :bake Warning: Nashorn engine is planned to be removed from a future JDK release BUILD SUCCESSFUL in 1m 15s 3 actionable tasks: 3 executed The output is written to build/microsite/output/index.html . You can open this file in your browser and view the results. But you will notice that some features which rely on javascript will be broken. To avoid this, use the task previewSite to start a little webserver which presents you the site without flaws. Figure 1. generated output of generateSite task "
+},
+
+{
+    "id": 28,
+    "uri": "020_tutorial/040_microsite/index.html",
+    "menu": "tutorial",
+    "title": "Microsite",
+    "text": " This chapter lists tutorials related to publishing a microsite. "
 },
 
 {
@@ -282,18 +282,18 @@ var documents = [
 
 {
     "id": 35,
-    "uri": "020_tutorial/990_Tutorial.html",
-    "menu": "tutorial",
-    "title": "How to create a Tutorial",
-    "text": " Table of Contents How to create a Tutorial Prepare your Tutorial Preview your work Submit your Pull-Request How to create a Tutorial Since docToolchain is a community project, it also lives from the content created by the community. This little tutorial will explain how you&#8201;&#8212;&#8201;as a member of the community&#8201;&#8212;&#8201;can create your own tutorial. Prerequisites: you know how to use Git ( https://www.gitbook.com/ ), how to fork and create a pull request on github and how to write in AsciiDoc. The docToolchain website is build with docToolchain itself. So, the code of docToolchain and the documentation reside both in the same repository. (The way as it should be with the docs-as-code approach!) Navigate to https://github.com/docToolchain/docToolchain/tree/ng/src/docs/020_tutorial to find the source of the already existing tutorials. As you can see, the files are numbered in steps of 10. The numbers are the order of appearance within the left navigation. They can be overwritten by a :jbake-order: x -statement within the .adoc file. The order is specified in steps of 10 just to be able to insert files in between if necessary. Prepare your Tutorial To create a new Tutorial, fork the project and create a new file in the folder src/docs with an appropriate name and number. Add the following content to your file: :jbake-title: Your Navigation-Entry :source-highlighter: highlightjs :highlightjs-theme: monokai-sublime :imagesdir: images :icons: font == Your Headline The :jbake-title: Your Navigation-Entry tell jBake (the renderer used by docToolchain) the text for the navigation link in left navigation pane. If this is missing, it will use the first Headline in your document. If this is also missing, it will use the filename. You might wonder why you should specify the title if you already have named your tutorial via the first headline. The headline is often quite long and :jbake-title: gives you the opportunity to shorten it for the navigation pane. The include:: -statement mainly sets the location of the imagesdir so that you don&#8217;t have to worry about it. Take a look at the file to see what else it does! Your first headline should always start with == and not = , sind a single = is the document name like a book title. docToolchain expects for the chapters of the documentation headline level == as starting headline. That&#8217;s it. Now you can start to write your tutorial. Preview your work To edit your file, use an editor which gives you a preview of your .adoc file like IntelliJ or VS Code. This already gives you a good preview of the structure and formatting of your document. Want to see how it looks on a web page? There are two ways to render the full page. One create a pull request (PR) and mark it as draft. As soon as the PR is submitted, netlify will start to render a preview. You will see some tasks running on the PR-page and the last one will give you a link to the preview-site. Two you can render the page locally through docToolchain. Execute ./dtcw generateSite locally and you will find the result in build/microsite/output/index.html Submit your Pull-Request As soon as you think your tutorial is ready for production, remove the draft status from your PR and we will start a short review process. As soon as we are through with the review, we will merge the PR and your tutorial will be live. Any questions? Feel free to open a new Discussion ! "
-},
-
-{
-    "id": 36,
     "uri": "020_tutorial/150_multiRepoMicrositeTipsAndTricks.html",
     "menu": "tutorial",
     "title": "Building a microsite from multiple repositories",
     "text": " Table of Contents Multiple Repositories Backlinks to the repositories Multiple Repositories Modern software development teams maintain several git repositories. If they commit to having documentation close to the code, they will inevitably have documentation spread over several repositories. DocToolchain supports building documentation such as a microsite from several repositories precisely by not supporting it in any particular way. You can just checkout all repositories you need, and extract and arrange the content of their docs folders as you need before you build the documentation. Backlinks to the repositories DocToolchain offers two helpful links in the top right corner of every page: Improve this doc Opens a new tab to directly edit the respective page on e.g. GitHub Create an issue Lets you create a new issue in a defined git repository. The URLs for both activities can be specified in docToolchainConfig.groovy , in the fields issueUrl and gitRepoUrl . However, if you build your documentation from several repos, you&#8217;ll want to link to different repos. A simple fix is to do a postprocessing step with sed and replace the default URLs with the correct ones. If your way of arranging the documentation folders from the different repos is simple enough, you can simply run sed with a different URL on each of the different generated folders. If your arrangement is more complicated, e.g. because you merge all repos ADRs into one folder, you can do a preprocessing step in advance. In each repo, automatically set the :filename: tag and prefix the value with a unique identifier for the repository. Move your adoc files to the desired target folders. run generateSite In the generated HTML files, replace the repository in the backlinks. By including the prefix in your query, you can make sure to target the correct repository. "
+},
+
+{
+    "id": 36,
+    "uri": "020_tutorial/990_Tutorial.html",
+    "menu": "tutorial",
+    "title": "How to create a Tutorial",
+    "text": " Table of Contents How to create a Tutorial Prepare your Tutorial Preview your work Submit your Pull-Request How to create a Tutorial Since docToolchain is a community project, it also lives from the content created by the community. This little tutorial will explain how you&#8201;&#8212;&#8201;as a member of the community&#8201;&#8212;&#8201;can create your own tutorial. Prerequisites: you know how to use Git ( https://www.gitbook.com/ ), how to fork and create a pull request on github and how to write in AsciiDoc. The docToolchain website is build with docToolchain itself. So, the code of docToolchain and the documentation reside both in the same repository. (The way as it should be with the docs-as-code approach!) Navigate to https://github.com/docToolchain/docToolchain/tree/ng/src/docs/020_tutorial to find the source of the already existing tutorials. As you can see, the files are numbered in steps of 10. The numbers are the order of appearance within the left navigation. They can be overwritten by a :jbake-order: x -statement within the .adoc file. The order is specified in steps of 10 just to be able to insert files in between if necessary. Prepare your Tutorial To create a new Tutorial, fork the project and create a new file in the folder src/docs with an appropriate name and number. Add the following content to your file: :jbake-title: Your Navigation-Entry :source-highlighter: highlightjs :highlightjs-theme: monokai-sublime :imagesdir: images :icons: font == Your Headline The :jbake-title: Your Navigation-Entry tell jBake (the renderer used by docToolchain) the text for the navigation link in left navigation pane. If this is missing, it will use the first Headline in your document. If this is also missing, it will use the filename. You might wonder why you should specify the title if you already have named your tutorial via the first headline. The headline is often quite long and :jbake-title: gives you the opportunity to shorten it for the navigation pane. The include:: -statement mainly sets the location of the imagesdir so that you don&#8217;t have to worry about it. Take a look at the file to see what else it does! Your first headline should always start with == and not = , sind a single = is the document name like a book title. docToolchain expects for the chapters of the documentation headline level == as starting headline. That&#8217;s it. Now you can start to write your tutorial. Preview your work To edit your file, use an editor which gives you a preview of your .adoc file like IntelliJ or VS Code. This already gives you a good preview of the structure and formatting of your document. Want to see how it looks on a web page? There are two ways to render the full page. One create a pull request (PR) and mark it as draft. As soon as the PR is submitted, netlify will start to render a preview. You will see some tasks running on the PR-page and the last one will give you a link to the preview-site. Two you can render the page locally through docToolchain. Execute ./dtcw generateSite locally and you will find the result in build/microsite/output/index.html Submit your Pull-Request As soon as you think your tutorial is ready for production, remove the draft status from your PR and we will start a short review process. As soon as we are through with the review, we will merge the PR and your tutorial will be live. Any questions? Feel free to open a new Discussion ! "
 },
 
 {
@@ -330,14 +330,6 @@ var documents = [
 
 {
     "id": 41,
-    "uri": "050_ADRs/ADR-2-separate-core-logic-from-gradle.html",
-    "menu": "ADRs",
-    "title": "ADR-02: Separate core logic from Gradle",
-    "text": " Table of Contents ADR-02: Separate core logic from Gradle Status Problem and Context Decision Alternatives Consequences :gradle-submoduleshttps://docs.gradle.org/current/userguide/multi_project_builds.html#sec:adding_subprojects ADR-02: Separate core logic from Gradle Status This decision is currently under ongoing discussion. Problem and Context The structure of the docToolchain project, is historically grown and has been adapted to the needs of the project. The project is built with Gradle. Although Gradle is a powerful build tool that allows for a lot of flexibility, there are some recommendation on how to setup and structure a project, docToolchains setup is quite customized only follows few conventions. The project setup is not very well documented, which makes it difficult for new developers to understand the build process. Furthermore, the build scripts have become increasingly complex over time, which makes it difficult to maintain them. Apart from the aforementioned problems, docToolchain is currently very tightly coupled to Gradle, which in some scenarios leads to high startup times, e.g. when running tests. Decision There has been a vital discussion on GitHub around docToolchain v3, which has led to the decision to separate the core logic from Gradle. The core logic will be implemented in Groovy and will be used by Gradle. Gradle, as a first-class citizen, is then considered as a tool to provide a convenient way to use the core logic. The core logic will be implemented in a way that it is in the first steps completely isolated from Gradle. This paves the road for even further decoupling from Gradle in the future. This decision has several advantages: Developer experience is improved, as the core logic is easier to understand and to maintain. IDE support is improved, as the core logic is like any other Groovy project, no custom setup required. Encapsulating business logic into a dedicated submodule that does not know anything about Gradle or any other buildtool, opens the door for non-Gradle usage. Core logic is not splattered over scripts and Gradle task definitions, but is concentrated in a single place. Dependencies are easier to manage, as they are defined in a single place. Gradle buildscripts only have a single dependency to the core logic. Tests can be executed without Gradle, which leads to faster test execution. Alternatives Keep the current setup We could keep the current setup, but this would block to the aforementioned improvements. Separate core logic into Gradle&#8217;s buildSrc We could separate the core logic into Gradle&#8217;s buildSrc . While this would improve the situation, it would still not solve the problem of having the core logic tightly coupled to Gradle. Furthermore, it would not solve the problem of having a complex/ slow test setup, since there is still the need for Gradle runner. On top buildSrc is meant for complex build logic and not for business logic. See this PR for an example Separate core logic into a separate project We could separate the core logic into a separate project. This would solve the problem of having the core logic tightly coupled to Gradle. While a submodule in the first step is still part of the current project, it relieves the core logic from the need to know about Gradle. However, some tasks rely on Gradle plugins, this would make it difficult to execute them without Gradle. See this PR for an example Consequences As a result of this decision, the setup needs to be migrated to the new structure. This includes: Migrating the core logic into a separate submodule Revise current implementation Logic that solely depends on Gradle plugins should be kept as is to avoid unnecessary effort and reduce the overall scope of the migration Migrating the tests into the new submodule Adopt the buildscripts to use the new submodule New features should be implemented in the new submodule. Gradle Task should only be used to provide a convenient default way to use the core logic. "
-},
-
-{
-    "id": 42,
     "uri": "050_ADRs/ADR-1-Scripting-Languages.html",
     "menu": "ADRs",
     "title": "ADR-01: Scripting",
@@ -345,15 +337,15 @@ var documents = [
 },
 
 {
-    "id": 43,
-    "uri": "ea/Activity_notes_issue1.html",
-    "menu": "ea",
-    "title": "Activity_notes_issue1.ad",
-    "text": " Activity1 Just a test for issue #1 https://github.com/rdmueller/docToolchain/issues/1 "
+    "id": 42,
+    "uri": "050_ADRs/ADR-2-separate-core-logic-from-gradle.html",
+    "menu": "ADRs",
+    "title": "ADR-02: Separate core logic from Gradle",
+    "text": " Table of Contents ADR-02: Separate core logic from Gradle Status Problem and Context Decision Alternatives Consequences :gradle-submoduleshttps://docs.gradle.org/current/userguide/multi_project_builds.html#sec:adding_subprojects ADR-02: Separate core logic from Gradle Status This decision is currently under ongoing discussion. Problem and Context The structure of the docToolchain project, is historically grown and has been adapted to the needs of the project. The project is built with Gradle. Although Gradle is a powerful build tool that allows for a lot of flexibility, there are some recommendation on how to setup and structure a project, docToolchains setup is quite customized only follows few conventions. The project setup is not very well documented, which makes it difficult for new developers to understand the build process. Furthermore, the build scripts have become increasingly complex over time, which makes it difficult to maintain them. Apart from the aforementioned problems, docToolchain is currently very tightly coupled to Gradle, which in some scenarios leads to high startup times, e.g. when running tests. Decision There has been a vital discussion on GitHub around docToolchain v3, which has led to the decision to separate the core logic from Gradle. The core logic will be implemented in Groovy and will be used by Gradle. Gradle, as a first-class citizen, is then considered as a tool to provide a convenient way to use the core logic. The core logic will be implemented in a way that it is in the first steps completely isolated from Gradle. This paves the road for even further decoupling from Gradle in the future. This decision has several advantages: Developer experience is improved, as the core logic is easier to understand and to maintain. IDE support is improved, as the core logic is like any other Groovy project, no custom setup required. Encapsulating business logic into a dedicated submodule that does not know anything about Gradle or any other buildtool, opens the door for non-Gradle usage. Core logic is not splattered over scripts and Gradle task definitions, but is concentrated in a single place. Dependencies are easier to manage, as they are defined in a single place. Gradle buildscripts only have a single dependency to the core logic. Tests can be executed without Gradle, which leads to faster test execution. Alternatives Keep the current setup We could keep the current setup, but this would block to the aforementioned improvements. Separate core logic into Gradle&#8217;s buildSrc We could separate the core logic into Gradle&#8217;s buildSrc . While this would improve the situation, it would still not solve the problem of having the core logic tightly coupled to Gradle. Furthermore, it would not solve the problem of having a complex/ slow test setup, since there is still the need for Gradle runner. On top buildSrc is meant for complex build logic and not for business logic. See this PR for an example Separate core logic into a separate project We could separate the core logic into a separate project. This would solve the problem of having the core logic tightly coupled to Gradle. While a submodule in the first step is still part of the current project, it relieves the core logic from the need to know about Gradle. However, some tasks rely on Gradle plugins, this would make it difficult to execute them without Gradle. See this PR for an example Consequences As a result of this decision, the setup needs to be migrated to the new structure. This includes: Migrating the core logic into a separate submodule Revise current implementation Logic that solely depends on Gradle plugins should be kept as is to avoid unnecessary effort and reduce the overall scope of the migration Migrating the tests into the new submodule Adopt the buildscripts to use the new submodule New features should be implemented in the new submodule. Gradle Task should only be used to provide a convenient default way to use the core logic. "
 },
 
 {
-    "id": 44,
+    "id": 43,
     "uri": "ea/issue1.html",
     "menu": "ea",
     "title": "issue1.ad",
@@ -361,18 +353,26 @@ var documents = [
 },
 
 {
-    "id": 45,
-    "uri": "ea/UseCases.html",
+    "id": 44,
+    "uri": "ea/Use_Cases_notes_UseCases.html",
     "menu": "ea",
-    "title": "UseCases.ad",
+    "title": "Use_Cases_notes_UseCases.ad",
     "text": " docToolchain is a gradle/maven build which turns asciidoc documentation into HTML5 rendered files. create stunning docs invoked by gradle or maven command "
 },
 
 {
-    "id": 46,
-    "uri": "ea/Use_Cases_notes_UseCases.html",
+    "id": 45,
+    "uri": "ea/Activity_notes_issue1.html",
     "menu": "ea",
-    "title": "Use_Cases_notes_UseCases.ad",
+    "title": "Activity_notes_issue1.ad",
+    "text": " Activity1 Just a test for issue #1 https://github.com/rdmueller/docToolchain/issues/1 "
+},
+
+{
+    "id": 46,
+    "uri": "ea/UseCases.html",
+    "menu": "ea",
+    "title": "UseCases.ad",
     "text": " docToolchain is a gradle/maven build which turns asciidoc documentation into HTML5 rendered files. create stunning docs invoked by gradle or maven command "
 },
 
@@ -410,14 +410,6 @@ var documents = [
 
 {
     "id": 51,
-    "uri": "ea/Architect_notes_issue2.html",
-    "menu": "ea",
-    "title": "Architect_notes_issue2.ad",
-    "text": " "
-},
-
-{
-    "id": 52,
     "uri": "ea/Use_Cases_notes.html",
     "menu": "ea",
     "title": "Use_Cases_notes.ad",
@@ -425,19 +417,27 @@ var documents = [
 },
 
 {
-    "id": 53,
-    "uri": "ea/Architect_notes.html",
+    "id": 52,
+    "uri": "ea/Architect_notes_issue2.html",
     "menu": "ea",
-    "title": "Architect_notes.ad",
+    "title": "Architect_notes_issue2.ad",
     "text": " "
 },
 
 {
-    "id": 54,
+    "id": 53,
     "uri": "ea/readme.html",
     "menu": "ea",
     "title": "readme.ad",
     "text": " Table of Contents Warning! This folder contains exported diagrams or notes from Enterprise Architect. Please note that these are generated files but reside in the src -folder in order to be versioned. This is to make sure that they can be used from environments other than windows. Warning! The contents of this folder will be overwritten with each re-export! use gradle exportEA to re-export files "
+},
+
+{
+    "id": 54,
+    "uri": "ea/Architect_notes.html",
+    "menu": "ea",
+    "title": "Architect_notes.ad",
+    "text": " "
 },
 
 {
@@ -602,14 +602,6 @@ var documents = [
 
 {
     "id": 75,
-    "uri": "015_tasks/03_task_exportOpenApi.html",
-    "menu": "tasks",
-    "title": "exportOpenAPI",
-    "text": " Table of Contents exportOpenAPI About This Task Configuration Source .gravatar img { margin-left: 3px; border-radius: 4px; } exportOpenAPI 1 minute to read About This Task This task exports an OpenAPI Specification definition yaml file to a AsciiDoc document. Currently, this task depends on OpenAPI Generator (v4.3.1) and its gradle plugin . Configuration Config.groovy // Configuration for OpenAPI related task openApi = [:] // 'specFile' is the name of OpenAPI specification yaml file. Tool expects this file inside working dir (as a filename or relative path with filename) // 'infoUrl' and 'infoEmail' are specification metadata about further info related to the API. By default this values would be filled by openapi-generator plugin placeholders // openApi.with { specFile = 'src/docs/petstore-v2.0.yaml' // i.e. 'petstore.yaml', 'src/doc/petstore.yaml' infoUrl = 'https://my-api.company.com' infoEmail = 'info@company.com' } Source Show source code of scripts/exportOpenApi.gradle or go directly to GitHub · docToolchain/scripts/exportOpenApi.gradle . scripts/exportOpenApi.gradle task exportOpenApi ( type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask, group: 'docToolchain', description: 'exports OpenAPI specification to the asciidoc file') { if (!specFile) { logger.info(\"\\n---&gt; OpenAPI specification file not found in Config.groovy (https://doctoolchain.github.io/docToolchain/#_exportopenapi)\") return } else { logger.info(\"Found OpenAPI specification in Config.groovy\") } outputs.upToDateWhen { false } outputs.cacheIf { false } generatorName = 'asciidoc' outputDir = \"${targetDir}/OpenAPI\".toString() inputSpec = \"${docDir}/${specFile}\" // plugin is not able to find file if inputPath is defined as '.' logger.debug(\"\\n=====================\\nProject Config:\\n=====================\") logger.debug(\"Docdir: ${docDir}\") logger.debug(\"Target: ${targetDir}\") logger.info(\"\\n=====================\\nOpenAPI Config:\\n=====================\") logger.info(\"Specification file: ${specFile}\") logger.info(\"inputSpec: ${inputSpec}\") logger.info(\"outputDir: ${outputDir}\\n\") additionalProperties = [ infoEmail:\"${config.openApi.infoEmail}\", infoUrl:\"${config.openApi.infoUrl}\" ] } "
-},
-
-{
-    "id": 76,
     "uri": "015_tasks/03_task_copy_themes.html",
     "menu": "tasks",
     "title": "copyThemes",
@@ -617,11 +609,19 @@ var documents = [
 },
 
 {
-    "id": 77,
+    "id": 76,
     "uri": "015_tasks/03_task_previewSite.html",
     "menu": "tasks",
     "title": "previewSite",
     "text": " Table of Contents previewSite About This Task .gravatar img { margin-left: 3px; border-radius: 4px; } previewSite 1 minute to read About This Task Note This task has now been deprecated. When you use a build in a static site generator through generateSite , most site themes don&#8217;t need the static site server for general content. You can just preview the site by opening from the file system in your browser. However, some JavaScript features will not work because of CORS restrictions. In that case you need a server. You can start one by running e.g. python -m http.server or in case you have Python 3 python3 -m http.server . "
+},
+
+{
+    "id": 77,
+    "uri": "015_tasks/03_task_exportOpenApi.html",
+    "menu": "tasks",
+    "title": "exportOpenAPI",
+    "text": " Table of Contents exportOpenAPI About This Task Configuration Source .gravatar img { margin-left: 3px; border-radius: 4px; } exportOpenAPI 1 minute to read About This Task This task exports an OpenAPI Specification definition yaml file to a AsciiDoc document. Currently, this task depends on OpenAPI Generator (v4.3.1) and its gradle plugin . Configuration Config.groovy // Configuration for OpenAPI related task openApi = [:] // 'specFile' is the name of OpenAPI specification yaml file. Tool expects this file inside working dir (as a filename or relative path with filename) // 'infoUrl' and 'infoEmail' are specification metadata about further info related to the API. By default this values would be filled by openapi-generator plugin placeholders // openApi.with { specFile = 'src/docs/petstore-v2.0.yaml' // i.e. 'petstore.yaml', 'src/doc/petstore.yaml' infoUrl = 'https://my-api.company.com' infoEmail = 'info@company.com' } Source Show source code of scripts/exportOpenApi.gradle or go directly to GitHub · docToolchain/scripts/exportOpenApi.gradle . scripts/exportOpenApi.gradle task exportOpenApi ( type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask, group: 'docToolchain', description: 'exports OpenAPI specification to the asciidoc file') { if (!specFile) { logger.info(\"\\n---&gt; OpenAPI specification file not found in Config.groovy (https://doctoolchain.github.io/docToolchain/#_exportopenapi)\") return } else { logger.info(\"Found OpenAPI specification in Config.groovy\") } outputs.upToDateWhen { false } outputs.cacheIf { false } generatorName = 'asciidoc' outputDir = \"${targetDir}/OpenAPI\".toString() inputSpec = \"${docDir}/${specFile}\" // plugin is not able to find file if inputPath is defined as '.' logger.debug(\"\\n=====================\\nProject Config:\\n=====================\") logger.debug(\"Docdir: ${docDir}\") logger.debug(\"Target: ${targetDir}\") logger.info(\"\\n=====================\\nOpenAPI Config:\\n=====================\") logger.info(\"Specification file: ${specFile}\") logger.info(\"inputSpec: ${inputSpec}\") logger.info(\"outputDir: ${outputDir}\\n\") additionalProperties = [ infoEmail:\"${config.openApi.infoEmail}\", infoUrl:\"${config.openApi.infoUrl}\" ] } "
 },
 
 {
