@@ -207,6 +207,11 @@
     </url>
 
     <url>
+    	<loc>https://localhost/ea/issue2.html</loc>
+    	<lastmod>2025-02-10</lastmod>
+    </url>
+
+    <url>
     	<loc>https://localhost/ea/Use_Cases_links.html</loc>
     	<lastmod>2025-02-10</lastmod>
     </url>
@@ -217,12 +222,12 @@
     </url>
 
     <url>
-    	<loc>https://localhost/ea/issue2.html</loc>
+    	<loc>https://localhost/ea/Use_Cases_notes.html</loc>
     	<lastmod>2025-02-10</lastmod>
     </url>
 
     <url>
-    	<loc>https://localhost/ea/Use_Cases_notes.html</loc>
+    	<loc>https://localhost/ea/Use_Cases_notes_UseCases.html</loc>
     	<lastmod>2025-02-10</lastmod>
     </url>
 
@@ -233,11 +238,6 @@
 
     <url>
     	<loc>https://localhost/ea/Activity_notes.html</loc>
-    	<lastmod>2025-02-10</lastmod>
-    </url>
-
-    <url>
-    	<loc>https://localhost/ea/Use_Cases_notes_UseCases.html</loc>
     	<lastmod>2025-02-10</lastmod>
     </url>
 
@@ -317,12 +317,12 @@
     </url>
 
     <url>
-    	<loc>https://localhost/015_tasks/03_task_dependencyUpdates.html</loc>
+    	<loc>https://localhost/015_tasks/03_task_exportOpenApi.html</loc>
     	<lastmod>2025-02-10</lastmod>
     </url>
 
     <url>
-    	<loc>https://localhost/015_tasks/03_task_exportOpenApi.html</loc>
+    	<loc>https://localhost/015_tasks/03_task_dependencyUpdates.html</loc>
     	<lastmod>2025-02-10</lastmod>
     </url>
 
@@ -362,12 +362,12 @@
     </url>
 
     <url>
-    	<loc>https://localhost/015_tasks/03_task_copy_themes.html</loc>
+    	<loc>https://localhost/015_tasks/03_task_generateSite.html</loc>
     	<lastmod>2025-02-10</lastmod>
     </url>
 
     <url>
-    	<loc>https://localhost/015_tasks/03_task_generateSite.html</loc>
+    	<loc>https://localhost/015_tasks/03_task_copy_themes.html</loc>
     	<lastmod>2025-02-10</lastmod>
     </url>
 
@@ -387,12 +387,12 @@
     </url>
 
     <url>
-    	<loc>https://localhost/015_tasks/03_task_exportContributors.html</loc>
+    	<loc>https://localhost/015_tasks/03_task_convertToDocx.html</loc>
     	<lastmod>2025-02-10</lastmod>
     </url>
 
     <url>
-    	<loc>https://localhost/015_tasks/03_task_convertToDocx.html</loc>
+    	<loc>https://localhost/015_tasks/03_task_exportContributors.html</loc>
     	<lastmod>2025-02-10</lastmod>
     </url>
 

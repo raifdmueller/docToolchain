@@ -5411,7 +5411,7 @@ The resulting file can be found in <code>build/docs/epub</code>.</p>
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>5 minutes to read</pre>
+<pre>6 minutes to read</pre>
 </div>
 </div>
 <div class="sect2">
@@ -5587,13 +5587,27 @@ Default is set to ".png".</p>
 <div class="sect3">
 <h4 id="_additionaloptions">17.3.9. additionalOptions</h4>
 <div class="paragraph">
-<p>This parameter is used to define the specific behavior of the export. Currently, these options are supported:</p>
+<p>This parameter is used to define the specific behavior of the export. Currently, these mutually exclusive options are supported:</p>
 </div>
-<div class="paragraph">
-<p><code>KeepFirstDiagram</code></p>
-</div>
-<div class="paragraph">
-<p>If diagrams are not uniquely named, the last diagram will be saved. If you want to prevent diagrams from being overwritten, add this parameter to additionalOptions.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>KeepFirstDiagram</code><br>
+If diagrams are not uniquely named, the last diagram will be saved. If you want to prevent diagrams from being overwritten, add this parameter to additionalOptions.</p>
+</li>
+<li>
+<p><code>append_GUID</code><br>
+Append the diagram GUID to the diagram name to guarantee a unique name.</p>
+</li>
+<li>
+<p><code>prepend_GUID</code><br>
+Prepend the diagram GUID before the diagram name guarantee a unique name.</p>
+</li>
+<li>
+<p><code>use_GUID</code><br>
+Ignore the diagram name and only use the GUID as diagram name.</p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect3">
@@ -5987,7 +6001,21 @@ use `gradle exportEA` to re-export files
         diagramName = Replace(diagramName,vbCr,"")
         diagramName = Replace(diagramName,vbLf,"")
         diagramName = NormalizeName(diagramName)
-        filename = objFSO.BuildPath(path, diagramName &amp; imageFormat)
+        diagramGUID = currentDiagram.DiagramGUID
+        diagramGUID = Replace(diagramGUID,"{","")
+        diagramGUID = Replace(diagramGUID,"}","")
+        If InStr(additionalOptions, "append_GUID") &gt; 0 Then
+            diagramName = diagramName +  "_" + diagramGUID
+            filename = objFSO.BuildPath(path, diagramName &amp; imageFormat)
+        ElseIf InStr(additionalOptions, "prepend_GUID") &gt; 0 Then
+            diagramName = diagramGUID + "_" + diagramName
+            filename = objFSO.BuildPath(path, diagramName &amp; imageFormat)
+        ElseIf InStr(additionalOptions, "use_GUID") &gt; 0 Then
+            diagramName = diagramGUID
+            filename = objFSO.BuildPath(path, diagramName &amp; imageFormat)
+        Else
+            filename = objFSO.BuildPath(path, diagramName &amp; imageFormat)
+        End If
 
         If isSelectedViaDiagramFilter(currentDiagram) = False Then
             Repository.CloseDiagram(currentDiagram.DiagramID)
@@ -5997,15 +6025,11 @@ use `gradle exportEA` to re-export files
         exportDiagram = True
         If objFSO.FileExists(filename) Then
             WScript.echo " --- " &amp; filename &amp; " already exists."
-            If Len(additionalOptions) &gt; 0 Then
-                If InStr(additionalOptions, "KeepFirstDiagram") &gt; 0 Then
-                    WScript.echo " --- Skipping export -- parameter 'KeepFirstDiagram' set."
-                Else
-                    WScript.echo " --- Overwriting -- parameter 'KeepFirstDiagram' not set."
-                    exportDiagram = False
-                End If
+            If InStr(additionalOptions, "KeepFirstDiagram") &gt; 0 Then
+                WScript.echo " --- Skipping export -- parameter 'KeepFirstDiagram' set."
             Else
                 WScript.echo " --- Overwriting -- parameter 'KeepFirstDiagram' not set."
+                exportDiagram = False
             End If
         End If
         If exportDiagram Then
