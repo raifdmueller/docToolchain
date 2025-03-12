@@ -11,6 +11,7 @@ and this project tries to adhere to https://semver.org/spec/v2.0.0.html[Semantic
 
 * https://github.com/docToolchain/docToolchain/issues/1447[publishToConfluence: Internal links broken with v3.4.1]
 * fixed an issue with ConfluenceClientV2 pagination traversal / cursor extraction
+* https://github.com/docToolchain/docToolchain/issues/1460[generatePDF throws exception when using custom-theme.yml (font not found in GEM_FONTS_DIR) #1460]
 * https://github.com/docToolchain/docToolchain/issues/1475[exportEA: docToolchain\scripts\exportEAP.vbs(293, 13) Laufzeitfehler in Microsoft VBScript: Typenkonflikt: 'isSelectedViaDiagramFilter']
 
 === added
@@ -24,6 +25,9 @@ and this project tries to adhere to https://semver.org/spec/v2.0.0.html[Semantic
 
 * upgrade dependencies
 ** 'org.asciidoctor:asciidoctorj-diagram:2.3.1'
+** asciidoctor-jvm = "4.0.4"
+** revealjs = "5.1.0"
+** asciidoctorj = "2.5.13"
 
 == 3.4.1 - 2024-09-05
 

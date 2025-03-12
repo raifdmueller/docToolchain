@@ -119,7 +119,7 @@ For this tutorial, navigate to `src/docs/arc42/arc42.adoc` then add the followin
 
 [source, asciidoc]
 ----
-:pdf-themesdir: ../pdfTheme
+:pdf-themesdir: {docdir}/../pdfTheme
 :pdf-theme: custom
 ----
 
