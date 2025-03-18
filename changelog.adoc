@@ -29,6 +29,10 @@ and this project tries to adhere to https://semver.org/spec/v2.0.0.html[Semantic
 ** asciidoctor-jvm = "4.0.4"
 ** revealjs = "5.1.0"
 ** asciidoctorj = "2.5.13"
+** structurizr-dsl = "3.0.0"
+** structurizr-export = "3.0.0"
+** structurizr-graphviz = "2.2.2"
+** structurizr-d2-exporter = "1.5.3"
 
 == 3.4.1 - 2024-09-05
 
