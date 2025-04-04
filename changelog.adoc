@@ -24,7 +24,7 @@ and this project tries to adhere to https://semver.org/spec/v2.0.0.html[Semantic
 === changed
 
 * upgrade dependencies
-** 'org.asciidoctor:asciidoctorj-diagram:2.3.1'
+** 'org.asciidoctor:asciidoctorj-diagram:2.3.2'
 ** asciidoctor-jvm = "4.0.4"
 ** revealjs = "5.1.0"
 ** asciidoctorj = "2.5.13"
