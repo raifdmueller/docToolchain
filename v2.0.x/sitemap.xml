@@ -162,12 +162,12 @@
     </url>
 
     <url>
-    	<loc>https://localhost/025_development/030_create_new_release.html</loc>
+    	<loc>https://localhost/025_development/020_run_tests.html</loc>
     	<lastmod>2025-04-05</lastmod>
     </url>
 
     <url>
-    	<loc>https://localhost/025_development/020_run_tests.html</loc>
+    	<loc>https://localhost/025_development/030_create_new_release.html</loc>
     	<lastmod>2025-04-05</lastmod>
     </url>
 
@@ -177,12 +177,12 @@
     </url>
 
     <url>
-    	<loc>https://localhost/ea/issue2.html</loc>
+    	<loc>https://localhost/ea/Use_Cases_links.html</loc>
     	<lastmod>2025-04-05</lastmod>
     </url>
 
     <url>
-    	<loc>https://localhost/ea/Use_Cases_links.html</loc>
+    	<loc>https://localhost/ea/issue2.html</loc>
     	<lastmod>2025-04-05</lastmod>
     </url>
 
@@ -222,12 +222,12 @@
     </url>
 
     <url>
-    	<loc>https://localhost/ea/Activity_notes_issue1.html</loc>
+    	<loc>https://localhost/ea/Architect_notes.html</loc>
     	<lastmod>2025-04-05</lastmod>
     </url>
 
     <url>
-    	<loc>https://localhost/ea/Architect_notes.html</loc>
+    	<loc>https://localhost/ea/Activity_notes_issue1.html</loc>
     	<lastmod>2025-04-05</lastmod>
     </url>
 
@@ -447,12 +447,12 @@
     </url>
 
     <url>
-    	<loc>https://localhost/015_tasks/03_task_autobuildSite.html</loc>
+    	<loc>https://localhost/015_tasks/03_task_exportConfluence.html</loc>
     	<lastmod>2025-04-05</lastmod>
     </url>
 
     <url>
-    	<loc>https://localhost/015_tasks/03_task_exportConfluence.html</loc>
+    	<loc>https://localhost/015_tasks/03_task_autobuildSite.html</loc>
     	<lastmod>2025-04-05</lastmod>
     </url>
 
@@ -462,12 +462,12 @@
     </url>
 
     <url>
-    	<loc>https://localhost/015_tasks/03_task_dependencyUpdates.html</loc>
+    	<loc>https://localhost/015_tasks/03_task_exportMarkdown.html</loc>
     	<lastmod>2025-04-05</lastmod>
     </url>
 
     <url>
-    	<loc>https://localhost/015_tasks/03_task_exportMarkdown.html</loc>
+    	<loc>https://localhost/015_tasks/03_task_dependencyUpdates.html</loc>
     	<lastmod>2025-04-05</lastmod>
     </url>
 
