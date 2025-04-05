@@ -258,18 +258,18 @@ var documents = [
 
 {
     "id": 32,
-    "uri": "025_development/020_run_tests.html",
-    "menu": "development",
-    "title": "Running Tests",
-    "text": " Table of Contents Running Tests Execute Tests Execute a specific test Workaround to Ensure Correct Proxy Settings for Tests Running Tests 2 minutes to read docToolchain uses Spock as Test-Framework. See http://spockframework.org/ for details. Execute Tests rm -r build &amp;&amp; ./gradlew test --info The rm command ensures that you have a clean test running. This is vital because if artifacts of an older test run still exist, Gradle will skip steps (‘Up-to-date’) and you might get false positives. Execute a specific test rm -r build &amp;&amp; ./gradlew test --info --tests=ExportStructurizrSpec Workaround to Ensure Correct Proxy Settings for Tests The docToolchain setup is based on the Gradle-Test-Kit and makes use of the Spock test execution framework . The Gradle test runner is started in its own test environment and its own JVM instance. As a result, the global proxy settings are ignored. To execute the test with the correct proxy settings, you must use a workaround. Copy the proxy settings from the gradle.properties file located in the user directory to the gradle.properties file located in the docToolchain folder itself. Note: The files downloaded by the Gradle test runner are placed in a different folder than the default Gradle cache. You will find them in the Tmp folder C:\\Users\\YOUR_USER_NAME\\AppData\\Local\\Temp\\.gradle-test-kit-YOUR_USER_NAME\\caches. "
-},
-
-{
-    "id": 33,
     "uri": "025_development/030_create_new_release.html",
     "menu": "development",
     "title": "Creating a New Release",
     "text": " Table of Contents Creating a New Release Before You Begin GitHub Docker Hub Blog Post docToolchain-Wrapper (dtcw) SDKMAN! Creating a New Release 2 minutes to read Before You Begin We use semantic versioning and we also keep a changelog . All of this is done on a best-efforts basis. A release consists of five parts, each explained below. GitHub run docker run -it -e BATS_LIB_PATH=/usr/lib/bats -v \"${PWD}/dtcw:/code/dtcw\" -v \"${PWD}/test:/code/test\" maxh/bats:latest test to test dtcw Update the version in gradle.properties . Update the version in dtcw and dtcw.ps1 . dtcw.bat will be generated Update the changelog. Create a section for the version. Copy to the new section all unreleased features which will be in the release. Commit and push the new version. Draft a new release . Copy the contents of the changelog for this version to the description then submit. Set the version as v X.Y.Z. Run ./gradlew createDist to zip the source in build (the distribution file). Add the zipped file and submit the new release. Docker Hub Standard Image Update the GitHub workflows to reflect the new version. run github action to build and deploy the image do the same for the other images Blog Post Create a blog post to announce the new release. The SDKMAN! announcement will reference it. docToolchain-Wrapper (dtcw) Everything went well? Great! Now let’s update the wrapper. Navigate to https://github.com/docToolchain/doctoolchain.github.io/actions/workflows/update-dtcw.yml and trigger the action. SDKMAN! A GitHub action sdkman deploy has been created to deploy to SDKMAN! Set the version to the same as for the other releases, but without the prepended v: X.Y.Z. Use as a download link the link to the docToolchain-dist.zip from the GitHub release. Tip: the link looks like https://github.com/docToolchain/docToolchain/releases/download/v1.3.1/docToolchain-dist.zip . "
+},
+
+{
+    "id": 33,
+    "uri": "025_development/020_run_tests.html",
+    "menu": "development",
+    "title": "Running Tests",
+    "text": " Table of Contents Running Tests Execute Tests Execute a specific test Workaround to Ensure Correct Proxy Settings for Tests Running Tests 2 minutes to read docToolchain uses Spock as Test-Framework. See http://spockframework.org/ for details. Execute Tests rm -r build &amp;&amp; ./gradlew test --info The rm command ensures that you have a clean test running. This is vital because if artifacts of an older test run still exist, Gradle will skip steps (‘Up-to-date’) and you might get false positives. Execute a specific test rm -r build &amp;&amp; ./gradlew test --info --tests=ExportStructurizrSpec Workaround to Ensure Correct Proxy Settings for Tests The docToolchain setup is based on the Gradle-Test-Kit and makes use of the Spock test execution framework . The Gradle test runner is started in its own test environment and its own JVM instance. As a result, the global proxy settings are ignored. To execute the test with the correct proxy settings, you must use a workaround. Copy the proxy settings from the gradle.properties file located in the user directory to the gradle.properties file located in the docToolchain folder itself. Note: The files downloaded by the Gradle test runner are placed in a different folder than the default Gradle cache. You will find them in the Tmp folder C:\\Users\\YOUR_USER_NAME\\AppData\\Local\\Temp\\.gradle-test-kit-YOUR_USER_NAME\\caches. "
 },
 
 {
@@ -298,6 +298,14 @@ var documents = [
 
 {
     "id": 37,
+    "uri": "ea/Use_Cases_links_issue2.html",
+    "menu": "ea",
+    "title": "Use_Cases_links_issue2.ad",
+    "text": " . and this is just a test for issue #2 https://github.com/rdmueller/docToolchain/issues/2 "
+},
+
+{
+    "id": 38,
     "uri": "ea/Use_Cases_notes.html",
     "menu": "ea",
     "title": "Use_Cases_notes.ad",
@@ -305,19 +313,11 @@ var documents = [
 },
 
 {
-    "id": 38,
+    "id": 39,
     "uri": "ea/UseCases.html",
     "menu": "ea",
     "title": "UseCases.ad",
     "text": " docToolchain is a gradle/maven build which turns asciidoc documentation into HTML5 rendered files. create stunning docs invoked by gradle or maven command "
-},
-
-{
-    "id": 39,
-    "uri": "ea/Use_Cases_links_issue2.html",
-    "menu": "ea",
-    "title": "Use_Cases_links_issue2.ad",
-    "text": " . and this is just a test for issue #2 https://github.com/rdmueller/docToolchain/issues/2 "
 },
 
 {
@@ -354,18 +354,18 @@ var documents = [
 
 {
     "id": 44,
-    "uri": "ea/Architect_notes.html",
-    "menu": "ea",
-    "title": "Architect_notes.ad",
-    "text": " "
-},
-
-{
-    "id": 45,
     "uri": "ea/Activity_notes_issue1.html",
     "menu": "ea",
     "title": "Activity_notes_issue1.ad",
     "text": " Activity1 Just a test for issue #1 https://github.com/rdmueller/docToolchain/issues/1 "
+},
+
+{
+    "id": 45,
+    "uri": "ea/Architect_notes.html",
+    "menu": "ea",
+    "title": "Architect_notes.ad",
+    "text": " "
 },
 
 {
@@ -402,18 +402,18 @@ var documents = [
 
 {
     "id": 50,
-    "uri": "010_manual/60_further_reading.html",
-    "menu": "manual",
-    "title": "Useful Resources",
-    "text": " Table of Contents Useful Resources Introduction Underlying Technologies Books Useful Resources 2 minutes to read Introduction Everything you need to know about docToolchain, from the underlying technology to useful resources. Underlying Technologies Learn more about the technologies that support docToolchain, as well as some useful resources. Markup AsciiDoc This is our preferred markup language for technical docs. Asciidoctor User-Manual AsciiDoc Syntax Quick Reference \"Asciidoctor Deep Dive Video\" by Alexander Schwartz Markdown Since we use JBake as a static site generator, you can write your docs in Markdown too. flexmark-java is the Markdown parser and flavor jBake uses. markdown-to-asciidoc library can be used if you prefer to use the exportMarkdown -Task. Templates arc42 The perfect template for your software solution architecture documentation. arc42 arc42 Tips &amp; Tricks arc42 FAQ Docs as Code Docs as Code Treat your docs as if they were code. Docs-as-Code write the docs: docs-as-code Static Site Generator Static Site Generator The underlying static site generator for the generateSite -Task is jBake Our standard theme is docsy Our CSS framework is Twitter Bootstrap Books Note These are Amazon affiliate links. Title Author Language Docs Like Code Anne Gentle English Modern Technical Writing: An Introduction to Software Documentation Andrew Etter English arc42 by Example Gernot Starke, Stefan Zörner, Michael Simons, Ralf D. Müller English Communicating Software Architectures with arc42 Gernot Starke und Peter Hruschka English Software Architecture for Developers, Volume 2 Simon Brown English arc42 in Aktion: Praktische Tipps zur Architekturdokumentation von Gernot Starke and Peter Hruschka40:00 German Softwarearchitekturen dokumentieren und kommunizieren: Entwürfe, Entscheidungen und Lösungen nachvollziehbar und wirkungsvoll festhalten von Stefan Zörner German "
-},
-
-{
-    "id": 51,
     "uri": "010_manual/040_contributors.html",
     "menu": "-",
     "title": "moved",
     "text": " document.location.href = '../10_about/30_community.html'; "
+},
+
+{
+    "id": 51,
+    "uri": "010_manual/60_further_reading.html",
+    "menu": "manual",
+    "title": "Useful Resources",
+    "text": " Table of Contents Useful Resources Introduction Underlying Technologies Books Useful Resources 2 minutes to read Introduction Everything you need to know about docToolchain, from the underlying technology to useful resources. Underlying Technologies Learn more about the technologies that support docToolchain, as well as some useful resources. Markup AsciiDoc This is our preferred markup language for technical docs. Asciidoctor User-Manual AsciiDoc Syntax Quick Reference \"Asciidoctor Deep Dive Video\" by Alexander Schwartz Markdown Since we use JBake as a static site generator, you can write your docs in Markdown too. flexmark-java is the Markdown parser and flavor jBake uses. markdown-to-asciidoc library can be used if you prefer to use the exportMarkdown -Task. Templates arc42 The perfect template for your software solution architecture documentation. arc42 arc42 Tips &amp; Tricks arc42 FAQ Docs as Code Docs as Code Treat your docs as if they were code. Docs-as-Code write the docs: docs-as-code Static Site Generator Static Site Generator The underlying static site generator for the generateSite -Task is jBake Our standard theme is docsy Our CSS framework is Twitter Bootstrap Books Note These are Amazon affiliate links. Title Author Language Docs Like Code Anne Gentle English Modern Technical Writing: An Introduction to Software Documentation Andrew Etter English arc42 by Example Gernot Starke, Stefan Zörner, Michael Simons, Ralf D. Müller English Communicating Software Architectures with arc42 Gernot Starke und Peter Hruschka English Software Architecture for Developers, Volume 2 Simon Brown English arc42 in Aktion: Praktische Tipps zur Architekturdokumentation von Gernot Starke and Peter Hruschka40:00 German Softwarearchitekturen dokumentieren und kommunizieren: Entwürfe, Entscheidungen und Lösungen nachvollziehbar und wirkungsvoll festhalten von Stefan Zörner German "
 },
 
 {
@@ -674,18 +674,18 @@ var documents = [
 
 {
     "id": 84,
-    "uri": "015_tasks/03_task_exportMetrics.html",
-    "menu": "tasks",
-    "title": "exportMetrics",
-    "text": " Table of Contents exportMetrics .gravatar img { margin-left: 3px; border-radius: 4px; } exportMetrics 1 minute to read This task crawls through all Asciidoctor source files and extracts the total number of words in each file (word count), so you can check your writing progress. The output is displayed on the command line. "
-},
-
-{
-    "id": 85,
     "uri": "015_tasks/03_task_prependFilename.html",
     "menu": "tasks",
     "title": "prependFilename",
     "text": " Table of Contents prependFilename About This Task Source .gravatar img { margin-left: 3px; border-radius: 4px; } prependFilename 1 minute to read About This Task When Asciidoctor renders a file, the file context only knows the name of the top-level AsciiDoc file. But an include file doesn&#8217;t know that it is being included. It simply gets the name of the master file and has no chance to get its own name as an attribute. This task crawls through all AsciiDoc files and prepends the name of the current file like this: :filename: 015_tasks/03_task_prependFilename.adoc This way, each file gets its own filename. This enables features like the inclusion of file contributors (see exportContributors-task). Note This task skips all files named config.* , _config.* , feedback.* and _feedback.* . Source Show source code of scripts/prependFilename.gradle or go directly to GitHub · docToolchain/scripts/prependFilename.gradle . scripts/prependFilename.gradle import static groovy.io.FileType.* task prependFilename( description: 'crawls through all AsciiDoc files and prepends the name of the current file', group: 'docToolchain helper', ) { doLast { File sourceFolder = new File(\"${docDir}/${inputPath}\") println(\"sourceFolder: \" + sourceFolder.canonicalPath) sourceFolder.traverse(type: FILES) { file -&gt; if (file.name ==~ '^.*(ad|adoc|asciidoc)$') { if (file.name.split('[.]')[0] in [\"feedback\", \"_feedback\", \"config\", \"_config\"]) { println \"skipped \"+file.name } else { def text = file.getText('utf-8') def name = file.canonicalPath - sourceFolder.canonicalPath name = name.replace(\"\\\\\", \"/\").replaceAll(\"^/\", \"\") if (text.contains(\":filename:\")) { text = text.replaceAll(\":filename:.*\", \":filename: $name\") println \"updated \"+name } else { text = \":filename: $name\\n\" + text println \"added \"+name } file.write(text,'utf-8') } } } } } "
+},
+
+{
+    "id": 85,
+    "uri": "015_tasks/03_task_exportMetrics.html",
+    "menu": "tasks",
+    "title": "exportMetrics",
+    "text": " Table of Contents exportMetrics .gravatar img { margin-left: 3px; border-radius: 4px; } exportMetrics 1 minute to read This task crawls through all Asciidoctor source files and extracts the total number of words in each file (word count), so you can check your writing progress. The output is displayed on the command line. "
 },
 
 {
