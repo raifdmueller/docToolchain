@@ -2,14 +2,14 @@
 <html lang="de">
 <head>
     
-    <!-- sourceuri: 030_news/2021/2.0.1-release.html -->
+    <!-- sourceuri: 030_news/2025/3.4.2-release.html -->
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
 
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
     <meta content="jbake" name="generator">
     <meta content="INDEX, FOLLOW" name="ROBOTS">
 
-    <title>Release v2.0.1</title>
+    <title>Release v3.4.2</title>
     <meta content="docToolchain" property="og:title">
     <meta content="build your dev docs the easy way..." property="og:description">
     <meta content="website" property="og:type">
@@ -317,7 +317,7 @@
                                 
                             </li>
                             <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child">
-                                <a class="align-left pl-0 pr-2 pt-2 td-sidebar-link td-sidebar-link__section active"
+                                <a class="align-left pl-0 pr-2 pt-2 td-sidebar-link td-sidebar-link__section "
                                    href="../../030_news/2021/2.0.1-release.html" title="Release v2.0.1">Release v2.0.1</a>
                                 
                             </li>
@@ -434,7 +434,7 @@
 <details id="d312351bff07989769097660a56395065"><summary><span class="label">2025</span></summary>
                         <ul class="ul-1">
                             <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child">
-                                <a class="align-left pl-0 pr-2 pt-2 td-sidebar-link td-sidebar-link__section "
+                                <a class="align-left pl-0 pr-2 pt-2 td-sidebar-link td-sidebar-link__section active"
                                    href="../../030_news/2025/3.4.2-release.html" title="Release v3.4.2">Release v3.4.2</a>
                                 
                             </li>
@@ -451,11 +451,11 @@
 				<div class="td-page-meta ml-2 pb-1 pt-2 mb-0">
 					
 
-        <a href="https://github.com/doctoolchain/doctoolchain/edit/ng/src/docs/030_news/2021/2.0.1-release.adoc"
+        <a href="https://github.com/doctoolchain/doctoolchain/edit/ng/src/docs/030_news/2025/3.4.2-release.adoc"
            target="_blank"><i class="fa fa-edit fa-fw"></i> Improve this doc</a>
 
 
-        <a href="https://github.com/docToolchain/docToolchain/issues/new?title=Docs%3A+Feedback+for+%27Release+v2.0.1%27&body=%0A%0A%5BEnter%20feedback%20here%5D%0A%0A%0A---%0A%23page:%20https://github.com/doctoolchain/doctoolchain/edit/ng/src/docs/030_news/2021/2.0.1-release.adoc%0A%23branch:%20ng" target="_blank"><i
+        <a href="https://github.com/docToolchain/docToolchain/issues/new?title=Docs%3A+Feedback+for+%27Release+v3.4.2%27&body=%0A%0A%5BEnter%20feedback%20here%5D%0A%0A%0A---%0A%23page:%20https://github.com/doctoolchain/doctoolchain/edit/ng/src/docs/030_news/2025/3.4.2-release.adoc%0A%23branch:%20ng" target="_blank"><i
                 class="fab fa-github fa-fw"></i> Create an issue</a>
 
         
@@ -463,7 +463,7 @@
         <hr />
 <script>
 const issuesBaseUrl = "https://api.github.com/repos/doctoolchain/doctoolchain/issues";
-const searchTerm = "030_news/2021/2.0.1-release.adoc";
+const searchTerm = "030_news/2025/3.4.2-release.adoc";
 </script>
 
 <script src="../../js/issues.js"></script>
@@ -514,10 +514,16 @@ searching issues...
         <div id="toc" class="toc">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_doctoolchain_v2_0_1_has_been_released">docToolchain v2.0.1 has been released!</a>
+<li><a href="#_doctoolchain_release_v3_4_2">docToolchain release v3.4.2</a>
 <ul class="sectlevel2">
 <li><a href="#_about_this_release">About This Release</a></li>
-<li><a href="#_changelog_v2_0_1">Changelog v2.0.1</a></li>
+</ul>
+</li>
+<li><a href="#_notes">Notes</a>
+<ul class="sectlevel2">
+<li><a href="#_fixed">fixed</a></li>
+<li><a href="#_added">added</a></li>
+<li><a href="#_changed">changed</a></li>
 </ul>
 </li>
 </ul>
@@ -536,93 +542,142 @@ searching issues...
 				</div>
 			</div>
 			<main class="col-12 col-md-9 col-xl-8 pl-md-5" role="main">
-				<p><em>06 October 2021, Ralf D. Müller</em></p>
+				<p><em>05 April 2025, Pascal Euhus</em></p>
 				<p>
                     
 <div class="sect1">
-<h2 id="_doctoolchain_v2_0_1_has_been_released">docToolchain v2.0.1 has been released!</h2>
+<h2 id="_doctoolchain_release_v3_4_2">docToolchain release v3.4.2</h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_about_this_release">About This Release</h3>
 <div class="paragraph">
-<p>This is our first bug-fix release. Thanks to everyone who contributed!</p>
+<p>This release includes several important bug fixes, new features, and dependency upgrades.</p>
+</div>
+<div class="paragraph">
+<p>Key highlights include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Fixed internal links issue in publishToConfluence with v3.4.1.</p>
+</li>
+<li>
+<p>Resolved pagination traversal and cursor extraction issues in ConfluenceClientV2.</p>
+</li>
+<li>
+<p>Addressed an exception in generatePDF when using custom-theme.yml due to missing fonts.</p>
+</li>
+<li>
+<p>Fixed a runtime error in the exportEA script caused by a type mismatch in VBScript.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>New features added in this release include</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the ability to change the search form,</p>
+</li>
+<li>
+<p>a progress indicator for the publishToConfluence task</p>
+</li>
+<li>
+<p>options to extend diagram names with GUIDs and filter diagrams within a package in exportEA.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Additionally, several dependencies have been upgraded .</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_notes">Notes</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_fixed">fixed</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/docToolchain/docToolchain/issues/1447">publishToConfluence: Internal links broken with v3.4.1</a></p>
+</li>
+<li>
+<p>fixed an issue with ConfluenceClientV2 pagination traversal / cursor extraction</p>
+</li>
+<li>
+<p><a href="https://github.com/docToolchain/docToolchain/issues/1460">generatePDF throws exception when using custom-theme.yml (font not found in GEM_FONTS_DIR) #1460</a></p>
+</li>
+<li>
+<p><a href="https://github.com/docToolchain/docToolchain/issues/1475">exportEA: docToolchain\scripts\exportEAP.vbs(293, 13) Laufzeitfehler in Microsoft VBScript: Typenkonflikt: 'isSelectedViaDiagramFilter'</a></p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_changelog_v2_0_1">Changelog v2.0.1</h3>
-<div class="sect3">
-<h4 id="_added">Added</h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">2021-10-06</dt>
-<dd>
+<h3 id="_added">added</h3>
 <div class="ulist">
 <ul>
 <li>
-<p>experimental: globalReferences</p>
+<p>possibility to change the search form</p>
+</li>
+<li>
+<p><a href="https://github.com/docToolchain/docToolchain/issues/1468">#1468: Add progress indicator/logging for 'allPages' fetch in publishToConfluence task</a></p>
+</li>
+<li>
+<p>exportEA: add option to extend the diagram name during export with the GUID to guarantee uniqueness <a href="https://github.com/docToolchain/docToolchain/pull/1473">#1473 exportEA: Add option to include GUID into diagram names</a></p>
+</li>
+<li>
+<p>allow filtering of diagrams within a package - <a href="https://github.com/docToolchain/docToolchain/pull/1472">#1472: exportEA: Add filter to select diagrams via tag in EA directly</a></p>
 </li>
 </ul>
 </div>
-</dd>
-</dl>
 </div>
-</div>
-<div class="sect3">
-<h4 id="_changed">Changed</h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">2021-10-04</dt>
-<dd>
+<div class="sect2">
+<h3 id="_changed">changed</h3>
 <div class="ulist">
 <ul>
 <li>
-<p>fix <a href="https://github.com/docToolchain/docToolchain/issues/616">#616 - exportOpenAPI: Enhance the Confluence Open-API Documentation API to refer to URLs</a></p>
-</li>
-</ul>
-</div>
-</dd>
-</dl>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_fixed">Fixed</h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">2021-10-06</dt>
-<dd>
+<p>upgrade dependencies</p>
 <div class="ulist">
 <ul>
 <li>
-<p>fix <a href="https://github.com/docToolchain/docToolchain/issues/636">#636 - theme: larger admonition icons</a></p>
+<p>'org.asciidoctor:asciidoctorj-diagram:2.3.2'</p>
 </li>
 <li>
-<p>fix <a href="https://github.com/docToolchain/docToolchain/issues/649">#649 - generateSite on powershell wrong file-separator</a></p>
+<p>asciidoctor-jvm = "4.0.4"</p>
+</li>
+<li>
+<p>revealjs = "5.1.0"</p>
+</li>
+<li>
+<p>asciidoctorj = "2.5.13"</p>
 </li>
 </ul>
 </div>
-</dd>
-<dt class="hdlist1">2021-10-04</dt>
-<dd>
-<div class="ulist">
-<ul>
-<li>
-<p>fix <a href="https://github.com/docToolchain/docToolchain/issues/645">#645 - exportJiraIssues: Could not get unknown property 'configFile' for task ':exportJiraIssues' of type org.gradle.api.DefaultTask</a></p>
 </li>
 </ul>
 </div>
-</dd>
-<dt class="hdlist1">2021-09-30</dt>
-<dd>
-<div class="ulist">
-<ul>
-<li>
-<p>fix <a href="https://github.com/docToolgchain/docToolchain/issues/632">#632 - generateHTML: broken images with generateHTML</a></p>
-</li>
-</ul>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You like docToolchain?<br>
+What about helping to make it even better?<br>
+docToolchain is a community project, so be part of the community which drives the project.<br>
+You don&#8217;t have to code for doing so.<br>
+It would even help to brush up the docs, write tutorials or groom the backlog<br>
+(I guess many of the open issues are already fixed).</p>
 </div>
-</dd>
-</dl>
-</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>

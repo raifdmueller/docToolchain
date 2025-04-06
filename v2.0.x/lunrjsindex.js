@@ -2,6 +2,14 @@ var documents = [
 
 {
     "id": 0,
+    "uri": "030_news/2025/3.4.2-release.html",
+    "menu": "news",
+    "title": "Release v3.4.2",
+    "text": " Table of Contents docToolchain release v3.4.2 About This Release Notes fixed added changed docToolchain release v3.4.2 About This Release This release includes several important bug fixes, new features, and dependency upgrades. Key highlights include: Fixed internal links issue in publishToConfluence with v3.4.1. Resolved pagination traversal and cursor extraction issues in ConfluenceClientV2. Addressed an exception in generatePDF when using custom-theme.yml due to missing fonts. Fixed a runtime error in the exportEA script caused by a type mismatch in VBScript. New features added in this release include the ability to change the search form, a progress indicator for the publishToConfluence task options to extend diagram names with GUIDs and filter diagrams within a package in exportEA. Additionally, several dependencies have been upgraded . Notes fixed publishToConfluence: Internal links broken with v3.4.1 fixed an issue with ConfluenceClientV2 pagination traversal / cursor extraction generatePDF throws exception when using custom-theme.yml (font not found in GEM_FONTS_DIR) #1460 exportEA: docToolchain\\scripts\\exportEAP.vbs(293, 13) Laufzeitfehler in Microsoft VBScript: Typenkonflikt: 'isSelectedViaDiagramFilter' added possibility to change the search form #1468: Add progress indicator/logging for 'allPages' fetch in publishToConfluence task exportEA: add option to extend the diagram name during export with the GUID to guarantee uniqueness #1473 exportEA: Add option to include GUID into diagram names allow filtering of diagrams within a package - #1472: exportEA: Add filter to select diagrams via tag in EA directly changed upgrade dependencies 'org.asciidoctor:asciidoctorj-diagram:2.3.2' asciidoctor-jvm = \"4.0.4\" revealjs = \"5.1.0\" asciidoctorj = \"2.5.13\" You like docToolchain? What about helping to make it even better? docToolchain is a community project, so be part of the community which drives the project. You don&#8217;t have to code for doing so. It would even help to brush up the docs, write tutorials or groom the backlog (I guess many of the open issues are already fixed). "
+},
+
+{
+    "id": 1,
     "uri": "030_news/2024/3.4.1-release.html",
     "menu": "news",
     "title": "Release v3.4.1",
@@ -9,7 +17,7 @@ var documents = [
 },
 
 {
-    "id": 1,
+    "id": 2,
     "uri": "030_news/2024/3.4.0-release.html",
     "menu": "news",
     "title": "Release v3.4",
@@ -17,7 +25,7 @@ var documents = [
 },
 
 {
-    "id": 2,
+    "id": 3,
     "uri": "030_news/2024/3.3-release.html",
     "menu": "news",
     "title": "Release v3.3",
@@ -25,7 +33,7 @@ var documents = [
 },
 
 {
-    "id": 3,
+    "id": 4,
     "uri": "030_news/2024/3.2.2-release.html",
     "menu": "news",
     "title": "Release v3.2.2",
@@ -33,7 +41,7 @@ var documents = [
 },
 
 {
-    "id": 4,
+    "id": 5,
     "uri": "030_news/2024/3.2.1-release.html",
     "menu": "news",
     "title": "Release v3.2.1",
@@ -41,7 +49,7 @@ var documents = [
 },
 
 {
-    "id": 5,
+    "id": 6,
     "uri": "030_news/2023/3.2.0-release.html",
     "menu": "news",
     "title": "Release v3.2.0",
@@ -49,7 +57,7 @@ var documents = [
 },
 
 {
-    "id": 6,
+    "id": 7,
     "uri": "030_news/2023/3.1.2-release.html",
     "menu": "news",
     "title": "Release v3.1.2",
@@ -57,7 +65,7 @@ var documents = [
 },
 
 {
-    "id": 7,
+    "id": 8,
     "uri": "030_news/2023/3.1.1-release.html",
     "menu": "news",
     "title": "Release v3.1.1",
@@ -65,7 +73,7 @@ var documents = [
 },
 
 {
-    "id": 8,
+    "id": 9,
     "uri": "030_news/2023/3.1.0-release.html",
     "menu": "news",
     "title": "Release v3.1.0",
@@ -73,7 +81,7 @@ var documents = [
 },
 
 {
-    "id": 9,
+    "id": 10,
     "uri": "030_news/2023/3.0.2-release.html",
     "menu": "news",
     "title": "Release v3.0.2",
@@ -81,7 +89,7 @@ var documents = [
 },
 
 {
-    "id": 10,
+    "id": 11,
     "uri": "030_news/2023/3.0.1-release.html",
     "menu": "news",
     "title": "Release v3.0.1",
@@ -89,7 +97,7 @@ var documents = [
 },
 
 {
-    "id": 11,
+    "id": 12,
     "uri": "030_news/2023/Babylon.html",
     "menu": "news",
     "title": "Multilingual Documentation",
@@ -97,7 +105,7 @@ var documents = [
 },
 
 {
-    "id": 12,
+    "id": 13,
     "uri": "030_news/2023/3.0.0-rc1.html",
     "menu": "news",
     "title": "Release Candidate v3.0.0",
@@ -105,7 +113,7 @@ var documents = [
 },
 
 {
-    "id": 13,
+    "id": 14,
     "uri": "030_news/2023/2.2.1-release.html",
     "menu": "news",
     "title": "Release v2.2.1",
@@ -113,7 +121,7 @@ var documents = [
 },
 
 {
-    "id": 14,
+    "id": 15,
     "uri": "030_news/2023/2.2.0-release.html",
     "menu": "news",
     "title": "Release v2.2.0",
@@ -121,7 +129,7 @@ var documents = [
 },
 
 {
-    "id": 15,
+    "id": 16,
     "uri": "030_news/2022/2.1.0-release.html",
     "menu": "news",
     "title": "Release v2.1.0",
@@ -129,7 +137,7 @@ var documents = [
 },
 
 {
-    "id": 16,
+    "id": 17,
     "uri": "030_news/2022/2.0.5-release.html",
     "menu": "news",
     "title": "Release v2.0.5",
@@ -137,7 +145,7 @@ var documents = [
 },
 
 {
-    "id": 17,
+    "id": 18,
     "uri": "030_news/2022/2.0.4-release.html",
     "menu": "news",
     "title": "(Release v2.0.4)",
@@ -145,7 +153,7 @@ var documents = [
 },
 
 {
-    "id": 18,
+    "id": 19,
     "uri": "030_news/2021/2021-11-23-Open-Source-Camp.html",
     "menu": "news",
     "title": "Open Source Camp",
@@ -153,7 +161,7 @@ var documents = [
 },
 
 {
-    "id": 19,
+    "id": 20,
     "uri": "030_news/2021/2.0.3-release.html",
     "menu": "news",
     "title": "Release v2.0.3",
@@ -161,7 +169,7 @@ var documents = [
 },
 
 {
-    "id": 20,
+    "id": 21,
     "uri": "030_news/2021/2.0.2-release.html",
     "menu": "news",
     "title": "Release v2.0.2",
@@ -169,7 +177,7 @@ var documents = [
 },
 
 {
-    "id": 21,
+    "id": 22,
     "uri": "030_news/2021/2.0.1-release.html",
     "menu": "news",
     "title": "Release v2.0.1",
@@ -177,7 +185,7 @@ var documents = [
 },
 
 {
-    "id": 22,
+    "id": 23,
     "uri": "030_news/2021/2.0.0-release.html",
     "menu": "news",
     "title": "Release v2.0.0",
@@ -185,7 +193,7 @@ var documents = [
 },
 
 {
-    "id": 23,
+    "id": 24,
     "uri": "030_news/2021/last-release-candidate.html",
     "menu": "news",
     "title": "Last Release Candidate",
@@ -193,7 +201,7 @@ var documents = [
 },
 
 {
-    "id": 24,
+    "id": 25,
     "uri": "030_news/index.html",
     "menu": "news",
     "title": "Overview",
@@ -201,7 +209,7 @@ var documents = [
 },
 
 {
-    "id": 25,
+    "id": 26,
     "uri": "10_about/20_what-is-doctoolchain.html",
     "menu": "about",
     "title": "What Is docToolchain?",
@@ -209,7 +217,7 @@ var documents = [
 },
 
 {
-    "id": 26,
+    "id": 27,
     "uri": "10_about/10_about-the-project.html",
     "menu": "about",
     "title": "About the Project",
@@ -217,7 +225,7 @@ var documents = [
 },
 
 {
-    "id": 27,
+    "id": 28,
     "uri": "10_about/30_community.html",
     "menu": "about",
     "title": "Acknowledgements and Contributors",
@@ -225,7 +233,7 @@ var documents = [
 },
 
 {
-    "id": 28,
+    "id": 29,
     "uri": "025_development/005_contributing_to_docs.html",
     "menu": "development",
     "title": "Contributing to Docs",
@@ -233,19 +241,11 @@ var documents = [
 },
 
 {
-    "id": 29,
+    "id": 30,
     "uri": "025_development/040_debugging.html",
     "menu": "development",
     "title": "Debugging",
     "text": " Table of Contents Debugging Environment Gradle jBake Templates Theming, Menu and Images Script Execution Debugging Debugging 2 minutes to read Things not working as you expected? Here are some tips that might help you. Environment To get the best out of docToolchain, we recommend that you set up a development environment. This way you get to see the inner workings and you also get to add extra debug output to the tasks that you want to inspect. Gradle You get more hints about what is going on with Gradle when you add the --info flag to your ./dtcw generateSite command: ./dtcw generateSite --info This outputs all config settings as seen by docToolchain along with many other internal settings. jBake Templates If something goes wrong with a template, you typically don’t receive much information about the problem. Take a look at menu.gsp to see how you can use try/catch blocks to get an error message. But to find out where the problem is occurring, you’ll need to use the poor man’s debugger and add some System.out.println statements. Make sure that you use the full System.out.println statement and not only println otherwise you won’t see any output. Theming, Menu and Images How the system creates the menu entries might seem like magic, but sometimes you cannot work out why an image is not shown. Remember, there is a way that you can check the generated files. Check the build/microsite/tmp folder to see the folder that is fed into jBake. In this folder, all files will have additional jbake attributes which are used to build the menu. They are generated from the original attributes of the file and folder/filename information. Now check the build/microsite/output folder to see the generated result. This often helps you find out where an image actually is located. Script Execution Debugging The execution of the ../../../bin/doctoolchain bash script may be traced by setting the environment variable DTC_BASH_OPTS to, e.g., -vx . "
-},
-
-{
-    "id": 30,
-    "uri": "025_development/050_who-uses-dtc.html",
-    "menu": "-",
-    "title": "moved",
-    "text": " document.location.href = '../10_about/10_about-the-project.html'; "
 },
 
 {
@@ -258,6 +258,14 @@ var documents = [
 
 {
     "id": 32,
+    "uri": "025_development/050_who-uses-dtc.html",
+    "menu": "-",
+    "title": "moved",
+    "text": " document.location.href = '../10_about/10_about-the-project.html'; "
+},
+
+{
+    "id": 33,
     "uri": "025_development/020_run_tests.html",
     "menu": "development",
     "title": "Running Tests",
@@ -265,7 +273,7 @@ var documents = [
 },
 
 {
-    "id": 33,
+    "id": 34,
     "uri": "025_development/030_create_new_release.html",
     "menu": "development",
     "title": "Creating a New Release",
@@ -273,19 +281,11 @@ var documents = [
 },
 
 {
-    "id": 34,
+    "id": 35,
     "uri": "ea/Activity_notes.html",
     "menu": "ea",
     "title": "Activity_notes.ad",
     "text": " Activity1 Just a test for issue #1 https://github.com/rdmueller/docToolchain/issues/1 "
-},
-
-{
-    "id": 35,
-    "uri": "ea/Use_Cases_links.html",
-    "menu": "ea",
-    "title": "Use_Cases_links.ad",
-    "text": " . and this is just a test for issue #2 https://github.com/rdmueller/docToolchain/issues/2 "
 },
 
 {
@@ -298,9 +298,9 @@ var documents = [
 
 {
     "id": 37,
-    "uri": "ea/Use_Cases_links_issue2.html",
+    "uri": "ea/Use_Cases_links.html",
     "menu": "ea",
-    "title": "Use_Cases_links_issue2.ad",
+    "title": "Use_Cases_links.ad",
     "text": " . and this is just a test for issue #2 https://github.com/rdmueller/docToolchain/issues/2 "
 },
 
@@ -322,10 +322,10 @@ var documents = [
 
 {
     "id": 40,
-    "uri": "ea/readme.html",
+    "uri": "ea/Use_Cases_links_issue2.html",
     "menu": "ea",
-    "title": "readme.ad",
-    "text": " Table of Contents Warning! This folder contains exported diagrams or notes from Enterprise Architect. Please note that these are generated files but reside in the src -folder in order to be versioned. This is to make sure that they can be used from environments other than windows. Warning! The contents of this folder will be overwritten with each re-export! use gradle exportEA to re-export files "
+    "title": "Use_Cases_links_issue2.ad",
+    "text": " . and this is just a test for issue #2 https://github.com/rdmueller/docToolchain/issues/2 "
 },
 
 {
@@ -346,6 +346,14 @@ var documents = [
 
 {
     "id": 43,
+    "uri": "ea/readme.html",
+    "menu": "ea",
+    "title": "readme.ad",
+    "text": " Table of Contents Warning! This folder contains exported diagrams or notes from Enterprise Architect. Please note that these are generated files but reside in the src -folder in order to be versioned. This is to make sure that they can be used from environments other than windows. Warning! The contents of this folder will be overwritten with each re-export! use gradle exportEA to re-export files "
+},
+
+{
+    "id": 44,
     "uri": "ea/Use_Cases_notes_UseCases.html",
     "menu": "ea",
     "title": "Use_Cases_notes_UseCases.ad",
@@ -353,7 +361,7 @@ var documents = [
 },
 
 {
-    "id": 44,
+    "id": 45,
     "uri": "ea/Architect_notes.html",
     "menu": "ea",
     "title": "Architect_notes.ad",
@@ -361,7 +369,7 @@ var documents = [
 },
 
 {
-    "id": 45,
+    "id": 46,
     "uri": "ea/Activity_notes_issue1.html",
     "menu": "ea",
     "title": "Activity_notes_issue1.ad",
@@ -369,7 +377,7 @@ var documents = [
 },
 
 {
-    "id": 46,
+    "id": 47,
     "uri": "050_ADRs/ADR-2-separate-core-logic-from-gradle.html",
     "menu": "ADRs",
     "title": "ADR-02: Separate core logic from Gradle",
@@ -377,7 +385,7 @@ var documents = [
 },
 
 {
-    "id": 47,
+    "id": 48,
     "uri": "050_ADRs/ADR-1-Scripting-Languages.html",
     "menu": "ADRs",
     "title": "ADR-01: Scripting",
@@ -385,7 +393,7 @@ var documents = [
 },
 
 {
-    "id": 48,
+    "id": 49,
     "uri": "010_manual/50_Frequently_asked_Questions.html",
     "menu": "manual",
     "title": "Solutions to Common Problems",
@@ -393,19 +401,11 @@ var documents = [
 },
 
 {
-    "id": 49,
+    "id": 50,
     "uri": "010_manual/30_config.html",
     "menu": "manual",
     "title": "Configuration",
     "text": " Table of Contents Configuration mainConfigFile and docDir AsciiDoc config Command Line Parameters Configuration 2 minutes to read This appendix covers all configuration introduced by docToolchain. AsciiDoc, AsciiDoctor, Gradle and other tools and libraries used know of more configuration settings and you can read about those in the corresponding documentation. mainConfigFile and docDir docToolchain should be easy to use. That&#8217;s why the goal is to have one config file with all settings for each project. But first of all, docToolchain has to know where your documentation project is located. If docDir is defined, the default for mainConfigFile is Config.groovy in the root folder of your docDir . You have several options to specify the location of your documentation project ( docDir ) and the location of your config file ( mainConfigFile ). Commandline Specify the property on the commandline ./dtcw generateHTML -PmainConfigFile=Config.groovy Tip you can verify the location of your Config.groovy by executing docToolchain with the --info parameter which sets the loglevel to info . It will print the location on the command line (among other settings) Environment Variable You can also specify the mainConfigFile using the environment variable DTC_CONFIG_FILE . This will override the default value of docToolchainConfig.groovy . export DTC_CONFIG_FILE=path/to/config.groovy dynamic configuration properties Sometimes you need a more dynamic configuration. Since the configuration file is an executable .groovy file, you can not only configure static values but also fetch dynamic once. For example, example = System.properties.myProperty You can then specify the property with the -D parameter like this ./dtcw docker generateHTML -DmyProperty=myValue In the same way, you can use environment variables example = System.getenv(\"myEnvVariable\") But in this case, you have to ensure that the environment variable can be accessed. It will not work for docker based execution of dtcw Content of the mainConfigFile outputPath = 'build/docs' // If you want to use the Antora integration, set this to true. // This requires your project to be setup as Antora module. // You can use `downloadTemplate` task to bootstrap your project. //useAntoraIntegration = false // Path where the docToolchain will search for the input files. // This path is appended to the docDir property specified in gradle.properties // or in the command line, and therefore must be relative to it. inputPath = 'src/docs'; inputFiles = [ [file: 'manual_test_script.adoc', formats: ['html','pdf']], /** inputFiles **/ ] //folders in which asciidoc will find images. //these will be copied as resources to ./images //folders are relative to inputPath imageDirs = [ /** imageDirs **/ ] // whether the build should fail when detecting broken image references // if this config is set to true all images will be embedded // failOnMissingImages = false taskInputsDirs = [\"${inputPath}/images\"] taskInputsFiles = [] //****************************************************************************************** //customization of the Jbake gradle plugin used by the generateSite task jbake.with { // possibility to configure additional asciidoctorj plugins used by jbake plugins = [ ] // possibility to configure additional asciidoctor attributes passed to the jbake task asciidoctorAttributes = [ ] } //Configuration for exportChangelog exportChangelog = [:] changelog.with { // Directory of which the exportChangelog task will export the changelog. // It should be relative to the docDir directory provided in the // gradle.properties file. dir = 'src/docs' // Command used to fetch the list of changes. // It should be a single command taking a directory as a parameter. // You cannot use multiple commands with pipe between. // This command will be executed in the directory specified by changelogDir // it the environment inherited from the parent process. // This command should produce asciidoc text directly. The exportChangelog // task does not do any post-processing // of the output of that command. // // See also https://git-scm.com/docs/pretty-formats cmd = 'git log --pretty=format:%x7c%x20%ad%x20%n%x7c%x20%an%x20%n%x7c%x20%s%x20%n --date=short' } //***************************************************************************************** //Configuration for publishToConfluence confluence = [:] // 'input' is an array of files to upload to Confluence with the ability // to configure a different parent page for each file. // // Attributes // - 'file': absolute or relative path to the asciidoc generated html file to be exported // - 'url': absolute URL to an asciidoc generated html file to be exported // - 'ancestorName' (optional): the name of the parent page in Confluence as string; // this attribute has priority over ancestorId, but if page with given name doesn't exist, // ancestorId will be used as a fallback // - 'ancestorId' (optional): the id of the parent page in Confluence as string; leave this empty // if a new parent shall be created in the space // Set it for every file so the page scanning is done only for the given ancestor page trees. // // The following four keys can also be used in the global section below // - 'spaceKey' (optional): page specific variable for the key of the confluence space to write to // - 'subpagesForSections' (optional): The number of nested sub-pages to create. Default is '1'. // '0' means creating all on one page. // The following migration for removed configuration can be used. // 'allInOnePage = true' is the same as 'subpagesForSections = 0' // 'allInOnePage = false &amp;&amp; createSubpages = false' is the same as 'subpagesForSections = 1' // 'allInOnePage = false &amp;&amp; createSubpages = true' is the same as 'subpagesForSections = 2' // - 'pagePrefix' (optional): page specific variable, the pagePrefix will be a prefix for the page title and it's sub-pages // use this if you only have access to one confluence space but need to store several // pages with the same title - a different pagePrefix will make them unique // - 'pageSuffix' (optional): same usage as prefix but appended to the title and it's subpages // only 'file' or 'url' is allowed. If both are given, 'url' is ignored confluence.with { input = [ [ file: \"build/docs/html5/arc42-template-de.html\" ], ] // endpoint of the confluenceAPI (REST) to be used // https://[yourServer] api = 'https://[yourServer]' // requests per second for confluence API calls rateLimit = 10 // Additionally, spaceKey, subpagesForSections, pagePrefix and pageSuffix can be globally defined here. The assignment in the input array has precedence // the key of the confluence space to write to spaceKey = 'asciidoc' // if true, all pages will be created using the new editor v2 // enforceNewEditor = false // variable to determine how many layers of sub pages should be created subpagesForSections = 1 // the pagePrefix will be a prefix for each page title // use this if you only have access to one confluence space but need to store several // pages with the same title - a different pagePrefix will make them unique pagePrefix = '' pageSuffix = '' /* WARNING: It is strongly recommended to store credentials securely instead of committing plain text values to your git repository!!! Tool expects credentials that belong to an account which has the right permissions to to create and edit confluence pages in the given space. Credentials can be used in a form of: - passed parameters when calling script (-PconfluenceUser=myUsername -PconfluencePass=myPassword) which can be fetched as a secrets on CI/CD or - gradle variables set through gradle properties (uses the 'confluenceUser' and 'confluencePass' keys) Often, same credentials are used for Jira &amp; Confluence, in which case it is recommended to pass CLI parameters for both entities as -Pusername=myUser -Ppassword=myPassword */ //optional API-token to be added in case the credentials are needed for user and password exchange. //apikey = \"[API-token]\" // HTML Content that will be included with every page published // directly after the TOC. If left empty no additional content will be // added // extraPageContent = '&lt;ac:structured-macro ac:name=\"warning\"&gt;&lt;ac:parameter ac:name=\"title\" /&gt;&lt;ac:rich-text-body&gt;This is a generated page, do not edit!&lt;/ac:rich-text-body&gt;&lt;/ac:structured-macro&gt; extraPageContent = '' // enable or disable attachment uploads for local file references enableAttachments = false // default attachmentPrefix = attachment - All files to attach will require to be linked inside the document. // attachmentPrefix = \"attachment\" // Optional proxy configuration, only used to access Confluence // schema supports http and https // proxy = [host: 'my.proxy.com', port: 1234, schema: 'http'] // Optional: specify which Confluence OpenAPI Macro should be used to render OpenAPI definitions // possible values: [\"confluence-open-api\", \"open-api\", \"swagger-open-api\", true]. true is the same as \"confluence-open-api\" for backward compatibility // useOpenapiMacro = \"confluence-open-api\" } //***************************************************************************************** //Configuration for the export script 'exportEA.vbs'. // The following parameters can be used to change the default behaviour of 'exportEA'. // All parameter are optionally. // - connection: Parameter allows to select a certain database connection by // using the ConnectionString as used for directly connecting to the project // database instead of looking for EAP/EAPX files inside and below the 'src' folder. // - 'packageFilter' is an array of package GUID's to be used for export. All // images inside and in all packages below the package represented by its GUID // are exported. A packageGUID, that is not found in the currently opened // project, is silently skipped. PackageGUID of multiple project files can // be mixed in case multiple projects have to be opened. // - exportPath: relative path to base 'docDir' to which the diagrams and notes are to be exported // - searchPath: relative path to base 'docDir', in which Enterprise Architect project files are searched // - absoluteSearchPath: absolute path in which Enterprise Architect project files are searched // - glossaryAsciiDocFormat: if set, the EA glossary is exported into exportPath as 'glossary.ad' // - glossaryTypes: if set and glossary is exported, used to filter for certain types. // Not set or empty list will cause no filtered glossary. // - diagramAttributes: if set, the diagram attributes are exported and formatted as specified // - imageFormat: if set, the image format is used for the export of diagrams. Default is '.png'. exportEA.with { // OPTIONAL: Set the connection to a certain project or comment it out to use all project files inside the src folder or its child folder. // connection = \"DBType=1;Connect=Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=[THE_DB_NAME_OF_THE_PROJECT];Data Source=[server_hosting_database.com];LazyLoad=1;\" // OPTIONAL: Add one or multiple packageGUIDs to be used for export. All packages are analysed, if no packageFilter is set. // packageFilter = [ // \"{A237ECDE-5419-4d47-AECC-B836999E7AE0}\", // \"{B73FA2FB-267D-4bcd-3D37-5014AD8806D6}\" // ] // OPTIONAL: tag used to filter diagrams to be exported - based on diagram.Stereotype. // If not set all diagrams in the selected packages are exported. // diagramFilter = \"myProject\" // OPTIONAL: export diagrams, notes, etc. below folder src/docs // exportPath = \"src/docs/\" // OPTIONAL: EA project files are expected to be located in folder src/projects // searchPath = \"src/projects/\" // OPTIONAL: terms will be exported as asciidoc 'Description, single-line' // glossaryAsciiDocFormat = \"TERM:: MEANING\" // OPTIONAL: only terms of type Business and Technical will be exported. // glossaryTypes = [\"Business\", \"Technical\"] // OPTIONAL: Additional files will be exported containing diagram attributes in the given asciidoc format // diagramAttributes = \"Modified: %DIAGRAM_AUTHOR%, %DIAGRAM_MODIFIED%, %DIAGRAM_NAME%, // %DIAGRAM_GUID%, %DIAGRAM_CREATED%, %DIAGRAM_NOTES%, %DIAGRAM_DIAGRAM_TYPE%, %DIAGRAM_VERSION%\" // OPTIONAL: format of the exported diagrams. Defaults to '.png' if the parameter is not provided. // imageFormat = \".svg\" } htmlSanityCheck.with { //sourceDir = \"build/html5/site\" // where to put results of sanityChecks... //checkingResultsDir = // OPTIONAL: directory where the results written to in JUnit XML format //junitResultsDir = // OPTIONAL: which statuscodes shall be interpreted as warning, error or success defaults to standard //httpSuccessCodes = [] //httpWarningCodes = [] //httpErrorCodes = [] // fail build on errors? failOnErrors = false } // Configuration for Jira related tasks jira = [:] jira.with { // endpoint of the JiraAPI (REST) to be used api = 'https://your-jira-instance' // requests per second for Jira API calls rateLimit = 10 /* WARNING: It is strongly recommended to store credentials securely instead of committing plain text values to your git repository!!! Tool expects credentials that belong to an account which has the right permissions to read the JIRA issues for a given project. Credentials can be used in a form of: - passed parameters when calling script (-PjiraUser=myUsername -PjiraPass=myPassword) which can be fetched as a secrets on CI/CD or - gradle variables set through gradle properties (uses the 'jiraUser' and 'jiraPass' keys) Often, Jira &amp; Confluence credentials are the same, in which case it is recommended to pass CLI parameters for both entities as -Pusername=myUser -Ppassword=myPassword */ // the key of the Jira project project = 'PROJECTKEY' // the format of the received date time values to parse dateTimeFormatParse = \"yyyy-MM-dd'T'H:m:s.SSSz\" // i.e. 2020-07-24'T'9:12:40.999 CEST // the format in which the date time should be saved to output dateTimeFormatOutput = \"dd.MM.yyyy HH:mm:ss z\" // i.e. 24.07.2020 09:02:40 CEST // the label to restrict search to label = 'label1' // Legacy settings for Jira query. This setting is deprecated &amp; support for it will soon be completely removed. Please use JiraRequests settings jql = \"project='%jiraProject%' AND labels='%jiraLabel%' ORDER BY priority DESC, duedate ASC\" // Base filename in which Jira query results should be stored resultsFilename = 'JiraTicketsContent' saveAsciidoc = true // if true, asciidoc file will be created with *.adoc extension saveExcel = true // if true, Excel file will be created with *.xlsx extension // Output folder for this task inside main outputPath resultsFolder = 'JiraRequests' /* List of requests to Jira API: These are basically JQL expressions bundled with a filename in which results will be saved. User can configure custom fields IDs and name those for column header, i.e. customfield_10026:'Story Points' for Jira instance that has custom field with that name and will be saved in a column named \"Story Points\" */ exports = [ [ filename:\"File1_Done_issues\", jql:\"project='%jiraProject%' AND status='Done' ORDER BY duedate ASC\", customfields: [customfield_10026:'Story Points'] ], [ filename:'CurrentSprint', jql:\"project='%jiraProject%' AND Sprint in openSprints() ORDER BY priority DESC, duedate ASC\", customfields: [customfield_10026:'Story Points'] ] ] } // Configuration for OpenAPI related task openApi = [:] // 'specFile' is the name of OpenAPI specification yaml file. Tool expects this file inside working dir (as a filename or relative path with filename) // 'infoUrl' and 'infoEmail' are specification metadata about further info related to the API. By default this values would be filled by openapi-generator plugin placeholders // openApi.with { specFile = 'src/docs/petstore-v2.0.yaml' // i.e. 'petstore.yaml', 'src/doc/petstore.yaml' infoUrl = 'https://my-api.company.com' infoEmail = 'info@company.com' } // Sprint changelog configuration generate changelog lists based on tickets in sprints of an Jira instance. // This feature requires at least Jira API &amp; credentials to be properly set in Jira section of this configuration sprintChangelog = [:] sprintChangelog.with { sprintState = 'closed' // it is possible to define multiple states, i.e. 'closed, active, future' ticketStatus = \"Done, Closed\" // it is possible to define multiple ticket statuses, i.e. \"Done, Closed, 'in Progress'\" showAssignee = false showTicketStatus = false showTicketType = true sprintBoardId = 12345 // Jira instance probably have multiple boards; here it can be defined which board should be used // Output folder for this task inside main outputPath resultsFolder = 'Sprints' // if sprintName is not defined or sprint with that name isn't found, release notes will be created on for all sprints that match sprint state configuration sprintName = 'PRJ Sprint 1' // if sprint with a given sprintName is found, release notes will be created just for that sprint allSprintsFilename = 'Sprints_Changelogs' // Extension will be automatically added. } collectIncludes = [:] collectIncludes.with { // fileFilter = \"adoc\" // define which files are considered. default: \"ad|adoc|asciidoc\" // minPrefixLength = \"3\" // define what minimum length the prefix. default: \"3\" // maxPrefixLength = \"3\" // define what maximum length the prefix. default: \"\" // separatorChar = \"_\" // define the allowed separators after prefix. default: \"-_\" // cleanOutputFolder = true // should the output folder be emptied before generation? default: false // excludeDirectories = [] // define additional directories that should not be traversed. } // Configuration for Structurizr related tasks structurizr = [:] structurizr.with { // Configure where `exportStructurizr` looks for the Structurizr model. workspace = { // The directory in which the Structurizr workspace file is located. // path = 'src/docs/structurizr' // By default `exportStructurizr` looks for a file '${structurizr.workspace.path}/workspace.dsl' // You can customize this behavior with 'filename'. Note that the workspace filename is provided without '.dsl' extension. // filename = 'workspace' } export = { // Directory for the exported diagrams. // // WARNING: Do not put manually created/changed files into this directory. // If a valid Structurizr workspace file is found the directory is deleted before the diagram files are generated. // outputPath = 'src/docs/structurizr/diagrams' // Format of the exported diagrams. Defaults to 'plantuml' if the parameter is not provided. // // Following formats are supported: // - 'plantuml': the same as 'plantuml/structurizr' // - 'plantuml/structurizr': exports views to PlantUML // - 'plantuml/c4plantuml': exports views to PlantUML with https://github.com/plantuml-stdlib/C4-PlantUML // format = 'plantuml' } } // Configuration for openAI related tasks openAI = [:] openAI.with { // This task requires a person access token for openAI. // Ensure to pass this token as parameters when calling the task // using -PopenAI.token=xx-xxxxxxxxxxxxxx //model = \"text-davinci-003\" //maxToken = '500' //temperature = '0.3' } // Configuration for pandoc options pandocOptions = [ '--toc' ] AsciiDoc config Command Line Parameters "
-},
-
-{
-    "id": 50,
-    "uri": "010_manual/040_contributors.html",
-    "menu": "-",
-    "title": "moved",
-    "text": " document.location.href = '../10_about/30_community.html'; "
 },
 
 {
@@ -418,6 +418,14 @@ var documents = [
 
 {
     "id": 52,
+    "uri": "010_manual/040_contributors.html",
+    "menu": "-",
+    "title": "moved",
+    "text": " document.location.href = '../10_about/30_community.html'; "
+},
+
+{
+    "id": 53,
     "uri": "010_manual/20_install.html",
     "menu": "manual",
     "title": "Install docToolchain",
@@ -425,7 +433,7 @@ var documents = [
 },
 
 {
-    "id": 53,
+    "id": 54,
     "uri": "010_manual/010_introduction_and_goals.html",
     "menu": "-",
     "title": "moved",
@@ -433,7 +441,7 @@ var documents = [
 },
 
 {
-    "id": 54,
+    "id": 55,
     "uri": "010_manual/40_features.html",
     "menu": "manual",
     "title": "Using docToolchain to Build Docs",
@@ -441,7 +449,7 @@ var documents = [
 },
 
 {
-    "id": 55,
+    "id": 56,
     "uri": "020_tutorial/020_arc42.html",
     "menu": "tutorial",
     "title": "arc42 Template",
@@ -449,7 +457,7 @@ var documents = [
 },
 
 {
-    "id": 56,
+    "id": 57,
     "uri": "020_tutorial/140_Dropdown_Menu.html",
     "menu": "tutorial",
     "title": "How to create a Dropdown Menu",
@@ -457,7 +465,7 @@ var documents = [
 },
 
 {
-    "id": 57,
+    "id": 58,
     "uri": "020_tutorial/050_multipleRepositories.html",
     "menu": "tutorial",
     "title": "Multi-Repo",
@@ -465,7 +473,7 @@ var documents = [
 },
 
 {
-    "id": 58,
+    "id": 59,
     "uri": "020_tutorial/990_Tutorial.html",
     "menu": "tutorial",
     "title": "How to create a Tutorial",
@@ -473,7 +481,7 @@ var documents = [
 },
 
 {
-    "id": 59,
+    "id": 60,
     "uri": "020_tutorial/150_multiRepoMicrositeTipsAndTricks.html",
     "menu": "tutorial",
     "title": "Building a microsite from multiple repositories",
@@ -481,7 +489,7 @@ var documents = [
 },
 
 {
-    "id": 60,
+    "id": 61,
     "uri": "020_tutorial/010_Install.html",
     "menu": "tutorial",
     "title": "Install docToolchain",
@@ -489,7 +497,7 @@ var documents = [
 },
 
 {
-    "id": 61,
+    "id": 62,
     "uri": "020_tutorial/030_generateHTML.html",
     "menu": "tutorial",
     "title": "generateHTML &amp; generatePDF",
@@ -497,7 +505,7 @@ var documents = [
 },
 
 {
-    "id": 62,
+    "id": 63,
     "uri": "020_tutorial/110_presentations_with_revealjs.html",
     "menu": "tutorial",
     "title": "Presentations with reveal.js",
@@ -505,7 +513,7 @@ var documents = [
 },
 
 {
-    "id": 63,
+    "id": 64,
     "uri": "020_tutorial/120_self-contained-dtc.html",
     "menu": "tutorial",
     "title": "Self-Contained docToolchain",
@@ -513,7 +521,7 @@ var documents = [
 },
 
 {
-    "id": 64,
+    "id": 65,
     "uri": "020_tutorial/070_publishToConfluence.html",
     "menu": "tutorial",
     "title": "publishToConfluence",
@@ -521,7 +529,7 @@ var documents = [
 },
 
 {
-    "id": 65,
+    "id": 66,
     "uri": "020_tutorial/040_microsite/043_multi-markup.html",
     "menu": "tutorial",
     "title": "generateSite: Multi-Markup",
@@ -529,7 +537,7 @@ var documents = [
 },
 
 {
-    "id": 66,
+    "id": 67,
     "uri": "020_tutorial/040_microsite/index.html",
     "menu": "tutorial",
     "title": "Microsite",
@@ -537,7 +545,7 @@ var documents = [
 },
 
 {
-    "id": 67,
+    "id": 68,
     "uri": "020_tutorial/040_microsite/130_theming.html",
     "menu": "tutorial",
     "title": "How to change the theme",
@@ -545,7 +553,7 @@ var documents = [
 },
 
 {
-    "id": 68,
+    "id": 69,
     "uri": "020_tutorial/040_microsite/040_generateSite.html",
     "menu": "tutorial",
     "title": "generateSite",
@@ -553,7 +561,7 @@ var documents = [
 },
 
 {
-    "id": 69,
+    "id": 70,
     "uri": "020_tutorial/160_EnterpriseTipsAndTricks.html",
     "menu": "tutorial",
     "title": "Enterprise docToolchain",
@@ -561,7 +569,7 @@ var documents = [
 },
 
 {
-    "id": 70,
+    "id": 71,
     "uri": "020_tutorial/100_diagrams.net.html",
     "menu": "tutorial",
     "title": "Diagrams: Diagrams.net",
@@ -569,7 +577,7 @@ var documents = [
 },
 
 {
-    "id": 71,
+    "id": 72,
     "uri": "015_tasks/03_task_generateHTML.html",
     "menu": "tasks",
     "title": "generateHTML",
@@ -577,7 +585,7 @@ var documents = [
 },
 
 {
-    "id": 72,
+    "id": 73,
     "uri": "015_tasks/03_task_exportEA.html",
     "menu": "tasks",
     "title": "exportEA",
@@ -585,7 +593,7 @@ var documents = [
 },
 
 {
-    "id": 73,
+    "id": 74,
     "uri": "015_tasks/03_task_downloadTemplate.html",
     "menu": "tasks",
     "title": "downloadTemplate",
@@ -593,7 +601,7 @@ var documents = [
 },
 
 {
-    "id": 74,
+    "id": 75,
     "uri": "015_tasks/03_task_wipeConfluenceSpace.html",
     "menu": "tasks",
     "title": "wipeConfluenceSpace",
@@ -601,7 +609,7 @@ var documents = [
 },
 
 {
-    "id": 75,
+    "id": 76,
     "uri": "015_tasks/03_task_exportExcel.html",
     "menu": "tasks",
     "title": "exportExcel",
@@ -609,7 +617,7 @@ var documents = [
 },
 
 {
-    "id": 76,
+    "id": 77,
     "uri": "015_tasks/03_task_exportJiraSprintChangelog.html",
     "menu": "tasks",
     "title": "exportJiraSprintChangelogIssues",
@@ -617,7 +625,7 @@ var documents = [
 },
 
 {
-    "id": 77,
+    "id": 78,
     "uri": "015_tasks/03_task_fixencoding.html",
     "menu": "tasks",
     "title": "fixEncoding",
@@ -625,7 +633,7 @@ var documents = [
 },
 
 {
-    "id": 78,
+    "id": 79,
     "uri": "015_tasks/03_tasks.html",
     "menu": "tasks",
     "title": "What Is a Task?",
@@ -633,7 +641,7 @@ var documents = [
 },
 
 {
-    "id": 79,
+    "id": 80,
     "uri": "015_tasks/03_task_copy_themes.html",
     "menu": "tasks",
     "title": "copyThemes",
@@ -641,7 +649,7 @@ var documents = [
 },
 
 {
-    "id": 80,
+    "id": 81,
     "uri": "015_tasks/03_task_generateSite.html",
     "menu": "tasks",
     "title": "generateSite",
@@ -649,7 +657,7 @@ var documents = [
 },
 
 {
-    "id": 81,
+    "id": 82,
     "uri": "015_tasks/03_task_htmlSanityCheck.html",
     "menu": "tasks",
     "title": "htmlSanityCheck",
@@ -657,7 +665,7 @@ var documents = [
 },
 
 {
-    "id": 82,
+    "id": 83,
     "uri": "015_tasks/03_task_generatePDF.html",
     "menu": "tasks",
     "title": "generatePDF",
@@ -665,7 +673,7 @@ var documents = [
 },
 
 {
-    "id": 83,
+    "id": 84,
     "uri": "015_tasks/03_task_previewSite.html",
     "menu": "tasks",
     "title": "previewSite",
@@ -673,7 +681,7 @@ var documents = [
 },
 
 {
-    "id": 84,
+    "id": 85,
     "uri": "015_tasks/03_task_prependFilename.html",
     "menu": "tasks",
     "title": "prependFilename",
@@ -681,7 +689,7 @@ var documents = [
 },
 
 {
-    "id": 85,
+    "id": 86,
     "uri": "015_tasks/03_task_exportMetrics.html",
     "menu": "tasks",
     "title": "exportMetrics",
@@ -689,7 +697,7 @@ var documents = [
 },
 
 {
-    "id": 86,
+    "id": 87,
     "uri": "015_tasks/03_task_exportStructurizr.html",
     "menu": "tasks",
     "title": "exportStructurizr",
@@ -697,7 +705,7 @@ var documents = [
 },
 
 {
-    "id": 87,
+    "id": 88,
     "uri": "015_tasks/03_task_exportContributors.html",
     "menu": "tasks",
     "title": "exportContributors",
@@ -705,19 +713,11 @@ var documents = [
 },
 
 {
-    "id": 88,
+    "id": 89,
     "uri": "015_tasks/03_task_generateDocBook.html",
     "menu": "tasks",
     "title": "generateDocbook",
     "text": " Table of Contents generateDocbook About This Task Source .gravatar img { margin-left: 3px; border-radius: 4px; } generateDocbook 1 minute to read About This Task A helper task, generateDocbook generates the intermediate format for convertToDocx &lt;&lt;&gt;&gt; and convertToEpub . Source Show source code of scripts/AsciiDocBasics.gradle or go directly to GitHub · docToolchain/scripts/AsciiDocBasics.gradle . scripts/AsciiDocBasics.gradle task generateDocbook ( type: AsciidoctorTask, group: 'docToolchain', description: 'use docbook as asciidoc backend') { def sourceFilesDOCBOOK = findSourceFilesByType(['docbook', 'epub', 'docx']) // onlyIf { // sourceFilesDOCBOOK // } sources { sourceFilesDOCBOOK.each { include it.file logger.info it.file File useFile = new File(srcDir, it.file) if (!useFile.exists()) { throw new Exception (\"\"\" The file $useFile in DOCBOOK config does not exist! Please check the configuration 'inputFiles' in $mainConfigFile.\"\"\") } } } outputOptions { backends = ['docbook'] } outputDir = file(targetDir+'/docbook/') doFirst { if (sourceFilesDOCBOOK.size()==0) { throw new Exception (\"\"\" &gt;&gt; No source files defined for type of '[docbook, epub, docx]'. &gt;&gt; Please specify at least one inputFile in your docToolchainConfig.groovy \"\"\") } } } "
-},
-
-{
-    "id": 89,
-    "uri": "015_tasks/03_task_exportConfluence.html",
-    "menu": "tasks",
-    "title": "exportConfluence",
-    "text": " Table of Contents exportConfluence About This Task Source .gravatar img { margin-left: 3px; border-radius: 4px; } exportConfluence 3 minutes to read About This Task For a long time, docToolchain supports the conversion of AsciiDoc files to confluence spaces. This task now allows you to convert you confluence spaces back to AsciiDoc. A confluence space will be converted to a \"ready to use\" set of AsciiDoc files together with a navigation menu. Note the results of the conversion are quite good. However, don&#8217;t expect the two tasks publishToConfluence and exportConfluence to be able to give you a full round-trip without losing some information about the format of your texts. As an example, numbered headlines will not be automatically converted between both systems. The task exportConfluence parses the entities.xml file of a confluence-space export and creates a hierarchical html export. It then uses pandoc to convert the HTML files to AsciiDoc. Since this conversion isn&#8217;t perfect and pandoc doesn&#8217;t even know about confluence macros, the script also does some pre- and post-processing. prerequisites docToolchain &gt;= v2.2 you need to have pandoc installed. usage Export the confluence space as XML and unzip it in a distinct sample_data folder. To export the confluence space, navigate to the space and then click Space Settings Manage Space &gt; Export Space [x] Export Formats: XLM &#8658; Next [x] Full Export &#8658; Export Configure the right paths in your docToolchainConfig.groovy . export = [ srcDir: 'sample_data', destDir: 'src/docs' ] Then use the following steps to run the script and render the results as a microsite: ./dtcw exportConfluence ./dtcw generateSite You can also specify the needed parameters through the command line: ./dtcw exportConfluence -Pconfluence.export.srcDir=sample_data -Pconfluence.export.destDir=src/docs Supported Features all kinds of text formatting line breaks paragraphs explizit, external links image attachments admonitions .-Titles Anchors numbered Lists bulleted Lists literal blocks code blocks horizontal rules Quotes look good standard tables lucidchart diagrams anchors link-macro unsupported features tables with colspans or rowspans layout-sections inline comments comments expand blocks user-profile macro has only rudimentary support known issues Definitions lists are transformed to tables Quotes are not exactly as expected but look good tables with colspan will have colspan removed include sections are in give sort order Source Show source code of scripts/confluenceToAsciiDoc.groovy or go directly to GitHub · docToolchain/scripts/confluenceToAsciiDoc.groovy . scripts/confluenceToAsciiDoc.groovy import org.jsoup.Jsoup import org.jsoup.parser.Parser import org.jsoup.nodes.Document import groovy.xml.XmlSlurper import groovy.xml.slurpersupport.GPathResult import java.nio.file.Files import java.nio.file.StandardCopyOption // parse command line arguments and display usage info List parseCliArgs(String[] args) { // parse the exportet confluence entities from xml file if (args.size() &lt; 2) { println \"\"\" Usage: groovy exportConfluence.groovy srcDir=[name of source dir] destDir=[name of destination dir] both dirs can be specified as relative path. the script expects the srcDir to contain the unzipped data from a confluence space XML export \"\"\" System.exit(1) } parsedArgs = args.collectEntries { it.split(\"=\").each { it.trim() } } def srcDir = new File(parsedArgs.srcDir) def destDir = new File(parsedArgs.destDir) destDir.mkdirs() return [srcDir, destDir] } lucidChartsIframe = false unknownTagsStats = [:] //takes confluence xHTML storage format and fixes some issues to be better converted by pandoc def fixBody(pageId, String body, users, pages, space) { body = body // it seems to be a bug how CDATA sections are closed in the xHTML .replaceAll(\"]] &gt;&lt;\", \"]]&gt;&lt;\") // remove empty headings .replaceAll(\"&lt;h[1-9]&gt; &lt;/h[1-9]&gt;\",\"\") // remove unecessary colspan attrib .replaceAll('colspan=\"1\"',\"\") // fix colspan=2 for pandoc .replaceAll('colspan=\"2\"(.*?)&lt;/(t[dh])&gt;','$1&lt;/$2&gt;&lt;$2&gt;&lt;/$2&gt;') Document dom = Jsoup.parse(body, 'utf-8', Parser.xmlParser()) dom.outputSettings().prettyPrint(false);//makes html() preserve linebreaks and spacing dom.outputSettings().escapeMode(org.jsoup.nodes.Entities.EscapeMode.xhtml); //This will ensure xhtml validity regarding entities dom.outputSettings().charset(\"UTF-8\"); //does no harm :-) // search for image tags and convert them to HTML // get all ac: tags def acTags = [] dom.select(\"*\").each { element -&gt; if (element.tagName().startsWith(\"ac:\")) { acTags &lt;&lt; element.tagName().replace(\":\", \"|\") } } //fix links which still point to confluence dom.select(\"a\").each { element -&gt; def href = element.attr('href') def regexp = href =~ '/spaces/([^/]+)/pages/([0-9]+)/' if (regexp.size()==1) { // we have a link to confluence. // let's try to redirect it to out static page def targetSpace = regexp[0][1] if (space.key!=targetSpace) { println \"WARNING: can't rewrite links between different spaces (source: $space.key, target: $targetSpace)\" } else { def targetPage = regexp[0][2] def targetFilename = (pages[targetPage]?.filename) ?: '' def folderStructureTarget = getFolderStructure(pages, targetPage).join(\"/\") def folderStructureSource = getFolderStructure(pages, pageId) def targetLink = \"../\" * folderStructureSource.size() + folderStructureTarget + \"/\" + targetFilename + \".html\" element.attr('href', targetLink) } } } dom.select(\"span\").each { element -&gt; if (element.attr(\"class\").startsWith(\"css-\")) { element.unwrap() } if (element.attr(\"class\").startsWith(\"loader-wrapper\")) { element.unwrap() } if (element.attr(\"class\").contains(\"smart-link-title-wrapper\")) { element.unwrap() } } acTags = acTags.unique() def unknownTags = [] if (acTags.size() &gt; 0) { dom.select(acTags.join(\", \")).each { element -&gt; def name = element.tagName() switch (name) { case \"ac:image\": def alignment = element.attr(\"ac:align\") def width = element.attr(\"ac:width\") def filename = element.select([\"ri|attachment\"]).attr(\"ri:filename\") def version = element.select([\"ri|attachment\"]).attr(\"ri:version-at-save\") element.before(\"&lt;img src='{filepath}/${(version?version+\"_\":\"1_\")+(filename.replaceAll(\":\",\"_\"))}' align='${alignment?:''}' width='${width?:''}' /&gt;\") element.remove() break case \"ac:link\": if (element.children().size()&gt;0) { def anchor = element.attr(\"ac:anchor\") def targetPage = element.select(\"ri|page\").attr(\"ri:content-title\") def linkText = element.select(\"ac|plain-text-link-body\").text() if (linkText.trim()==\"\") { linkText = element.select(\"ac|link-body\").text() } targetPage = pages.find { _pageId, pageInfo -&gt; pageInfo.title == targetPage} if (targetPage) { def folderStructureTarget = getFolderStructure(pages, targetPage.key).join(\"/\") def folderStructureSource = getFolderStructure(pages, pageId) def targetLink = \"../\" * folderStructureSource.size() + folderStructureTarget + \"/\" + targetPage.value.filename + \".adoc\" if (anchor) { targetLink += \"#\" + anchor } element.before(\" xref:${targetLink}[${linkText}] \") element.remove() } else { //&lt;ac:link&gt;&lt;ri:attachment ri:filename=\"attachment.png\" ri:version-at-save=\"1\" /&gt;&lt;/ac:link&gt; } } break case \"ac:plain-text-link-body\": // ignore, part of link break case \"ac:inline-comment-marker\": // ignore - not supported break case [ \"ac:layout\", \"ac:layout-section\", \"ac:layout-cell\", \"ac:placeholder\" ]: // these tags are for multi column layouts and can't be easily converted // ignore break case \"ac:structured-macro\": def macroName = element.attr(\"ac:name\") switch (macroName) { case [ \"drawio\", \"excerpt-include\", \"panel\", ]: // ignore - not supported break case [\"expand\", \"expandable-comment\", ]: //println \"&gt;&gt;&gt; $macroName\" //println element break; case [\"view-file\"]: def filename = element.select([\"ri|attachment\"]).attr(\"ri:filename\") def version = element.select([\"ri|attachment\"]).attr(\"ri:version-at-save\") def height = element.select(\"ac|parameter[ac:name=height]\")?:'400' def filepath = \"images/\"+getFolderStructure(pages, pageId).join(\"/\") filepath = \"../\"*getFolderStructure(pages,pageId).size()+filepath if (filename.toLowerCase().endsWith('.pdf')) { element.before(\"\"\" &lt;div&gt; ++++%%CRLF%% &amp;lt;iframe name=\"${filename.replaceAll(\":\", \"_\")}\" allowfullscreen frameborder=\"0\" src='${filepath}/${(version ? version + \"_\" : \"1_\") + (filename.replaceAll(\":\", \"_\"))}' width='100%' height='${height}' &gt;&amp;lt;/iframe&gt;%%CRLF%% ++++%%CRLF%% &lt;/div&gt; \"\"\") } else if (filename[-4..-1].toLowerCase() in ['.jpg', '.png']) { element.before(\"&lt;img src='${filepath}/${(version ? version + \"_\" : \"1_\") + (filename.replaceAll(\":\", \"_\"))}' /&gt;\") } else { element.before(\"&lt;a href='${filepath}/${(version ? version + \"_\" : \"1_\") + (filename.replaceAll(\":\", \"_\"))}' &gt;$filename&lt;/a&gt;\") } element.remove() break; case 'attachments': // get all attachments for the current page and insert them as link // since we don't know about attachments in this method, we delegate it for later element.before(\"%%attachments%%\") element.remove() break case 'profile': def userkey = element.select(\"ri|user\").attr(\"ri:userkey\") if (users[userkey]) { element.before(\"\"\" User:: ${users[userkey].name}%%CRLF%% // ${users[userkey].atlassianAccountId}%%CRLF%% \"\"\") element.remove() } break case 'lucidchart': def documentId = element.select(\"ac|parameter[ac:name=documentId]\").text() def localId = element.attr(\"ac:local-id\") def macroId = element.attr(\"ac:macro-id\") def lucidInfos = \"\"\" // lucidChart // localId: ${element.attr(\"ac:local-id\")} // macroId: ${element.attr(\"ac:macro-id\")} \"\"\" element.select(\"ac|parameter\").each { parameter -&gt; def pname = parameter.attr(\"ac:name\") def pvalue = parameter.text() lucidInfos += \"// ${pname}: ${pvalue}\\n\" } // create AsciiDoc which will be passed through // only \\r\\n have to be encoded def chart = \"\" if (lucidChartsIframe) { chart = \"\"\" ++++%%CRLF%% &amp;lt;iframe allowfullscreen frameborder=\"0\" style=\"width:640px; height:480px\" src=\"https://lucid.app/documents/embedded/${documentId}\" &gt;&amp;lt;/iframe&gt;%%CRLF%% ++++%%CRLF%% \"\"\" } else { def folderStructure = getFolderStructure(pages, pageId) chart = \"\"\" %%CRLF%% image::${folderStructure.join(\"/\")}/${documentId}.png[]%%CRLF%% %%CRLF%% \"\"\" lucidInfoFile.append(\"\"\"\\ images/${folderStructure.join(\"/\")}/${documentId}.png \"\"\".toString()) } element.before(\"\"\" &lt;div class=\"lucidchart-wrapper\"&gt; ${lucidInfos.replaceAll(\"\\n\", \"%%CRLF%%\")} $chart https://lucid.app/lucidchart/${documentId}/edit[edit lucidchart] &lt;/div&gt; \"\"\") element.remove() break case 'toc': //ignore toc, will be generated by asciidoctor element.remove() break case 'children': //ignore, contains no content element.remove() break case [ 'tip', 'info', 'warning', 'note' ] : // admotions body = element.select(\"ac|rich-text-body\").html() def type = [ 'info':'NOTE', 'warning':'WARNING', 'note': 'CAUTION', 'tip':'TIP'][macroName] element.html(\"\"\" &lt;div class=\"admonition-wrapper\"&gt; [${type}]%%CRLF%% ====%%CRLF%% ${body.replaceAll(\"&lt;h([1-9])&gt;\",\"&lt;h\\$1&gt;[discrete]\")}%%CRLF%% ====%%CRLF%% &lt;/div&gt; \"\"\") element.unwrap() break case 'info': body = element.select(\"ac|rich-text-body\").html() def title = element.select(\"ac|parameter[ac:name=title]\").text() element.html(\"\"\" &lt;div class=\"info-wrapper\"&gt; .${title}%%CRLF%% ****%%CRLF%% ${body.replaceAll(\"&lt;h([1-9])&gt;\",\"&lt;h\\$1&gt;[discrete]\")}%%CRLF%% ****%%CRLF%% &lt;/div&gt; \"\"\") element.unwrap() break case 'anchor': def anchor = element.select(\"ac|parameter\").text() element.html(\"\\n&lt;span&gt;[[${anchor}]]&lt;span&gt;\\n\") element.unwrap() break case ['code', 'paste-code-macro']: def language = element.select(\"ac|parameter[ac:name=language]\").text() def code = element.select(\"ac|plain-text-body\").text() element.html(\"\"\" &lt;div class=\"code-wrapper\"&gt; [source, $language]%%CRLF%% ----%%CRLF%% ${code.replaceAll(\"\\n\",\"%%CRLF%%\")}%%CRLF%% ----%%CRLF%% &lt;/div&gt; \"\"\") element.unwrap() break default: unknownTags = (unknownTags &lt;&lt; \"ac:structured-macro $macroName\").unique() if (!unknownTagsStats[\"ac:structured-macro $macroName\"]) { unknownTagsStats[\"ac:structured-macro $macroName\"]=[] } unknownTagsStats[\"ac:structured-macro $macroName\"] &lt;&lt; pageId } break case [ \"ac:parameter\", \"ac:rich-text-body\", \"ac:plain-text-body\" ]: // ignore, part of structured-macro break default: unknownTags = (unknownTags &lt;&lt; name).unique() if (!unknownTagsStats[name]) { unknownTagsStats[name]=[] } unknownTagsStats[name] &lt;&lt; pageId } } } def html = dom.html() // some last dirty hacks // add a space in front of each link .replaceAll(\"&lt;a \", \" &lt;a \") // some links contain /#/ which is a problem for asciidoc .replaceAll(\"[/][#][/]\", '/\\\\\\\\#/') // remove unneeded line breaks in headlines .replaceAll(\"&lt;p&gt;&lt;/p&gt;&lt;strong&gt;&lt;br /&gt;\", \"&lt;strong&gt;\") // remove empty bold tags .replaceAll(\"&lt;strong&gt;&lt;br /&gt;&lt;/strong&gt;\", \"&lt;br /&gt;\") // turn html titles to .-titles .replaceAll(\"&lt;div&gt;&lt;div class=\\\"title\\\"&gt;([^&lt;]+)&lt;/div&gt;&lt;/div&gt;\", \".\\$1\") // remove bold formatting and empty breaks from .-titles .replaceAll(\"&lt;strong&gt;&lt;br /&gt;[.]([^&lt;]+)&lt;/strong&gt;\", \".\\$1\") return [html, unknownTags] } // need to parse the entities.xml into meta data about page-structure, attachments and space def parseMetaData( entities) { // first parse all pages, then all contentBodies def pages = [:] def attachments = [:] def space = [:] def users = [:] def unknownTags = [] println \"parsing page meta-data\" println \"\" entities.object.each { object -&gt; switch (object[\"@class\"]) { case 'Page': def pageId = object.id.toString() def contentStatus = object.property.find { it.@name == 'contentStatus' } if (contentStatus == \"current\") { def title = object.property.find { it.@name == 'title' }.text() def parentId = object.property.find { it.@name == 'parent' }.text() def filename = title .replaceAll(\"[Ää]\",\"ae\") .replaceAll(\"[Üü]\",\"ue\") .replaceAll(\"[Öö]\",\"oe\") .replaceAll(\"[^a-zA-Z0-9]\", \"_\") .replaceAll(\"_+\", \"_\") def position = object.property.find { it.@name == 'position' }.text() println \"Page: \" + pageId + \" - \" + title pages[pageId] = [title: title, parentId: parentId ?: -1, filename: filename, position: position] } break case 'Attachment': def id = object.id.toString() def contentStatus = object.property.find { it.@name == 'contentStatus' } if (contentStatus == \"current\") { def title = object.property.find { it.@name == 'title' }.text() def pageId = object.property.find { it.@name == 'containerContent' }.id.text() def version = object.property.find { it.@name == 'version' }.text() def originalId = object.property.find { it.@name == 'originalVersion' }.id.text() attachments[id] = [filename: title, id: id, version: version, pageId: pageId, originalId: originalId] println \"Attachment: \" + id + \" - \" + contentStatus + \" - \" + title } break case 'ConfluenceUserImpl': def id = object.id.toString() def name = object.property.find { it.@name == 'name' }.text() def atlassianAccountId = object.property.find { it.@name == 'atlassianAccountId' }.text() users[id] = [name: name, atlassianAccountId: atlassianAccountId] break case [ 'ContentProperty', 'SpacePermission', 'CustomContentEntityObject', 'Notification', 'Comment', 'OutgoingLink', 'Label', 'Labelling', 'User2ContentRelationEntity', 'Content2ContentRelationEntity', 'SpaceDescription', 'LikeEntity', 'BucketPropertySetItem', 'ContentPermission', 'BlogPost' ]: // ignore break case 'Space': space.name = object.property.find { it.@name == 'name' }.text() space.key = object.property.find { it.@name == 'key' }.text() space.homePage = object.property.find { it.@name == 'homePage' }.id.text() break case 'BodyContent': // will be handled later break default: println object[\"@class\"] break } } if (pages[space.homePage]==null) { pages[space.homePage] = [:] } pages[space.homePage].parentId = 0 return [unknownTags, pages, attachments, space, users] } // confluence exports attachments in a non-human readable format // let's change this def void copyAttachments (attachments, pages, srcDir, destDir) { println \"copying attachments\" attachments.each { attachmentId, attachment -&gt; def attachmentFile = new File(srcDir, 'attachments/' + attachment.pageId + '/' + (attachment.originalId ?: attachment.id) + \"/\" + attachment.version) def folderStructure = getFolderStructure(pages, attachment.pageId) def deepFilename = folderStructure.join(\"/\")+\"/\"+attachment.version + \"_\" + (attachment.filename.replaceAll(\":\", \"_\")) if (folderStructure.size() &gt; 1) { new File(destDir, \"images/\" + folderStructure.join(\"/\")).mkdirs() } def destFile = new File(new File(destDir, 'images'), deepFilename) try { Files.copy(attachmentFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING) } catch (Exception e) { println e.message } } } // get the folder structure for the current page through the page structure information String[] getFolderStructure ( Map pages, String pageId) { def parentId = pages[pageId]?.parentId if (parentId &amp;&amp; parentId != \"null\" &amp;&amp; parentId != 0) { if (pages[parentId]) { return getFolderStructure(pages, parentId ) + pages[parentId].filename } else { println \"parent page not found: \" + parentId + \" for \" + pages[pageId].filename return [] } } else { return [] } } // extract xHTML bodies from export, convert it to HTML and then to adoc and write it to disk def extractBodies(GPathResult entities, pages, attachments, space, users, File destDir) { println \"extracting contentBodies\" println \"\" def unknownTags = [] entities.object.each { object -&gt; switch (object[\"@class\"]) { case 'Page': def pageId = object.id.toString() def contentStatus = object.property.find { it.@name == 'contentStatus' } pages[pageId]?.status = '' if ( contentStatus == \"current\" &amp;&amp; (pages[pageId].parentId != -1 || pages[pageId].parentId == space.homePage) ) { pages[pageId].status = 'current' metaData = pages[pageId] def body = \"\" object.collection.findAll { it.@name == 'bodyContents' }.each { it -&gt; def id = it.element.id.text() body = entities.object .find { it.@class == 'BodyContent' &amp;&amp; it.id == id } .property.find { it.@name == 'body' }.text() } def children = [] object.collection.findAll { it.@name == 'children' }.each { collection -&gt; collection.element.each { element -&gt; children &lt;&lt; element.id.text() } } def folderStructure = getFolderStructure(pages, pageId) def deepFilename = folderStructure.join(\"/\")+\"/\"+metaData.filename.toString() // ensure that target folder exists if (folderStructure.size() &gt;= 1) { new File(destDir, folderStructure.join(\"/\")).mkdirs() } def outFile = new File(destDir, deepFilename + \".html\") // now, lets fix some body parts def uTags (body, uTags) = fixBody( pageId, body, users, pages, space) unknownTags = (unknownTags + uTags).unique() outFile.write(body, 'utf-8') // convert to AsciiDoc def outFilename = outFile.canonicalPath[0..-6] + \".adoc\" def command = \"pandoc --wrap preserve -f html -t asciidoc -s ${outFile.canonicalPath} -o ${outFilename}\" def process = command.execute() process.waitForProcessOutput(System.out, System.err) if (process.exitValue()&gt;1) { println \"couldn't convert ${outfile.canonicalPath}\" } else { def outFileAdoc = new File(outFilename) def filename = (outFile.toString() - destDir.toString()) def weightedChildren = [] children.each { child -&gt; weightedChildren &lt;&lt; [weight : ((pages[child]?.position?:\"-1\") as Integer), include: \"include::\" + pages[pageId].filename + \"/\" + pages[child].filename + \".adoc[levelOffset=+1]\", menu : \"include::\" + pages[child].filename + \"/_menu.adoc[]\"] } def childIncludes = \"\" if (weightedChildren.size()&gt;0) { childIncludes = \"\"\" ifdef::includeChildren[] ${weightedChildren.sort { it.weight }.collect { it.include }.join(\"\\n\")} endif::includeChildren[] \"\"\" } println deepFilename def fileHeader = \"\"\" :jbake-menu: ${folderStructure.size()&gt;0?folderStructure[0]:'-'} :jbake-deep-menu: ${folderStructure.join(\"/\")} :jbake-status: published :jbake-type: page_custom_menu :jbake-order: ${metaData.position?:'0'} :jbake-root: ${\"../\" * (folderStructure.size() )} :filename: ${metaData.filename.toString()}.adoc :filepath: ${folderStructure.join(\"/\")} include::{jbake-root}_config.adoc[] ifndef::imagesdir[:imagesdir: {jbake-root}images] \"\"\" // apply some last dirty fixes def adoc = outFileAdoc.text // fix \\r\\n for passed through asciidoc .replaceAll(\"%%CRLF%% *\", \"\\n\") // fix descrete headers .replaceAll(\"(=+) \\\\[discrete\\\\]\", \"[discrete]\\n\\$1 \") // nonbreaking space asciidoc style .replaceAll(\" \", \"{nbsp}\") // empty headline .replaceAll(\"(?sm)^ [+] *\\$\", \"\") // filepath attribute .replaceAll(\"%7Bfilepath%7D\", \"{filepath}\") println(pages[pageId].title) def linkedAttachments = \"\\n\" if (adoc.contains('%%attachments%%')) { linkedAttachments += \".Attachments\\n\\n\" attachments.findAll{it.value.pageId == pageId}.each { attachmentId, attributes -&gt; linkedAttachments += \"* link:${ \"../\" * (folderStructure.size() )}images/${folderStructure.join(\"/\")}/\" + attributes.version+\"_\"+attributes.filename +\"[\"+attributes.filename+\" (v${attributes.version})]\\n\" } adoc = adoc.replace('%%attachments%%', linkedAttachments) linkedAttachments = \"\\n\" } attachments.findAll{it.value.pageId == pageId}.each { attachmentId, attributes -&gt; linkedAttachments += \"// attachment /images/${folderStructure.join(\"/\")}/\" + attributes.filename +\"[\"+attributes.filename+\"]\\n\" } outFileAdoc.write( fileHeader + \"== ${pages[pageId].title}\\n\\n\" + adoc + linkedAttachments + \"\\n\" + childIncludes, 'utf-8' ) outFile.delete() // menuFile.append(\"\"\" //${\"*\" * folderStructure.size()} xref:${metaData.filename.toString()}.adoc[${pages[pageId].title}] //\"\"\") } } break } } return unknownTags } def createMenu(pages, startPageId) { def pageList = pages.findAll { it.value.parentId == startPageId} def menu = \"\" pageList.sort{(it.value.position?:'-1') as Integer}.each { page -&gt; def folderStructure = getFolderStructure(pages, page.key) menu += \"*\"*(folderStructure.size()+1) + \" xref:{jbake-root}\"+folderStructure.join(\"/\")+'/'+page.value.filename+\".adoc[\"+page.value.title+\"]\\n\" def childPageList = pages.findAll { it.value.parentId == page.key} if (childPageList.size()&gt;0) { menu += createMenu(pages, page.key) } } return menu } // this is where the main code starts def (File srcDir, File destDir) = parseCliArgs(args) println srcDir.canonicalPath println destDir.canonicalPath lucidInfoFile = new File( destDir,\"lucidinfos.txt\") lucidInfoFile.write(\"\", 'utf-8') File inFile = new File(srcDir, \"entities.xml\") def entities = new XmlSlurper().parseText(inFile.getText('utf-8')) def (unknownTags, pages, attachments, space, users) = parseMetaData(entities) println \"Space: \" + space copyAttachments(attachments, pages, srcDir, destDir) unknownTags &lt;&lt; extractBodies(entities, pages, attachments, space, users, destDir) unknownTags = unknownTags.unique() new File(destDir, '_config.adoc').write(\"\"\" ++++ &lt;style&gt; div.ulist ul { margin-left: 1em !important; } &lt;/style&gt; ++++ include::_menu.adoc[] ++++ &lt;!-- endtoc --&gt; ++++ \"\"\", 'utf-8') println \"\" println \"pages converted: \" + pages.findAll{it.value.status=='current'}.size() println \"unknown tags found: \" + unknownTags.unique() unknownTagsStats.sort{a, b -&gt; b.value.size() &lt;=&gt; a.value.size()}.each { tag, tagpages -&gt; println tagpages.size().toString().padLeft(5)+\" : \"+tag tagpages.each { pageid -&gt; println \" \"*10+\"- \"+pages[pageid].title } } new File(destDir, '_menu.adoc').write( createMenu(pages, 0), 'utf-8') "
 },
 
 {
@@ -730,18 +730,18 @@ var documents = [
 
 {
     "id": 91,
-    "uri": "015_tasks/03_task_generateDeck.html",
+    "uri": "015_tasks/03_task_exportConfluence.html",
     "menu": "tasks",
-    "title": "generateDeck",
-    "text": " Table of Contents generateDeck About This Task Source .gravatar img { margin-left: 3px; border-radius: 4px; } generateDeck 1 minute to read About This Task This task makes use of the asciidoctor-reveal.js backend to render your documents into an HTML-based presentation. It creates a PowerPoint presentation, then enriches it by adding reveal.js slide definitions in AsciiDoc to the speaker notes. For best results, use this task with the exportPPT task. Configure RevealJs docToolchain comes with some opinionated, sane defaults for RevealJs. You can overwrite any of them and provide further configuration as per asciidoctor-reveal.js documentation. Source Show source code of scripts/AsciiDocBasics.gradle or go directly to GitHub · docToolchain/scripts/AsciiDocBasics.gradle . scripts/AsciiDocBasics.gradle task generateDeck ( type: AsciidoctorJRevealJSTask, group: 'docToolchain', description: 'use revealJs as asciidoc backend to create a presentation') { // corresponding Asciidoctor reveal.js config // :revealjs_theme: theme = 'black' revealjsOptions { // :revealjs_hideAddressBar: hideAddressBarOnMobile = 'true' // :revealjs_history: pushToHistory = 'true' // :revealjs_progress: progressBar = 'true' // :revealjs_slideNumber: slideNumber = 'true' // :revealjs_touch: touchMode = 'true' // :revealjs_transition: transition = 'linear' } attributes ( 'idprefix': 'slide-', 'idseparator': '-', 'docinfo1': '', 'revealjsdir': '../reveal.js' ) def sourceFilesREVEAL = findSourceFilesByType(['revealjs']) sources { sourceFilesREVEAL.each { include it.file logger.info it.file File useFile = new File(srcDir, it.file) if (!useFile.exists()) { throw new Exception (\"\"\" The file $useFile in REVEAL config does not exist! Please check the configuration 'inputFiles' in $mainConfigFile.\"\"\") } } } outputDir = file(targetDir+'/decks/') resources { from(sourceDir) { include 'images/**' } into(\"\") logger.info \"${docDir}/${config.outputPath}/images\" } doFirst { if (sourceFilesREVEAL.size()==0) { throw new Exception (\"\"\" &gt;&gt; No source files defined for type 'revealjs'. &gt;&gt; Please specify at least one inputFile in your docToolchainConfig.groovy \"\"\") } } } generateDeck.dependsOn asciidoctorGemsPrepare "
+    "title": "exportConfluence",
+    "text": " Table of Contents exportConfluence About This Task Source .gravatar img { margin-left: 3px; border-radius: 4px; } exportConfluence 3 minutes to read About This Task For a long time, docToolchain supports the conversion of AsciiDoc files to confluence spaces. This task now allows you to convert you confluence spaces back to AsciiDoc. A confluence space will be converted to a \"ready to use\" set of AsciiDoc files together with a navigation menu. Note the results of the conversion are quite good. However, don&#8217;t expect the two tasks publishToConfluence and exportConfluence to be able to give you a full round-trip without losing some information about the format of your texts. As an example, numbered headlines will not be automatically converted between both systems. The task exportConfluence parses the entities.xml file of a confluence-space export and creates a hierarchical html export. It then uses pandoc to convert the HTML files to AsciiDoc. Since this conversion isn&#8217;t perfect and pandoc doesn&#8217;t even know about confluence macros, the script also does some pre- and post-processing. prerequisites docToolchain &gt;= v2.2 you need to have pandoc installed. usage Export the confluence space as XML and unzip it in a distinct sample_data folder. To export the confluence space, navigate to the space and then click Space Settings Manage Space &gt; Export Space [x] Export Formats: XLM &#8658; Next [x] Full Export &#8658; Export Configure the right paths in your docToolchainConfig.groovy . export = [ srcDir: 'sample_data', destDir: 'src/docs' ] Then use the following steps to run the script and render the results as a microsite: ./dtcw exportConfluence ./dtcw generateSite You can also specify the needed parameters through the command line: ./dtcw exportConfluence -Pconfluence.export.srcDir=sample_data -Pconfluence.export.destDir=src/docs Supported Features all kinds of text formatting line breaks paragraphs explizit, external links image attachments admonitions .-Titles Anchors numbered Lists bulleted Lists literal blocks code blocks horizontal rules Quotes look good standard tables lucidchart diagrams anchors link-macro unsupported features tables with colspans or rowspans layout-sections inline comments comments expand blocks user-profile macro has only rudimentary support known issues Definitions lists are transformed to tables Quotes are not exactly as expected but look good tables with colspan will have colspan removed include sections are in give sort order Source Show source code of scripts/confluenceToAsciiDoc.groovy or go directly to GitHub · docToolchain/scripts/confluenceToAsciiDoc.groovy . scripts/confluenceToAsciiDoc.groovy import org.jsoup.Jsoup import org.jsoup.parser.Parser import org.jsoup.nodes.Document import groovy.xml.XmlSlurper import groovy.xml.slurpersupport.GPathResult import java.nio.file.Files import java.nio.file.StandardCopyOption // parse command line arguments and display usage info List parseCliArgs(String[] args) { // parse the exportet confluence entities from xml file if (args.size() &lt; 2) { println \"\"\" Usage: groovy exportConfluence.groovy srcDir=[name of source dir] destDir=[name of destination dir] both dirs can be specified as relative path. the script expects the srcDir to contain the unzipped data from a confluence space XML export \"\"\" System.exit(1) } parsedArgs = args.collectEntries { it.split(\"=\").each { it.trim() } } def srcDir = new File(parsedArgs.srcDir) def destDir = new File(parsedArgs.destDir) destDir.mkdirs() return [srcDir, destDir] } lucidChartsIframe = false unknownTagsStats = [:] //takes confluence xHTML storage format and fixes some issues to be better converted by pandoc def fixBody(pageId, String body, users, pages, space) { body = body // it seems to be a bug how CDATA sections are closed in the xHTML .replaceAll(\"]] &gt;&lt;\", \"]]&gt;&lt;\") // remove empty headings .replaceAll(\"&lt;h[1-9]&gt; &lt;/h[1-9]&gt;\",\"\") // remove unecessary colspan attrib .replaceAll('colspan=\"1\"',\"\") // fix colspan=2 for pandoc .replaceAll('colspan=\"2\"(.*?)&lt;/(t[dh])&gt;','$1&lt;/$2&gt;&lt;$2&gt;&lt;/$2&gt;') Document dom = Jsoup.parse(body, 'utf-8', Parser.xmlParser()) dom.outputSettings().prettyPrint(false);//makes html() preserve linebreaks and spacing dom.outputSettings().escapeMode(org.jsoup.nodes.Entities.EscapeMode.xhtml); //This will ensure xhtml validity regarding entities dom.outputSettings().charset(\"UTF-8\"); //does no harm :-) // search for image tags and convert them to HTML // get all ac: tags def acTags = [] dom.select(\"*\").each { element -&gt; if (element.tagName().startsWith(\"ac:\")) { acTags &lt;&lt; element.tagName().replace(\":\", \"|\") } } //fix links which still point to confluence dom.select(\"a\").each { element -&gt; def href = element.attr('href') def regexp = href =~ '/spaces/([^/]+)/pages/([0-9]+)/' if (regexp.size()==1) { // we have a link to confluence. // let's try to redirect it to out static page def targetSpace = regexp[0][1] if (space.key!=targetSpace) { println \"WARNING: can't rewrite links between different spaces (source: $space.key, target: $targetSpace)\" } else { def targetPage = regexp[0][2] def targetFilename = (pages[targetPage]?.filename) ?: '' def folderStructureTarget = getFolderStructure(pages, targetPage).join(\"/\") def folderStructureSource = getFolderStructure(pages, pageId) def targetLink = \"../\" * folderStructureSource.size() + folderStructureTarget + \"/\" + targetFilename + \".html\" element.attr('href', targetLink) } } } dom.select(\"span\").each { element -&gt; if (element.attr(\"class\").startsWith(\"css-\")) { element.unwrap() } if (element.attr(\"class\").startsWith(\"loader-wrapper\")) { element.unwrap() } if (element.attr(\"class\").contains(\"smart-link-title-wrapper\")) { element.unwrap() } } acTags = acTags.unique() def unknownTags = [] if (acTags.size() &gt; 0) { dom.select(acTags.join(\", \")).each { element -&gt; def name = element.tagName() switch (name) { case \"ac:image\": def alignment = element.attr(\"ac:align\") def width = element.attr(\"ac:width\") def filename = element.select([\"ri|attachment\"]).attr(\"ri:filename\") def version = element.select([\"ri|attachment\"]).attr(\"ri:version-at-save\") element.before(\"&lt;img src='{filepath}/${(version?version+\"_\":\"1_\")+(filename.replaceAll(\":\",\"_\"))}' align='${alignment?:''}' width='${width?:''}' /&gt;\") element.remove() break case \"ac:link\": if (element.children().size()&gt;0) { def anchor = element.attr(\"ac:anchor\") def targetPage = element.select(\"ri|page\").attr(\"ri:content-title\") def linkText = element.select(\"ac|plain-text-link-body\").text() if (linkText.trim()==\"\") { linkText = element.select(\"ac|link-body\").text() } targetPage = pages.find { _pageId, pageInfo -&gt; pageInfo.title == targetPage} if (targetPage) { def folderStructureTarget = getFolderStructure(pages, targetPage.key).join(\"/\") def folderStructureSource = getFolderStructure(pages, pageId) def targetLink = \"../\" * folderStructureSource.size() + folderStructureTarget + \"/\" + targetPage.value.filename + \".adoc\" if (anchor) { targetLink += \"#\" + anchor } element.before(\" xref:${targetLink}[${linkText}] \") element.remove() } else { //&lt;ac:link&gt;&lt;ri:attachment ri:filename=\"attachment.png\" ri:version-at-save=\"1\" /&gt;&lt;/ac:link&gt; } } break case \"ac:plain-text-link-body\": // ignore, part of link break case \"ac:inline-comment-marker\": // ignore - not supported break case [ \"ac:layout\", \"ac:layout-section\", \"ac:layout-cell\", \"ac:placeholder\" ]: // these tags are for multi column layouts and can't be easily converted // ignore break case \"ac:structured-macro\": def macroName = element.attr(\"ac:name\") switch (macroName) { case [ \"drawio\", \"excerpt-include\", \"panel\", ]: // ignore - not supported break case [\"expand\", \"expandable-comment\", ]: //println \"&gt;&gt;&gt; $macroName\" //println element break; case [\"view-file\"]: def filename = element.select([\"ri|attachment\"]).attr(\"ri:filename\") def version = element.select([\"ri|attachment\"]).attr(\"ri:version-at-save\") def height = element.select(\"ac|parameter[ac:name=height]\")?:'400' def filepath = \"images/\"+getFolderStructure(pages, pageId).join(\"/\") filepath = \"../\"*getFolderStructure(pages,pageId).size()+filepath if (filename.toLowerCase().endsWith('.pdf')) { element.before(\"\"\" &lt;div&gt; ++++%%CRLF%% &amp;lt;iframe name=\"${filename.replaceAll(\":\", \"_\")}\" allowfullscreen frameborder=\"0\" src='${filepath}/${(version ? version + \"_\" : \"1_\") + (filename.replaceAll(\":\", \"_\"))}' width='100%' height='${height}' &gt;&amp;lt;/iframe&gt;%%CRLF%% ++++%%CRLF%% &lt;/div&gt; \"\"\") } else if (filename[-4..-1].toLowerCase() in ['.jpg', '.png']) { element.before(\"&lt;img src='${filepath}/${(version ? version + \"_\" : \"1_\") + (filename.replaceAll(\":\", \"_\"))}' /&gt;\") } else { element.before(\"&lt;a href='${filepath}/${(version ? version + \"_\" : \"1_\") + (filename.replaceAll(\":\", \"_\"))}' &gt;$filename&lt;/a&gt;\") } element.remove() break; case 'attachments': // get all attachments for the current page and insert them as link // since we don't know about attachments in this method, we delegate it for later element.before(\"%%attachments%%\") element.remove() break case 'profile': def userkey = element.select(\"ri|user\").attr(\"ri:userkey\") if (users[userkey]) { element.before(\"\"\" User:: ${users[userkey].name}%%CRLF%% // ${users[userkey].atlassianAccountId}%%CRLF%% \"\"\") element.remove() } break case 'lucidchart': def documentId = element.select(\"ac|parameter[ac:name=documentId]\").text() def localId = element.attr(\"ac:local-id\") def macroId = element.attr(\"ac:macro-id\") def lucidInfos = \"\"\" // lucidChart // localId: ${element.attr(\"ac:local-id\")} // macroId: ${element.attr(\"ac:macro-id\")} \"\"\" element.select(\"ac|parameter\").each { parameter -&gt; def pname = parameter.attr(\"ac:name\") def pvalue = parameter.text() lucidInfos += \"// ${pname}: ${pvalue}\\n\" } // create AsciiDoc which will be passed through // only \\r\\n have to be encoded def chart = \"\" if (lucidChartsIframe) { chart = \"\"\" ++++%%CRLF%% &amp;lt;iframe allowfullscreen frameborder=\"0\" style=\"width:640px; height:480px\" src=\"https://lucid.app/documents/embedded/${documentId}\" &gt;&amp;lt;/iframe&gt;%%CRLF%% ++++%%CRLF%% \"\"\" } else { def folderStructure = getFolderStructure(pages, pageId) chart = \"\"\" %%CRLF%% image::${folderStructure.join(\"/\")}/${documentId}.png[]%%CRLF%% %%CRLF%% \"\"\" lucidInfoFile.append(\"\"\"\\ images/${folderStructure.join(\"/\")}/${documentId}.png \"\"\".toString()) } element.before(\"\"\" &lt;div class=\"lucidchart-wrapper\"&gt; ${lucidInfos.replaceAll(\"\\n\", \"%%CRLF%%\")} $chart https://lucid.app/lucidchart/${documentId}/edit[edit lucidchart] &lt;/div&gt; \"\"\") element.remove() break case 'toc': //ignore toc, will be generated by asciidoctor element.remove() break case 'children': //ignore, contains no content element.remove() break case [ 'tip', 'info', 'warning', 'note' ] : // admotions body = element.select(\"ac|rich-text-body\").html() def type = [ 'info':'NOTE', 'warning':'WARNING', 'note': 'CAUTION', 'tip':'TIP'][macroName] element.html(\"\"\" &lt;div class=\"admonition-wrapper\"&gt; [${type}]%%CRLF%% ====%%CRLF%% ${body.replaceAll(\"&lt;h([1-9])&gt;\",\"&lt;h\\$1&gt;[discrete]\")}%%CRLF%% ====%%CRLF%% &lt;/div&gt; \"\"\") element.unwrap() break case 'info': body = element.select(\"ac|rich-text-body\").html() def title = element.select(\"ac|parameter[ac:name=title]\").text() element.html(\"\"\" &lt;div class=\"info-wrapper\"&gt; .${title}%%CRLF%% ****%%CRLF%% ${body.replaceAll(\"&lt;h([1-9])&gt;\",\"&lt;h\\$1&gt;[discrete]\")}%%CRLF%% ****%%CRLF%% &lt;/div&gt; \"\"\") element.unwrap() break case 'anchor': def anchor = element.select(\"ac|parameter\").text() element.html(\"\\n&lt;span&gt;[[${anchor}]]&lt;span&gt;\\n\") element.unwrap() break case ['code', 'paste-code-macro']: def language = element.select(\"ac|parameter[ac:name=language]\").text() def code = element.select(\"ac|plain-text-body\").text() element.html(\"\"\" &lt;div class=\"code-wrapper\"&gt; [source, $language]%%CRLF%% ----%%CRLF%% ${code.replaceAll(\"\\n\",\"%%CRLF%%\")}%%CRLF%% ----%%CRLF%% &lt;/div&gt; \"\"\") element.unwrap() break default: unknownTags = (unknownTags &lt;&lt; \"ac:structured-macro $macroName\").unique() if (!unknownTagsStats[\"ac:structured-macro $macroName\"]) { unknownTagsStats[\"ac:structured-macro $macroName\"]=[] } unknownTagsStats[\"ac:structured-macro $macroName\"] &lt;&lt; pageId } break case [ \"ac:parameter\", \"ac:rich-text-body\", \"ac:plain-text-body\" ]: // ignore, part of structured-macro break default: unknownTags = (unknownTags &lt;&lt; name).unique() if (!unknownTagsStats[name]) { unknownTagsStats[name]=[] } unknownTagsStats[name] &lt;&lt; pageId } } } def html = dom.html() // some last dirty hacks // add a space in front of each link .replaceAll(\"&lt;a \", \" &lt;a \") // some links contain /#/ which is a problem for asciidoc .replaceAll(\"[/][#][/]\", '/\\\\\\\\#/') // remove unneeded line breaks in headlines .replaceAll(\"&lt;p&gt;&lt;/p&gt;&lt;strong&gt;&lt;br /&gt;\", \"&lt;strong&gt;\") // remove empty bold tags .replaceAll(\"&lt;strong&gt;&lt;br /&gt;&lt;/strong&gt;\", \"&lt;br /&gt;\") // turn html titles to .-titles .replaceAll(\"&lt;div&gt;&lt;div class=\\\"title\\\"&gt;([^&lt;]+)&lt;/div&gt;&lt;/div&gt;\", \".\\$1\") // remove bold formatting and empty breaks from .-titles .replaceAll(\"&lt;strong&gt;&lt;br /&gt;[.]([^&lt;]+)&lt;/strong&gt;\", \".\\$1\") return [html, unknownTags] } // need to parse the entities.xml into meta data about page-structure, attachments and space def parseMetaData( entities) { // first parse all pages, then all contentBodies def pages = [:] def attachments = [:] def space = [:] def users = [:] def unknownTags = [] println \"parsing page meta-data\" println \"\" entities.object.each { object -&gt; switch (object[\"@class\"]) { case 'Page': def pageId = object.id.toString() def contentStatus = object.property.find { it.@name == 'contentStatus' } if (contentStatus == \"current\") { def title = object.property.find { it.@name == 'title' }.text() def parentId = object.property.find { it.@name == 'parent' }.text() def filename = title .replaceAll(\"[Ää]\",\"ae\") .replaceAll(\"[Üü]\",\"ue\") .replaceAll(\"[Öö]\",\"oe\") .replaceAll(\"[^a-zA-Z0-9]\", \"_\") .replaceAll(\"_+\", \"_\") def position = object.property.find { it.@name == 'position' }.text() println \"Page: \" + pageId + \" - \" + title pages[pageId] = [title: title, parentId: parentId ?: -1, filename: filename, position: position] } break case 'Attachment': def id = object.id.toString() def contentStatus = object.property.find { it.@name == 'contentStatus' } if (contentStatus == \"current\") { def title = object.property.find { it.@name == 'title' }.text() def pageId = object.property.find { it.@name == 'containerContent' }.id.text() def version = object.property.find { it.@name == 'version' }.text() def originalId = object.property.find { it.@name == 'originalVersion' }.id.text() attachments[id] = [filename: title, id: id, version: version, pageId: pageId, originalId: originalId] println \"Attachment: \" + id + \" - \" + contentStatus + \" - \" + title } break case 'ConfluenceUserImpl': def id = object.id.toString() def name = object.property.find { it.@name == 'name' }.text() def atlassianAccountId = object.property.find { it.@name == 'atlassianAccountId' }.text() users[id] = [name: name, atlassianAccountId: atlassianAccountId] break case [ 'ContentProperty', 'SpacePermission', 'CustomContentEntityObject', 'Notification', 'Comment', 'OutgoingLink', 'Label', 'Labelling', 'User2ContentRelationEntity', 'Content2ContentRelationEntity', 'SpaceDescription', 'LikeEntity', 'BucketPropertySetItem', 'ContentPermission', 'BlogPost' ]: // ignore break case 'Space': space.name = object.property.find { it.@name == 'name' }.text() space.key = object.property.find { it.@name == 'key' }.text() space.homePage = object.property.find { it.@name == 'homePage' }.id.text() break case 'BodyContent': // will be handled later break default: println object[\"@class\"] break } } if (pages[space.homePage]==null) { pages[space.homePage] = [:] } pages[space.homePage].parentId = 0 return [unknownTags, pages, attachments, space, users] } // confluence exports attachments in a non-human readable format // let's change this def void copyAttachments (attachments, pages, srcDir, destDir) { println \"copying attachments\" attachments.each { attachmentId, attachment -&gt; def attachmentFile = new File(srcDir, 'attachments/' + attachment.pageId + '/' + (attachment.originalId ?: attachment.id) + \"/\" + attachment.version) def folderStructure = getFolderStructure(pages, attachment.pageId) def deepFilename = folderStructure.join(\"/\")+\"/\"+attachment.version + \"_\" + (attachment.filename.replaceAll(\":\", \"_\")) if (folderStructure.size() &gt; 1) { new File(destDir, \"images/\" + folderStructure.join(\"/\")).mkdirs() } def destFile = new File(new File(destDir, 'images'), deepFilename) try { Files.copy(attachmentFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING) } catch (Exception e) { println e.message } } } // get the folder structure for the current page through the page structure information String[] getFolderStructure ( Map pages, String pageId) { def parentId = pages[pageId]?.parentId if (parentId &amp;&amp; parentId != \"null\" &amp;&amp; parentId != 0) { if (pages[parentId]) { return getFolderStructure(pages, parentId ) + pages[parentId].filename } else { println \"parent page not found: \" + parentId + \" for \" + pages[pageId].filename return [] } } else { return [] } } // extract xHTML bodies from export, convert it to HTML and then to adoc and write it to disk def extractBodies(GPathResult entities, pages, attachments, space, users, File destDir) { println \"extracting contentBodies\" println \"\" def unknownTags = [] entities.object.each { object -&gt; switch (object[\"@class\"]) { case 'Page': def pageId = object.id.toString() def contentStatus = object.property.find { it.@name == 'contentStatus' } pages[pageId]?.status = '' if ( contentStatus == \"current\" &amp;&amp; (pages[pageId].parentId != -1 || pages[pageId].parentId == space.homePage) ) { pages[pageId].status = 'current' metaData = pages[pageId] def body = \"\" object.collection.findAll { it.@name == 'bodyContents' }.each { it -&gt; def id = it.element.id.text() body = entities.object .find { it.@class == 'BodyContent' &amp;&amp; it.id == id } .property.find { it.@name == 'body' }.text() } def children = [] object.collection.findAll { it.@name == 'children' }.each { collection -&gt; collection.element.each { element -&gt; children &lt;&lt; element.id.text() } } def folderStructure = getFolderStructure(pages, pageId) def deepFilename = folderStructure.join(\"/\")+\"/\"+metaData.filename.toString() // ensure that target folder exists if (folderStructure.size() &gt;= 1) { new File(destDir, folderStructure.join(\"/\")).mkdirs() } def outFile = new File(destDir, deepFilename + \".html\") // now, lets fix some body parts def uTags (body, uTags) = fixBody( pageId, body, users, pages, space) unknownTags = (unknownTags + uTags).unique() outFile.write(body, 'utf-8') // convert to AsciiDoc def outFilename = outFile.canonicalPath[0..-6] + \".adoc\" def command = \"pandoc --wrap preserve -f html -t asciidoc -s ${outFile.canonicalPath} -o ${outFilename}\" def process = command.execute() process.waitForProcessOutput(System.out, System.err) if (process.exitValue()&gt;1) { println \"couldn't convert ${outfile.canonicalPath}\" } else { def outFileAdoc = new File(outFilename) def filename = (outFile.toString() - destDir.toString()) def weightedChildren = [] children.each { child -&gt; weightedChildren &lt;&lt; [weight : ((pages[child]?.position?:\"-1\") as Integer), include: \"include::\" + pages[pageId].filename + \"/\" + pages[child].filename + \".adoc[levelOffset=+1]\", menu : \"include::\" + pages[child].filename + \"/_menu.adoc[]\"] } def childIncludes = \"\" if (weightedChildren.size()&gt;0) { childIncludes = \"\"\" ifdef::includeChildren[] ${weightedChildren.sort { it.weight }.collect { it.include }.join(\"\\n\")} endif::includeChildren[] \"\"\" } println deepFilename def fileHeader = \"\"\" :jbake-menu: ${folderStructure.size()&gt;0?folderStructure[0]:'-'} :jbake-deep-menu: ${folderStructure.join(\"/\")} :jbake-status: published :jbake-type: page_custom_menu :jbake-order: ${metaData.position?:'0'} :jbake-root: ${\"../\" * (folderStructure.size() )} :filename: ${metaData.filename.toString()}.adoc :filepath: ${folderStructure.join(\"/\")} include::{jbake-root}_config.adoc[] ifndef::imagesdir[:imagesdir: {jbake-root}images] \"\"\" // apply some last dirty fixes def adoc = outFileAdoc.text // fix \\r\\n for passed through asciidoc .replaceAll(\"%%CRLF%% *\", \"\\n\") // fix descrete headers .replaceAll(\"(=+) \\\\[discrete\\\\]\", \"[discrete]\\n\\$1 \") // nonbreaking space asciidoc style .replaceAll(\" \", \"{nbsp}\") // empty headline .replaceAll(\"(?sm)^ [+] *\\$\", \"\") // filepath attribute .replaceAll(\"%7Bfilepath%7D\", \"{filepath}\") println(pages[pageId].title) def linkedAttachments = \"\\n\" if (adoc.contains('%%attachments%%')) { linkedAttachments += \".Attachments\\n\\n\" attachments.findAll{it.value.pageId == pageId}.each { attachmentId, attributes -&gt; linkedAttachments += \"* link:${ \"../\" * (folderStructure.size() )}images/${folderStructure.join(\"/\")}/\" + attributes.version+\"_\"+attributes.filename +\"[\"+attributes.filename+\" (v${attributes.version})]\\n\" } adoc = adoc.replace('%%attachments%%', linkedAttachments) linkedAttachments = \"\\n\" } attachments.findAll{it.value.pageId == pageId}.each { attachmentId, attributes -&gt; linkedAttachments += \"// attachment /images/${folderStructure.join(\"/\")}/\" + attributes.filename +\"[\"+attributes.filename+\"]\\n\" } outFileAdoc.write( fileHeader + \"== ${pages[pageId].title}\\n\\n\" + adoc + linkedAttachments + \"\\n\" + childIncludes, 'utf-8' ) outFile.delete() // menuFile.append(\"\"\" //${\"*\" * folderStructure.size()} xref:${metaData.filename.toString()}.adoc[${pages[pageId].title}] //\"\"\") } } break } } return unknownTags } def createMenu(pages, startPageId) { def pageList = pages.findAll { it.value.parentId == startPageId} def menu = \"\" pageList.sort{(it.value.position?:'-1') as Integer}.each { page -&gt; def folderStructure = getFolderStructure(pages, page.key) menu += \"*\"*(folderStructure.size()+1) + \" xref:{jbake-root}\"+folderStructure.join(\"/\")+'/'+page.value.filename+\".adoc[\"+page.value.title+\"]\\n\" def childPageList = pages.findAll { it.value.parentId == page.key} if (childPageList.size()&gt;0) { menu += createMenu(pages, page.key) } } return menu } // this is where the main code starts def (File srcDir, File destDir) = parseCliArgs(args) println srcDir.canonicalPath println destDir.canonicalPath lucidInfoFile = new File( destDir,\"lucidinfos.txt\") lucidInfoFile.write(\"\", 'utf-8') File inFile = new File(srcDir, \"entities.xml\") def entities = new XmlSlurper().parseText(inFile.getText('utf-8')) def (unknownTags, pages, attachments, space, users) = parseMetaData(entities) println \"Space: \" + space copyAttachments(attachments, pages, srcDir, destDir) unknownTags &lt;&lt; extractBodies(entities, pages, attachments, space, users, destDir) unknownTags = unknownTags.unique() new File(destDir, '_config.adoc').write(\"\"\" ++++ &lt;style&gt; div.ulist ul { margin-left: 1em !important; } &lt;/style&gt; ++++ include::_menu.adoc[] ++++ &lt;!-- endtoc --&gt; ++++ \"\"\", 'utf-8') println \"\" println \"pages converted: \" + pages.findAll{it.value.status=='current'}.size() println \"unknown tags found: \" + unknownTags.unique() unknownTagsStats.sort{a, b -&gt; b.value.size() &lt;=&gt; a.value.size()}.each { tag, tagpages -&gt; println tagpages.size().toString().padLeft(5)+\" : \"+tag tagpages.each { pageid -&gt; println \" \"*10+\"- \"+pages[pageid].title } } new File(destDir, '_menu.adoc').write( createMenu(pages, 0), 'utf-8') "
 },
 
 {
     "id": 92,
-    "uri": "015_tasks/03_task_exportMarkdown.html",
+    "uri": "015_tasks/03_task_generateDeck.html",
     "menu": "tasks",
-    "title": "exportMarkdown",
-    "text": " Table of Contents exportMarkdown About This Task Source .gravatar img { margin-left: 3px; border-radius: 4px; } exportMarkdown 1 minute to read About This Task The exportMarkdown task can be used to include markdown files into the documentation. It scans the /src/docs directory for markdown ( *.md ) files and converts them into Asciidoc files. The converted files can then be referenced from within the /build -folder. Source Show source code of scripts/exportMarkdown.gradle or go directly to GitHub · docToolchain/scripts/exportMarkdown.gradle . scripts/exportMarkdown.gradle task exportMarkdown( description: 'exports all markdown files to AsciiDoc', group: 'docToolchain', type: Copy ) { from srcDir include(\"**/*.md\") //include only markdown files includeEmptyDirs = false rename(/(.+).md/, '$1.adoc') //rename all files from *.md to *.adoc filter(Markdown2AdocFilter) // convert the content of the files into targetDir } class Markdown2AdocFilter extends FilterReader { Markdown2AdocFilter(Reader input) { super(new StringReader(nl.jworks.markdown_to_asciidoc.Converter.convertMarkdownToAsciiDoc(input.text))) } } "
+    "title": "generateDeck",
+    "text": " Table of Contents generateDeck About This Task Source .gravatar img { margin-left: 3px; border-radius: 4px; } generateDeck 1 minute to read About This Task This task makes use of the asciidoctor-reveal.js backend to render your documents into an HTML-based presentation. It creates a PowerPoint presentation, then enriches it by adding reveal.js slide definitions in AsciiDoc to the speaker notes. For best results, use this task with the exportPPT task. Configure RevealJs docToolchain comes with some opinionated, sane defaults for RevealJs. You can overwrite any of them and provide further configuration as per asciidoctor-reveal.js documentation. Source Show source code of scripts/AsciiDocBasics.gradle or go directly to GitHub · docToolchain/scripts/AsciiDocBasics.gradle . scripts/AsciiDocBasics.gradle task generateDeck ( type: AsciidoctorJRevealJSTask, group: 'docToolchain', description: 'use revealJs as asciidoc backend to create a presentation') { // corresponding Asciidoctor reveal.js config // :revealjs_theme: theme = 'black' revealjsOptions { // :revealjs_hideAddressBar: hideAddressBarOnMobile = 'true' // :revealjs_history: pushToHistory = 'true' // :revealjs_progress: progressBar = 'true' // :revealjs_slideNumber: slideNumber = 'true' // :revealjs_touch: touchMode = 'true' // :revealjs_transition: transition = 'linear' } attributes ( 'idprefix': 'slide-', 'idseparator': '-', 'docinfo1': '', 'revealjsdir': '../reveal.js' ) def sourceFilesREVEAL = findSourceFilesByType(['revealjs']) sources { sourceFilesREVEAL.each { include it.file logger.info it.file File useFile = new File(srcDir, it.file) if (!useFile.exists()) { throw new Exception (\"\"\" The file $useFile in REVEAL config does not exist! Please check the configuration 'inputFiles' in $mainConfigFile.\"\"\") } } } outputDir = file(targetDir+'/decks/') resources { from(sourceDir) { include 'images/**' } into(\"\") logger.info \"${docDir}/${config.outputPath}/images\" } doFirst { if (sourceFilesREVEAL.size()==0) { throw new Exception (\"\"\" &gt;&gt; No source files defined for type 'revealjs'. &gt;&gt; Please specify at least one inputFile in your docToolchainConfig.groovy \"\"\") } } } generateDeck.dependsOn asciidoctorGemsPrepare "
 },
 
 {
@@ -754,6 +754,14 @@ var documents = [
 
 {
     "id": 94,
+    "uri": "015_tasks/03_task_exportMarkdown.html",
+    "menu": "tasks",
+    "title": "exportMarkdown",
+    "text": " Table of Contents exportMarkdown About This Task Source .gravatar img { margin-left: 3px; border-radius: 4px; } exportMarkdown 1 minute to read About This Task The exportMarkdown task can be used to include markdown files into the documentation. It scans the /src/docs directory for markdown ( *.md ) files and converts them into Asciidoc files. The converted files can then be referenced from within the /build -folder. Source Show source code of scripts/exportMarkdown.gradle or go directly to GitHub · docToolchain/scripts/exportMarkdown.gradle . scripts/exportMarkdown.gradle task exportMarkdown( description: 'exports all markdown files to AsciiDoc', group: 'docToolchain', type: Copy ) { from srcDir include(\"**/*.md\") //include only markdown files includeEmptyDirs = false rename(/(.+).md/, '$1.adoc') //rename all files from *.md to *.adoc filter(Markdown2AdocFilter) // convert the content of the files into targetDir } class Markdown2AdocFilter extends FilterReader { Markdown2AdocFilter(Reader input) { super(new StringReader(nl.jworks.markdown_to_asciidoc.Converter.convertMarkdownToAsciiDoc(input.text))) } } "
+},
+
+{
+    "id": 95,
     "uri": "015_tasks/03_task_collectIncludes.html",
     "menu": "tasks",
     "title": "collectIncludes",
@@ -761,7 +769,7 @@ var documents = [
 },
 
 {
-    "id": 95,
+    "id": 96,
     "uri": "015_tasks/03_task_publishToConfluence.html",
     "menu": "tasks",
     "title": "publishToConfluence",
@@ -769,7 +777,7 @@ var documents = [
 },
 
 {
-    "id": 96,
+    "id": 97,
     "uri": "015_tasks/150_task_createTask.html",
     "menu": "tasks",
     "title": "createTask",
@@ -777,7 +785,7 @@ var documents = [
 },
 
 {
-    "id": 97,
+    "id": 98,
     "uri": "015_tasks/03_task_convertToDocx.html",
     "menu": "tasks",
     "title": "convertToDocx",
@@ -785,7 +793,7 @@ var documents = [
 },
 
 {
-    "id": 98,
+    "id": 99,
     "uri": "015_tasks/03_task_exportJiraIssues.html",
     "menu": "tasks",
     "title": "exportJiraIssues",
@@ -793,7 +801,7 @@ var documents = [
 },
 
 {
-    "id": 99,
+    "id": 100,
     "uri": "015_tasks/03_task_exportOpenApi.html",
     "menu": "tasks",
     "title": "exportOpenAPI",
@@ -801,7 +809,7 @@ var documents = [
 },
 
 {
-    "id": 100,
+    "id": 101,
     "uri": "015_tasks/03_task_createReferenceDoc.html",
     "menu": "tasks",
     "title": "createReferenceDoc",
@@ -809,7 +817,7 @@ var documents = [
 },
 
 {
-    "id": 101,
+    "id": 102,
     "uri": "015_tasks/03_task_exportDrawIo.html",
     "menu": "tasks",
     "title": "exportDrawIo",
@@ -817,7 +825,7 @@ var documents = [
 },
 
 {
-    "id": 102,
+    "id": 103,
     "uri": "015_tasks/03_task_convertToEpub.html",
     "menu": "tasks",
     "title": "convertToEpub",
@@ -825,7 +833,7 @@ var documents = [
 },
 
 {
-    "id": 103,
+    "id": 104,
     "uri": "015_tasks/03_task_exportPPT.html",
     "menu": "tasks",
     "title": "exportPPT",
@@ -833,7 +841,7 @@ var documents = [
 },
 
 {
-    "id": 104,
+    "id": 105,
     "uri": "015_tasks/03_task_exportChangeLog.html",
     "menu": "tasks",
     "title": "exportChangeLog",
@@ -841,7 +849,7 @@ var documents = [
 },
 
 {
-    "id": 105,
+    "id": 106,
     "uri": "015_tasks/03_task_exportVisio.html",
     "menu": "tasks",
     "title": "exportVisio",
@@ -849,7 +857,7 @@ var documents = [
 },
 
 {
-    "id": 106,
+    "id": 107,
     "uri": "015_tasks/03_task_generateContent.html",
     "menu": "tasks",
     "title": "generateContent",
@@ -857,7 +865,7 @@ var documents = [
 },
 
 {
-    "id": 107,
+    "id": 108,
     "uri": "010_manual/single-page.html",
     "menu": "-",
     "title": "docToolchain Manual",
@@ -865,7 +873,7 @@ var documents = [
 },
 
 {
-    "id": 108,
+    "id": 109,
     "uri": "search.html",
     "menu": "-",
     "title": "search",
@@ -873,7 +881,7 @@ var documents = [
 },
 
 {
-    "id": 109,
+    "id": 110,
     "uri": "lunrjsindex.html",
     "menu": "-",
     "title": "null",
