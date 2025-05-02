@@ -70,7 +70,7 @@ teardown_file() {
 
     # Test setup
     # TODO: where do we get this version?
-    sdk install java 11.0.18-tem
+    sdk install java 17.0.14-tem
     java --version
 
     # Execute

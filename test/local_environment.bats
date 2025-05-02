@@ -20,7 +20,7 @@ setup() {
     mock_doctoolchain=$(mock_create "${DTC_HOME}/bin/doctoolchain")
 
     # Installed local java
-    _mock=$(mock_create_java "${DTC_ROOT}/jdk/bin/java" "11.0.18")
+    _mock=$(mock_create_java "${DTC_ROOT}/jdk/bin/java" "17.0.14")
 }
 
 teardown() {
@@ -37,7 +37,7 @@ teardown() {
     assert_line "Available docToolchain environments: local"
     assert_line "Environments with docToolchain [${DTC_VERSION}]: local"
     assert_line "Using environment: local"
-    assert_line "Using Java 11.0.18 [${HOME}/.doctoolchain/jdk/bin/java]"
+    assert_line "Using Java 17.0.14 [${HOME}/.doctoolchain/jdk/bin/java]"
 
     assert_equal "$(mock_get_call_num "${mock_doctoolchain}")" 1
     assert_equal "$(mock_get_call_args "${mock_doctoolchain}")" ". tasks --group doctoolchain --warning-mode=none --no-daemon -Dfile.encoding=UTF-8 -PmainConfigFile=docToolchainConfig.groovy -Dorg.gradle.java.home=${DTC_ROOT}/jdk -Dgradle.user.home=${DTC_ROOT}/.gradle"

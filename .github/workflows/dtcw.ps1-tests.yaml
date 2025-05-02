@@ -43,7 +43,16 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y powershell
           fi
-       
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: ${{ matrix.jdk }}
+          java-version: ${{ matrix.java }}
+
+      - name: Verify Java version
+        run: java -version
+
       - name: Run tests
         run: |
           ./gradlew test --info --tests=DtcwOnPowershellSpec

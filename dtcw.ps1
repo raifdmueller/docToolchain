@@ -458,19 +458,11 @@ function assert_java_version_supported() {
 
     Write-Output "Java Version $javaversion"
 
-    if ([int]$javaversion -lt 11 ) {
+    if ([int]$javaversion -ne 17 ) {
         Write-Warning @"
 unsupported Java version ${javaversion} [$JAVA_CMD]
 "@
         java_help_and_die
-    }
-    else {
-        if ([int]$javaversion -gt 17 ) {
-            Write-Warning @"
-unsupported Java version ${javaversion} [$JAVA_CMD]
-"@
-            java_help_and_die
-        }
     }
     Write-Output "Using Java ${javaversion} [${JAVA_CMD}]"
     return
@@ -478,8 +470,8 @@ unsupported Java version ${javaversion} [$JAVA_CMD]
 
 function java_help_and_die() {
     Write-Host @"
-docToolchain supports Java versions 11, 14 or 17 (preferred). In case one of those
-Java versions is installed make sure 'java' is found with your PATH environment
+docToolchain supports Java version 17 only. In case that
+Java version is installed make sure 'java' is found with your PATH environment
 variable. As alternative you may provide the location of your Java installation
 with JAVA_HOME.
 
@@ -566,7 +558,7 @@ following docToolchain environments:
     > ./dtcw.ps1 local install doctoolchain
 
 Note that running docToolchain in 'local' environment needs a
-Java runtime (major version 11, 14 or 17) installed on your host.
+Java runtime major version 17 installed on your host.
 
 2. 'docker': pull the docToolchain image and execute docToolchain in a container environment.
 

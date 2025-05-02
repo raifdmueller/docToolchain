@@ -21,7 +21,7 @@ setup() {
 
     # Mock installation of doctoolchain and java with sdk
     mock_doctoolchain=$(mock_create "${SDKMAN_DIR}/candidates/doctoolchain/${DTC_VERSION}/bin/doctoolchain")
-    mock_java=$(mock_create_java "${SDKMAN_DIR}/candidates/java/current/bin/java" "17.0.7")
+    mock_java=$(mock_create_java "${SDKMAN_DIR}/candidates/java/current/bin/java" "17.0.14")
     path=$(path_override "${minimal_system}" "$(path_rm /bin "$(path_rm /usr/bin)")")
 }
 
@@ -78,7 +78,7 @@ EOF
     assert_line "2. 'sdk': to install docToolchain with SDKMAN! (https://sdkman.io)"
     assert_line "    $ sdk install doctoolchain ${DTC_VERSION}"
     assert_line "Note that running docToolchain in 'local' or 'sdk' environment needs a"
-    assert_line "Java runtime (major version 11, 14, or 17) installed on your host."
+    assert_line "Java runtime major version 17 installed on your host."
     assert_line "3. 'docker': pull the docToolchain image and execute docToolchain in a container environment."
     assert_line "    $ ./dtcw docker tasks --group doctoolchain"
 }
@@ -97,8 +97,8 @@ EOF
 
     assert_line "Error: unable to locate a Java Runtime"
 
-    assert_line "docToolchain supports Java versions 11, 14, or 17 (preferred). In case one of those"
-    assert_line "Java versions is installed make sure 'java' is found with your PATH environment"
+    assert_line "docToolchain supports Java version 17 only. In case that"
+    assert_line "Java version is installed make sure 'java' is found with your PATH environment"
     assert_line "variable. As alternative you may provide the location of your Java installation"
     assert_line "with JAVA_HOME."
 
@@ -116,7 +116,7 @@ EOF
     refute_output --partial "Then open a new shell and install Java 17 with"
 
     # TODO: This will break when we change Java version
-    assert_line "    \$ sdk install java 17.0.7-tem"
+    assert_line "    \$ sdk install java 17.0.14-tem"
 
     assert_line "If you prefer not to install Java on your host, you can run docToolchain in a"
     assert_line "docker container. For this case dtcw provides the 'docker' execution environment."
