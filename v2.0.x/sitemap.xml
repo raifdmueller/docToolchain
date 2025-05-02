@@ -147,12 +147,12 @@
     </url>
 
     <url>
-    	<loc>https://localhost/025_development/050_who-uses-dtc.html</loc>
+    	<loc>https://localhost/025_development/005_contributing_to_docs.html</loc>
     	<lastmod>2025-05-02</lastmod>
     </url>
 
     <url>
-    	<loc>https://localhost/025_development/005_contributing_to_docs.html</loc>
+    	<loc>https://localhost/025_development/050_who-uses-dtc.html</loc>
     	<lastmod>2025-05-02</lastmod>
     </url>
 
@@ -197,12 +197,12 @@
     </url>
 
     <url>
-    	<loc>https://localhost/050_ADRs/ADR-2-separate-core-logic-from-gradle.html</loc>
+    	<loc>https://localhost/050_ADRs/ADR-1-Scripting-Languages.html</loc>
     	<lastmod>2025-05-02</lastmod>
     </url>
 
     <url>
-    	<loc>https://localhost/050_ADRs/ADR-1-Scripting-Languages.html</loc>
+    	<loc>https://localhost/050_ADRs/ADR-2-separate-core-logic-from-gradle.html</loc>
     	<lastmod>2025-05-02</lastmod>
     </url>
 
@@ -232,12 +232,12 @@
     </url>
 
     <url>
-    	<loc>https://localhost/015_tasks/03_task_exportOpenApi.html</loc>
+    	<loc>https://localhost/015_tasks/03_task_autobuildSite.html</loc>
     	<lastmod>2025-05-02</lastmod>
     </url>
 
     <url>
-    	<loc>https://localhost/015_tasks/03_task_autobuildSite.html</loc>
+    	<loc>https://localhost/015_tasks/03_task_exportOpenApi.html</loc>
     	<lastmod>2025-05-02</lastmod>
     </url>
 
@@ -297,17 +297,17 @@
     </url>
 
     <url>
-    	<loc>https://localhost/015_tasks/03_task_createReferenceDoc.html</loc>
-    	<lastmod>2025-05-02</lastmod>
-    </url>
-
-    <url>
     	<loc>https://localhost/015_tasks/03_task_copy_themes.html</loc>
     	<lastmod>2025-05-02</lastmod>
     </url>
 
     <url>
     	<loc>https://localhost/015_tasks/03_task_publishToConfluence.html</loc>
+    	<lastmod>2025-05-02</lastmod>
+    </url>
+
+    <url>
+    	<loc>https://localhost/015_tasks/03_task_createReferenceDoc.html</loc>
     	<lastmod>2025-05-02</lastmod>
     </url>
 
@@ -322,12 +322,12 @@
     </url>
 
     <url>
-    	<loc>https://localhost/015_tasks/03_task_wipeConfluenceSpace.html</loc>
+    	<loc>https://localhost/015_tasks/03_task_previewSite.html</loc>
     	<lastmod>2025-05-02</lastmod>
     </url>
 
     <url>
-    	<loc>https://localhost/015_tasks/03_task_previewSite.html</loc>
+    	<loc>https://localhost/015_tasks/03_task_wipeConfluenceSpace.html</loc>
     	<lastmod>2025-05-02</lastmod>
     </url>
 
@@ -402,12 +402,12 @@
     </url>
 
     <url>
-    	<loc>https://localhost/ea/Activity_notes.html</loc>
+    	<loc>https://localhost/ea/Activity_notes_issue1.html</loc>
     	<lastmod>2025-05-02</lastmod>
     </url>
 
     <url>
-    	<loc>https://localhost/ea/Activity_notes_issue1.html</loc>
+    	<loc>https://localhost/ea/Activity_notes.html</loc>
     	<lastmod>2025-05-02</lastmod>
     </url>
 
@@ -432,17 +432,17 @@
     </url>
 
     <url>
-    	<loc>https://localhost/ea/Use_Cases_notes_UseCases.html</loc>
-    	<lastmod>2025-05-02</lastmod>
-    </url>
-
-    <url>
     	<loc>https://localhost/ea/Architect_notes.html</loc>
     	<lastmod>2025-05-02</lastmod>
     </url>
 
     <url>
     	<loc>https://localhost/ea/Use_Cases_links_issue2.html</loc>
+    	<lastmod>2025-05-02</lastmod>
+    </url>
+
+    <url>
+    	<loc>https://localhost/ea/Use_Cases_notes_UseCases.html</loc>
     	<lastmod>2025-05-02</lastmod>
     </url>
 
