@@ -103,7 +103,7 @@ function main($_args) {
     }
     else {
         $docker_image_name = "doctoolchain/doctoolchain"
-        if ( $_args[0] -eq "install" ) {
+        if ( $_args[0] -eq "image" ) {
             # shift 1
             $null, $_args = $_args
             $docker_image_name = $_args[0]
