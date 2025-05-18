@@ -17,6 +17,8 @@ docToolchain was created by Ralf D. Müller and is actively maintained by a comm
 - **Confluence Publishing**: Can publish documentation directly to Confluence
 - **Version Control**: Documentation can be managed with Git or other VCS
 - **Cross-platform**: Runs on Windows, macOS, and Linux
+- **Multi-language**: While AsciiDoc is the primary format, Markdown and ReStructuredText are also supported
+- **Language Agnostic**: Works with any programming language, not just Java
 
 ## Current Installation Methods (IMPORTANT)
 
@@ -103,6 +105,15 @@ imageDirs = ["${inputPath}/images"]
 
 # Generate a static website
 ./dtcw generateSite
+
+# Download the arc42 template
+./dtcw downloadTemplate
+
+# Convert to DOCX via pandoc
+./dtcw convertToDocx
+
+# Start the autobuild process (watches for changes)
+./dtcw autorebuild
 ```
 
 ## Task Categories
@@ -110,16 +121,80 @@ imageDirs = ["${inputPath}/images"]
 docToolchain organizes tasks into several categories:
 
 1. **Generate Tasks**: Render AsciiDoc to specific formats
-   - `generateHTML`, `generatePDF`, `generateDocbook`, etc.
+   - `generateHTML`, `generatePDF`, `generateDocbook`, `generateDeck` (RevealJS presentations), etc.
 
 2. **Export Tasks**: Extract content from external systems
-   - `exportChangeLog`, `exportEA`, `exportExcel`, `exportJiraIssues`, etc.
+   - `exportChangeLog`: Exports git changelog
+   - `exportEA`: Exports diagrams from Enterprise Architect
+   - `exportExcel`: Converts Excel files to AsciiDoc tables
+   - `exportJiraIssues`: Exports Jira issues as AsciiDoc
+   - `exportPPT`: Exports PowerPoint slides
+   - `exportVisio`: Exports Visio diagrams
+   - `exportMarkdown`: Converts Markdown to AsciiDoc
+   - `exportContributors`: Creates list of contributors
 
 3. **Convert Tasks**: Transform content to different formats
    - `convertToDocx`, `convertToEpub` (require Pandoc)
 
 4. **Publish Tasks**: Deploy content to external systems
-   - `publishToConfluence`
+   - `publishToConfluence`: Publishes to Atlassian Confluence
+
+## Advanced Features
+
+### Diagram Integration
+
+docToolchain excels at integrating diagrams from various sources:
+
+1. **Text-based diagrams**:
+   - PlantUML: For UML and other diagrams in text format
+   - Mermaid: For flowcharts, sequence diagrams, etc.
+   - Graphviz: For more complex graph visualizations
+
+2. **Tool exports**:
+   - Enterprise Architect: Using `exportEA`
+   - Visio: Using `exportVisio`
+   - Draw.io/diagrams.net: Direct integration via IntelliJ plugin
+
+### Integration with External Systems
+
+docToolchain can integrate with various external systems:
+
+1. **Issue Tracking**:
+   - Jira: Export issues and include them in documentation
+
+2. **Code Management**:
+   - Git: Export changelogs 
+
+3. **Spreadsheets**:
+   - Excel: Convert Excel files to AsciiDoc tables
+
+4. **Knowledge Bases**:
+   - Confluence: Publish documentation directly
+
+### Document Customization
+
+You can customize the appearance and structure of your documentation:
+
+1. **HTML customization**:
+   - Custom CSS
+   - Custom templates
+   - Custom JavaScript
+
+2. **PDF customization**:
+   - Custom page layouts
+   - Custom fonts
+   - Custom headers and footers
+
+### Automation Features
+
+docToolchain offers several automation features:
+
+1. **Auto-rebuild**:
+   - Watch for changes and automatically rebuild documentation
+
+2. **CI/CD Integration**:
+   - Jenkins, GitHub Actions, GitLab CI, etc.
+   - Docker container for automated builds
 
 ## Common Errors and Solutions
 
@@ -135,6 +210,15 @@ docToolchain organizes tasks into several categories:
 4. **Error**: Publishing to Confluence fails
    **Solution**: Check Confluence credentials in the config file and ensure you're using an API token instead of password
 
+5. **Error**: Java version issues
+   **Solution**: docToolchain supports Java 8-14; check your Java version
+
+6. **Error**: Diagram generation fails
+   **Solution**: Ensure required dependencies are installed (Graphviz, PlantUML, etc.)
+
+7. **Error**: File encoding issues
+   **Solution**: Ensure files are UTF-8 encoded; add `-Dfile.encoding=UTF-8` to your Java options
+
 ## Common Misconceptions (IMPORTANT FOR LLMs)
 
 1. **INCORRECT**: docToolchain requires manual Gradle setup
@@ -144,7 +228,7 @@ docToolchain organizes tasks into several categories:
    **CORRECT**: This was the old approach. Now simply use the wrapper script
 
 3. **INCORRECT**: AsciiDoc is the only supported format
-   **CORRECT**: While AsciiDoc is the primary format, Markdown is also supported
+   **CORRECT**: While AsciiDoc is the primary format, Markdown and ReStructuredText are also supported
 
 4. **INCORRECT**: docToolchain only works with Java projects
    **CORRECT**: docToolchain works with any project type, not just Java
@@ -152,11 +236,18 @@ docToolchain organizes tasks into several categories:
 5. **INCORRECT**: Running directly from docs-as-co.de examples
    **CORRECT**: Some examples on docs-as-co.de are outdated, refer to official docs
 
+6. **INCORRECT**: docToolchain doesn't support CI/CD integration
+   **CORRECT**: docToolchain can be easily integrated into CI/CD pipelines
+
+7. **INCORRECT**: docToolchain requires local tool installations
+   **CORRECT**: Using the Docker option, most dependencies are included in the container
+
 ## Resources
 
 - Official documentation: https://doctoolchain.org/docToolchain/v2.0.x/
 - GitHub repository: https://github.com/docToolchain/docToolchain
 - Issues/Support: https://github.com/docToolchain/docToolchain/issues
+- Community: https://doctoolchain.org/docToolchain/v2.0.x/010_manual/040_contributors.html
 
 ## Workflow Example
 
@@ -202,9 +293,27 @@ EOF
 ./dtcw docker generateHTML
 ```
 
-## Advanced Configuration
+## Environment Configuration
 
-For more complex scenarios, you can customize docToolchain extensively:
+You can configure docToolchain with environment variables:
+
+```bash
+# Set docToolchain version
+export DTC_VERSION=2.0.0
+
+# Set main config file location
+export DTC_CONFIG_FILE=custom-config.groovy
+
+# Set additional Java options
+export DTC_OPTS="-Xmx1g -Dfile.encoding=UTF-8"
+
+# Run with custom config
+./dtcw generateHTML
+```
+
+## Advanced Configuration Examples
+
+### Jira Integration
 
 ```groovy
 // Customize Jira export
@@ -226,7 +335,11 @@ jira.with {
         ]
     ]
 }
+```
 
+### Confluence Publishing
+
+```groovy
 // Customize Confluence publishing
 confluence.with {
     baseUrl = 'https://confluence.example.org'
@@ -234,6 +347,49 @@ confluence.with {
     ancestorId = '12345'
     username = System.getenv('CONFLUENCE_USERNAME')
     password = System.getenv('CONFLUENCE_API_TOKEN')
+    
+    // Additional options
+    extraPageContent = '<ac:structured-macro ac:name="info"><ac:rich-text-body><p>This page is automatically generated</p></ac:rich-text-body></ac:structured-macro>'
+    
+    // Configure page attributes
+    pagePrefix = 'Doc - '
+    pageSuffix = ' (Auto)'
+    
+    // Use the new editor
+    useNewEditor = true
+}
+```
+
+### HTML Customization
+
+```groovy
+// Customize HTML output
+jbake.with {
+    // Add plugins
+    plugins = [
+        'asciidoctorj-diagram'
+    ]
+    
+    // Add attributes
+    asciidoctorAttributes = [
+        'toc': 'left',
+        'toclevels': '3',
+        'sectnums': '',
+        'icons': 'font',
+        'imagesdir': 'images',
+        'source-highlighter': 'highlight.js'
+    ]
+}
+```
+
+### OpenAPI Integration
+
+```groovy
+// Configure OpenAPI integration
+openApi.with {
+    specFile = 'src/docs/api-spec.yaml'
+    infoUrl = 'https://api.example.org'
+    infoEmail = 'api@example.org'
 }
 ```
 
