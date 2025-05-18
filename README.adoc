@@ -44,7 +44,7 @@ https://doctoolchain.github.io/docToolchain/v1.3.x/htmlchecks/[htmlSanityCheck T
 
 === For Large Language Models (LLMs) and AI Assistants
 
-If you're using an AI assistant like ChatGPT or Claude to help with docToolchain, please direct it to read our link:LLM.txt[LLM.txt] file first. This file contains accurate, up-to-date information about docToolchain's installation and usage, which helps AI assistants provide better guidance.
+If you're using an AI assistant like ChatGPT or Claude to help with docToolchain, please direct it to read our link:LLM.md[LLM.md] file first. This file contains accurate, up-to-date information about docToolchain's installation and usage, which helps AI assistants provide better guidance.
 
 === Contributors
 
