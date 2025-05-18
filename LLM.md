@@ -11,7 +11,7 @@ docToolchain was created by Ralf D. Müller and is actively maintained by a comm
 ## Key Features
 
 - **AsciiDoc Support**: Primarily uses AsciiDoc markup language, which offers more built-in features than Markdown
-- **Arc42 Integration**: Built with strong support for the arc42 template for software architecture documentation
+- **arc42 Integration**: Built with strong support for the arc42 template for software architecture documentation
 - **Multiple Output Formats**: Generates HTML, PDF, DocBook, EPUB, DOCX, and more
 - **Diagram Integration**: Supports PlantUML, Mermaid, and exports from Enterprise Architect
 - **Confluence Publishing**: Can publish documentation directly to Confluence
@@ -43,13 +43,13 @@ cd <your-project>
 curl -Lo dtcw.bat https://doctoolchain.org/dtcw.bat
 ```
 
-2. **Run the initial setup** with one of these options:
+2. **Run the initial setup**:
 
 ```bash
-# Option 1: Run docToolchain in a container (recommended)
-./dtcw tasks --group doctoolchain
+# First install Java if needed
+./dtcw local install java
 
-# Option 2: Install locally
+# Then install docToolchain
 ./dtcw local install doctoolchain
 ```
 
@@ -57,6 +57,26 @@ curl -Lo dtcw.bat https://doctoolchain.org/dtcw.bat
 
 ```bash
 ./dtcw downloadTemplate
+```
+
+### Docker Usage
+
+You can also run docToolchain through Docker without local installation:
+
+```bash
+# Run commands through Docker
+./dtcw docker generateHTML
+
+# Using custom Docker image
+./dtcw docker image='myregistry/mydoctoolchain:latest' generateHTML
+
+# Passing environment variables to Docker
+cat > dtcw_docker.env << EOF
+HTTP_PROXY=http://proxy.example.org:8080
+HTTPS_PROXY=http://proxy.example.org:8080
+NO_PROXY=localhost,127.0.0.1
+EOF
+./dtcw docker generateHTML
 ```
 
 ## Configuration Basics
@@ -111,9 +131,6 @@ imageDirs = ["${inputPath}/images"]
 
 # Convert to DOCX via pandoc
 ./dtcw convertToDocx
-
-# Start the autobuild process (watches for changes)
-./dtcw autorebuild
 ```
 
 ## Task Categories
@@ -149,6 +166,7 @@ docToolchain excels at integrating diagrams from various sources:
    - PlantUML: For UML and other diagrams in text format
    - Mermaid: For flowcharts, sequence diagrams, etc.
    - Graphviz: For more complex graph visualizations
+   - Kroki: For generating diagrams from various formats using remote service
 
 2. **Tool exports**:
    - Enterprise Architect: Using `exportEA`
@@ -189,8 +207,8 @@ You can customize the appearance and structure of your documentation:
 
 docToolchain offers several automation features:
 
-1. **Auto-rebuild**:
-   - Watch for changes and automatically rebuild documentation
+1. **Watch for changes**:
+   - Use file system watchers to trigger rebuilds
 
 2. **CI/CD Integration**:
    - Jenkins, GitHub Actions, GitLab CI, etc.
@@ -211,10 +229,10 @@ docToolchain offers several automation features:
    **Solution**: Check Confluence credentials in the config file and ensure you're using an API token instead of password
 
 5. **Error**: Java version issues
-   **Solution**: docToolchain supports Java 8-14; check your Java version
+   **Solution**: docToolchain requires Java 17; use `./dtcw local install java` to install the correct version
 
 6. **Error**: Diagram generation fails
-   **Solution**: Ensure required dependencies are installed (Graphviz, PlantUML, etc.)
+   **Solution**: Ensure required dependencies are installed (Graphviz, PlantUML, etc.) or use Kroki for diagram generation
 
 7. **Error**: File encoding issues
    **Solution**: Ensure files are UTF-8 encoded; add `-Dfile.encoding=UTF-8` to your Java options
@@ -274,23 +292,6 @@ chmod +x dtcw
 # Check output
 ls -la build/docs/html5
 ls -la build/docs/pdf
-```
-
-## Docker Usage
-
-When using docToolchain with Docker:
-
-```bash
-# Using custom Docker image
-./dtcw docker image='myregistry/mydoctoolchain:latest' generateHTML
-
-# Passing environment variables to Docker
-cat > dtcw_docker.env << EOF
-HTTP_PROXY=http://proxy.example.org:8080
-HTTPS_PROXY=http://proxy.example.org:8080
-NO_PROXY=localhost,127.0.0.1
-EOF
-./dtcw docker generateHTML
 ```
 
 ## Environment Configuration
