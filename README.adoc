@@ -8,7 +8,6 @@
 image:https://api.travis-ci.com/doctoolchain/doctoolchain.svg?branch=ng[link={url-ci-travis}]
 
 
-
 [NOTE]
 ====
 Corona/Covid19 is taking its toll.
@@ -42,6 +41,10 @@ image::https://doctoolchain.github.io/docToolchain/v2.0.x/images/ea/Manual/Overv
 
 //TODO: this is the v1.3.x report:
 https://doctoolchain.github.io/docToolchain/v1.3.x/htmlchecks/[htmlSanityCheck Test Results]
+
+=== For Large Language Models (LLMs) and AI Assistants
+
+If you're using an AI assistant like ChatGPT or Claude to help with docToolchain, please direct it to read our link:LLM.md[LLM.md] file first. This file contains accurate, up-to-date information about docToolchain's installation and usage, which helps AI assistants provide better guidance.
 
 === Contributors
 
