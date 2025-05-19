@@ -116,13 +116,13 @@ Example:
 ----
 src/docs/
 ├── 10_foo
-│   ├── 10_first.adoc
-│   └── 20_second.adoc
+│   ├── 10_first.adoc
+│   └── 20_second.adoc
 └── 20_bar
     ├── 10_lorem.adoc
     ├── 20_ipsum
-    │   ├── 10_topic-A.adoc
-    │   └── 20_topic-B.adoc
+    │   ├── 10_topic-A.adoc
+    │   └── 20_topic-B.adoc
     └── 30_delis
         ├── 10_one.adoc
         ├── 20_two.adoc
@@ -167,11 +167,11 @@ If you have four files, located in following folder structure:
 ----
 src/docs
 ├── code1
-│   ├── demo1.adoc
-│   └── demo2.adoc
+│   ├── demo1.adoc
+│   └── demo2.adoc
 └── code3
-    ├── demo3.adoc
-    └── _demo4.adoc
+    ├── demo3.adoc
+    └── _demo4.adoc
 ----
 
 Where `demo1.adoc` and `demo3.adoc` contain no `:jbake-menu:` header, `demo2.adoc` contains `:jbake-menu: code2`, then:
@@ -252,7 +252,6 @@ To create a new blog post, create a new file in `src/docs/blog/<year>/<post-name
 {jbake-date}
 
 <insert your text here>
-
 ----
 
 === Search
@@ -264,6 +263,111 @@ But it does have a search input field which can be used to link to another searc
 
 When running in an automated build, set the environment variable `DTC_HEADLESS` to `true` or `1`. This stops docToolchain from asking to install the configured theme, and it will simply assume that you do want to install it.
 You can also avoid the theme downloading with every build by copying the themes folder from `$HOME/.doctoolchain/themes` to the corresponding folder in your build container.
+
+=== Practical Examples and Common Use Cases
+
+Let's explore some practical examples of how to use the `generateSite` task effectively:
+
+==== Basic Site Generation
+
+The simplest use of the command is:
+
+[source,bash]
+----
+./dtcw generateSite
+----
+
+This will:
+
+1. Parse all your AsciiDoc files in the input path (by default `src/docs`)
+2. Generate a microsite with navigation structure based on your folder hierarchy
+3. Output the result to `build/microsite/output/`
+
+==== Custom Theme Usage
+
+To use a custom theme, define it in your `dtcw` script:
+
+[source,bash]
+----
+# In your dtcw or dtcw.ps1 file
+export DTC_SITETHEME=https://example.com/your-theme.zip
+----
+
+Then run `generateSite` normally:
+
+[source,bash]
+----
+./dtcw generateSite
+----
+
+==== CI/CD Pipeline Integration
+
+For CI/CD environments, add these lines to your build script:
+
+[source,bash]
+----
+# Set headless mode to avoid interactive prompts
+export DTC_HEADLESS=true
+
+# Generate the site
+./dtcw generateSite
+
+# Deploy the files from build/microsite/output/ to your server
+# ...your deployment commands here...
+----
+
+For GitHub Actions, you might use:
+
+[source,yaml]
+----
+steps:
+  - name: Check out repository
+    uses: actions/checkout@v3
+    
+  - name: Generate documentation site
+    run: |
+      export DTC_HEADLESS=true
+      ./dtcw generateSite
+      
+  - name: Deploy to GitHub Pages
+    uses: peaceiris/actions-gh-pages@v3
+    with:
+      github_token: ${{ secrets.GITHUB_TOKEN }}
+      publish_dir: ./build/microsite/output
+----
+
+==== Performance Optimization
+
+For large documentation projects, you might encounter performance issues. Here are some tips:
+
+* Consider splitting your documentation into multiple repositories if it's very large
+* Use the `autobuildSite` script for development but disable it in CI/CD environments
+* Include only necessary images in your `imageDirs` configuration
+* Use a custom `outputPath` to keep build artifacts outside your repository:
+
+[source,groovy]
+----
+// In docToolchainConfig.groovy
+outputPath = System.getenv('HOME')+'/.doctoolchain/build/'+(new File('.')).canonicalPath.md5()
+----
+
+==== Troubleshooting
+
+Common issues and solutions:
+
+* *Missing theme error*: Ensure your `DTC_SITETHEME` URL is accessible. Try downloading it manually first.
+* *Navigation structure issues*: Check that your folder structure follows the conventions described in the "Navigation elements" section.
+* *Blank pages*: Verify that your AsciiDoc files have `:jbake-status: published` in their headers.
+* *Images not showing*: Make sure your images are in folders listed in `imageDirs` and the paths in your documents are correct.
+* *Custom theme not applied*: Check if the theme was downloaded correctly in `$HOME/.doctoolchain/themes/`.
+
+If you encounter persistent issues, try running with a clean build:
+
+[source,bash]
+----
+rm -rf build/
+./dtcw generateSite
+----
 
 === Further Reading and Resources
 
