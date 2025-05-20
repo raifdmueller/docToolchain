@@ -59,6 +59,29 @@ curl -Lo dtcw.bat https://doctoolchain.org/dtcw.bat
 ./dtcw downloadTemplate
 ```
 
+#### Automating the downloadTemplate Command
+
+The `downloadTemplate` command normally requires interactive input. To automate this process (useful for CI/CD pipelines or scripts), you can use these one-liners to provide all required inputs:
+
+```bash
+# For Linux/macOS (Bash)
+echo -e "1\nEN\nplain\nn" | ./dtcw downloadTemplate
+
+# For Windows (Command Prompt)
+(echo 1 & echo EN & echo plain & echo n) | .\dtcw.bat downloadTemplate
+
+# For Windows (PowerShell)
+"1`nEN`nplain`nn" | .\dtcw.ps1 downloadTemplate
+```
+
+These commands provide the following inputs in sequence:
+1. Template selection (1=arc42, 2=req42)
+2. Language (EN, DE, etc.)
+3. Help option (plain or withhelp)
+4. Antora setup (n=no, y=yes)
+
+Adjust the values according to your needs.
+
 ### Docker Usage
 
 You can also run docToolchain through Docker without local installation:
