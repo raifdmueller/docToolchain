@@ -322,7 +322,7 @@ confluence.with {
     // HTML Content that will be included with every page published
     // directly after the TOC. If left empty no additional content will be
     // added
-    // extraPageContent = '<ac:structured-macro ac:name="warning"><ac:parameter ac:name="title" /><ac:rich-text-body>This is a generated page, do not edit!</ac:rich-text-body></ac:structured-macro>
+    // extraPageContent = '<ac:structured-macro ac:name="warning"><ac:parameter ac:name="title" />><ac:rich-text-body>This is a generated page, do not edit!</ac:rich-text-body></ac:structured-macro>
     extraPageContent = ''
 
     // enable or disable attachment uploads for local file references
@@ -359,7 +359,7 @@ confluence.with {
 // All parameter are optionally.
 // Parameter 'connection' allows to select a certain database connection by using the ConnectionString as used for
 // directly connecting to the project database instead of looking for EAP/EAPX files inside and below the 'src' folder.
-// Parameter 'packageFilter' is an array of package GUID's to be used for export. All images inside and in all packages below the package represented by it's GUID are exported.
+// Parameter 'packageFilter' is an array of package GUID's to be used for export. All images inside and in all packages below the package represented by its GUID are exported.
 // A packageGUID, that is not found in the currently opened project, is silently skipped.
 // PackageGUID of multiple project files can be mixed in case multiple projects have to be opened.
 
@@ -416,7 +416,7 @@ jira.with {
     project = 'PROJECTKEY'
 
     // the format of the received date time values to parse
-    dateTimeFormatParse = "yyyy-MM-dd'T'H:m:s.SSSz" // i.e. 2020-07-24'T'9:12:40.999 CEST
+    dateTimeFormatParse = "yyyy-MM-dd'T'H:m:s.SSSZ" // i.e. 2020-07-24'T'9:12:40.999 CEST
 
     // the format in which the date time should be saved to output
     dateTimeFormatOutput = "dd.MM.yyyy HH:mm:ss z" // i.e. 24.07.2020 09:02:40 CEST
@@ -526,7 +526,7 @@ structurizr.with {
         // path = 'src/docs/structurizr'
 
         // By default `exportStructurizr` looks for a file '${structurizr.workspace.path}/workspace.dsl'.
-        // You can customize this behavior with 'filename'. Note that the workspace filename is provided without '.dsl' extension.
+        // You can customize this behaviour with 'filename'. Note that the workspace filename is provided without '.dsl' extension.
         // filename = 'workspace'
     }
 
