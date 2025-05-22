@@ -1,0 +1,188 @@
+:filename: 030_news/2025/kroki-configuration-complete-guide.adoc
+:jbake-title: Die vollständige Geschichte der Kroki-Konfiguration in docToolchain
+:jbake-date: 2025-05-22
+:jbake-type: post
+:jbake-tags: docToolchain, kroki, configuration, diagrams
+:jbake-status: published
+:jbake-menu: news
+:jbake-author: RaifDMueller mit Claude Sonnet 4
+:icons: font
+
+ifndef::imagesdir[:imagesdir: ../../../images]
+
+== Die vollständige Geschichte der Kroki-Konfiguration in docToolchain
+
+_Ein Deep-Dive in die Evolution der Diagramm-Attribute und wie Sie Kroki richtig konfigurieren_
+
+=== Das Problem
+
+Haben Sie schon einmal versucht, Kroki in docToolchain zu konfigurieren und sind auf widersprüchliche Dokumentation gestoßen? Sie sind nicht allein! In GitHub Issues und Community-Diskussionen tauchen immer wieder verschiedene Attribut-Namen auf:
+
+- `:diagram-server-url:` und `:diagram-server-type:`
+- `:kroki-server-url:`
+
+Welche sind korrekt? Warum gibt es unterschiedliche Varianten? Und vor allem: Wie konfiguriert man Kroki richtig in docToolchain?
+
+=== Die Geschichte hinter den Attributen
+
+Die Verwirrung hat einen historischen Grund - es gibt tatsächlich **zwei verschiedene AsciiDoc-Extensions** für Diagramme:
+
+==== asciidoctor-diagram: Der Allrounder
+
+Die ursprüngliche `asciidoctor-diagram` Extension war schon lange vor Kroki da. Sie unterstützte lokale Tools wie PlantUML, GraphViz und andere. 
+
+**Der Wendepunkt** kam mit Version 2.1.0 (Issue #226), als Kroki-Support hinzugefügt wurde:
+
+[source,asciidoc]
+----
+:diagram-server-url: https://kroki.io/
+:diagram-server-type: kroki_io
+----
+
+Diese Extension sagt: _"Ich kann alles - lokale Tools UND Kroki-Server"_
+
+==== asciidoctor-kroki: Der Spezialist
+
+Parallel entwickelte sich die spezialisierte `asciidoctor-kroki` Extension, die ausschließlich für Kroki entwickelt wurde:
+
+[source,asciidoc]
+----
+:kroki-server-url: https://kroki.io/
+----
+
+Diese Extension sagt: _"Ich bin nur für Kroki da, aber dafür bin ich perfekt optimiert"_
+
+=== Praktisches Beispiel: Beide Konfigurationen in Aktion
+
+Lassen Sie uns das mit echten Diagrammen demonstrieren. Hier ist ein vollständiges Beispiel:
+
+[source,asciidoc]
+----
+= Kroki-Diagramme Demo
+:toc:
+
+// Kroki-Konfiguration (funktioniert mit beiden Extensions)
+:diagram-server-url: https://kroki.io/
+:diagram-server-type: kroki_io
+:kroki-server-url: https://kroki.io/
+
+== PlantUML Sequenzdiagramm
+
+[plantuml]
+....
+@startuml
+actor User
+participant "docToolchain" as DTC
+participant "Kroki Server" as Kroki
+participant "PlantUML" as PUML
+
+User -> DTC: generateHTML
+DTC -> Kroki: POST diagram source
+Kroki -> PUML: render diagram
+PUML -> Kroki: SVG/PNG
+Kroki -> DTC: diagram image
+DTC -> User: HTML with diagram
+@enduml
+....
+
+== Mermaid Flowchart
+
+[mermaid]
+....
+graph TD
+    A[AsciiDoc Document] --> B{Extension Type?}
+    B -->|asciidoctor-diagram| C[diagram-server-url]
+    B -->|asciidoctor-kroki| D[kroki-server-url]
+    C --> E[Kroki Server]
+    D --> E
+    E --> F[Rendered Diagram]
+....
+
+== GraphViz Diagramm
+
+[graphviz]
+....
+digraph G {
+    rankdir=LR;
+    node [shape=box, style=rounded];
+    
+    "Local Tools" -> "asciidoctor-diagram";
+    "Kroki Server" -> "asciidoctor-diagram";
+    "Kroki Server" -> "asciidoctor-kroki";
+    
+    "asciidoctor-diagram" -> "docToolchain";
+    "asciidoctor-kroki" -> "docToolchain";
+    
+    "docToolchain" -> "Beautiful Docs";
+}
+....
+----
+
+=== Die Lösung: Defensive Konfiguration
+
+Um sicherzustellen, dass Ihre Diagramme unabhängig von der verwendeten Extension funktionieren, empfehlen wir die **defensive Konfiguration**:
+
+[source,asciidoc]
+----
+// Kroki-Konfiguration (kompatibel mit allen Extensions)
+:diagram-server-url: https://kroki.io/
+:diagram-server-type: kroki_io
+:kroki-server-url: https://kroki.io/
+----
+
+==== In docToolchainConfig.groovy
+
+[source,groovy]
+----
+asciidoctorAttributes = [
+    // Defensive Kroki-Konfiguration
+    'diagram-server-url': 'https://kroki.io/',
+    'diagram-server-type': 'kroki_io',
+    'kroki-server-url': 'https://kroki.io/',
+    
+    // Andere Attribute...
+    'toc': 'left',
+    'icons': 'font'
+]
+----
+
+=== Lokaler Kroki-Server für Unternehmen
+
+Für Organisationen, die sensible Diagramme nicht an externe Services senden möchten:
+
+[source,bash]
+----
+# Kroki lokal starten
+docker run -d --name kroki -p 8000:8000 yuzutech/kroki
+
+# In der Konfiguration verwenden
+:diagram-server-url: http://localhost:8000/
+:diagram-server-type: kroki_io
+:kroki-server-url: http://localhost:8000/
+----
+
+=== Warum ist das wichtig?
+
+Diese defensive Konfiguration bietet mehrere Vorteile:
+
+✅ **Zukunftssicher**: Funktioniert mit Extension-Updates +
+✅ **Flexibel**: docToolchain kann zwischen Extensions wechseln +
+✅ **Robust**: Keine Breaking Changes bei Upgrades +
+✅ **Benutzerfreundlich**: Teams müssen nicht wissen, welche Extension verwendet wird
+
+=== Fazit
+
+Die verschiedenen Kroki-Attribute sind nicht das Resultat von Verwirrung, sondern spiegeln die natürliche Evolution des AsciiDoc-Ökosystems wider. Zwei verschiedene Ansätze - ein generischer und ein spezialisierter - führten zu verschiedenen Attribut-Namen.
+
+Mit der defensiven Konfiguration können Sie beide Welten nutzen und sind für die Zukunft gerüstet. Ihre Diagramme werden funktionieren, egal welche Extension docToolchain intern verwendet.
+
+=== Was kommt als nächstes?
+
+Diese Erkenntnisse fließen in die offizielle docToolchain-Dokumentation ein. Haben Sie weitere Konfigurationsfragen oder Verbesserungsvorschläge? 
+
+Diskutieren Sie mit uns auf:
+
+- https://github.com/docToolchain/docToolchain/issues[GitHub Issues]
+- https://doctoolchain.org[docToolchain Community]
+
+Happy Diagramming! 📊
