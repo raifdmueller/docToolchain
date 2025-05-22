@@ -50,11 +50,11 @@ taskInputsDirs = [
                     "${inputPath}",
 //                  "${inputPath}/src",
 //                  "${inputPath}/images",
-                 ]
+              ]
 
 taskInputsFiles = []
 
-//*****************************************************************************************
+//******************************************************************************
 
 // Configuration for customTasks
 // create a new Task with ./dtcw createTask
@@ -63,7 +63,7 @@ customTasks = [
 ]
 
 
-//*****************************************************************************************
+//******************************************************************************
 
 //Configuration for microsite: generateSite + previewSite
 
@@ -121,7 +121,7 @@ microsite.with {
     issueUrl = '##issue-url##'
     //
     // the base url for code files in github
-    // Example: https://github.com/doctoolchain/doctoolchain/edit/master/src/docs
+    // Example: https://github.com/docToolchain/docToolchain/edit/master/src/docs
     branch = System.getenv("DTC_PROJECT_BRANCH")?:'-'
     gitRepoUrl = '##git-repo-url##'
 
@@ -175,13 +175,13 @@ Needs `python3` and `docutils` installed.
     /**
     search = """        <form action="${content.rootpath}search.html">
         <input aria-label="Search this site…" autocomplete="off" class="form-control td-search-input"
-               placeholder=" Search this site…" type="search" name="q">
+               placeholder="🔍 Search this site…" type="search" name="q">
         </form>
     """
     **/
 }
 
-//*****************************************************************************************
+//******************************************************************************
 
 //Configuration for exportChangelog
 
@@ -208,7 +208,7 @@ changelog.with {
 
 }
 
-//*****************************************************************************************
+//******************************************************************************
 
 //tag::confluenceConfig[]
 //Configuration for publishToConfluence
@@ -228,8 +228,8 @@ to configure a different parent page for each file.
 - `file`: absolute or relative path to the asciidoc generated html file to be exported
 - `url`: absolute URL to an asciidoc generated html file to be exported
 - `ancestorName` (optional): the name of the parent page in Confluence as string;
-                             this attribute has priority over ancestorId, but if page with given name doesn't exist,
-                             ancestorId will be used as a fallback
+                              this attribute has priority over ancestorId, but if page with given name doesn't exist,
+                              ancestorId will be used as a fallback
 - `ancestorId` (optional): the id of the parent page in Confluence as string; leave this empty
                            if a new parent shall be created in the space
 
@@ -240,13 +240,13 @@ The following four keys can also be used in the global section below
               created but can't be updated in the next run.
 - `subpagesForSections` (optional): The number of nested sub-pages to create. Default is '1'.
                                     '0' means creating all on one page.
-                                    The following migration for removed configuration can be used.
+                             The following migration for removed configuration can be used.
 ** `allInOnePage = true` is the same as `subpagesForSections = 0`
 ** `allInOnePage = false && createSubpages = false` is the same as `subpagesForSections = 1`
 ** `allInOnePage = false && createSubpages = true` is the same as `subpagesForSections = 2`
 - `pagePrefix` (optional): page specific variable, the pagePrefix will be a prefix for the page title and it's sub-pages
-                           use this if you only have access to one confluence space but need to store several
-                           pages with the same title - a different pagePrefix will make them unique
+                          use this if you only have access to one confluence space but need to store several
+                          pages with the same title - a different pagePrefix will make them unique
 - `pageSuffix` (optional): same usage as prefix but appended to the title and it's subpages
 
 only 'file' or 'url' is allowed. If both are given, 'url' is ignored
@@ -260,12 +260,19 @@ confluence.with {
     ]
 
     // endpoint of the confluenceAPI (REST) to be used
-    // if you use Confluence Cloud, you can set this value to
-    // https://[yourServer]
-    // a working example is https://arc42-template.atlassian.net
-    // if you use Confluence Server, you may need to set a context:
+    //
+    // For Confluence Cloud, set this to:
+    // https://[yourDomain].atlassian.net
+    // Example: https://arc42-template.atlassian.net
+    //
+    // For Confluence Server/Data Center, you may need to include a context:
     // https://[yourServer]/[context]
-    // a working example is https://arc42-template.atlassian.net/wiki
+    // Example: https://confluence.company.com/wiki
+    //
+    // VERIFICATION: You can verify your endpoint is correct by browsing to:
+    // [your-api-endpoint]/rest/api/user/current
+    // This should return a JSON response describing your current user
+    // Working example: https://arc42-template.atlassian.net/wiki/rest/api/user/current
     api = 'https://[yourServer]/[context]'
 
     // requests per second for confluence API calls
@@ -277,7 +284,7 @@ confluence.with {
     // if true, the new editor v2 will be used. Default is false.
     // enforceNewEditor = false
 
-    //    Additionally, spaceKey, subpagesForSections, pagePrefix and pageSuffix can be globally defined here. The assignment in the input array has precedence
+    //     Additionally, spaceKey, subpagesForSections, pagePrefix and pageSuffix can be globally defined here. The assignment in the input array has precedence
 
     // the key of the confluence space to write to
     spaceKey = 'asciidoc'
@@ -299,7 +306,7 @@ confluence.with {
     pageVersionComment = ''
 
     /*
-    WARNING: It is strongly recommended to store credentials securely instead of commiting plain text values to your git repository!!!
+    WARNING: It is strongly recommended to store credentials securely instead of committing plain text values to your git repository!!!
 
     Tool expects credentials that belong to an account which has the right permissions to to create and edit confluence pages in the given space.
     Credentials can be used in a form of:
@@ -315,7 +322,7 @@ confluence.with {
     // HTML Content that will be included with every page published
     // directly after the TOC. If left empty no additional content will be
     // added
-    // extraPageContent = '<ac:structured-macro ac:name="warning"><ac:parameter ac:name="title" /><ac:rich-text-body>This is a generated page, do not edit!</ac:rich-text-body></ac:structured-macro>
+    // extraPageContent = '<ac:structured-macro ac:name="warning"><ac:parameter ac:name="title" />><ac:rich-text-body>This is a generated page, do not edit!</ac:rich-text-body></ac:structured-macro>
     extraPageContent = ''
 
     // enable or disable attachment uploads for local file references
@@ -334,7 +341,7 @@ confluence.with {
 
     // Optional: specify which Confluence OpenAPI Macro should be used to render OpenAPI definitions
     // possible values: ["confluence-open-api", "open-api", true]. true is the same as "confluence-open-api" for backward compatibility
-    // useOpenapiMacro = "confluence-open-api"
+    // useOpenApiMacro = "confluence-open-api"
 
     // for exportConfluence-Task
     export = [
@@ -345,7 +352,7 @@ confluence.with {
 }
 //end::confluenceConfig[]
 
-//*****************************************************************************************
+//******************************************************************************
 //tag::exportEAConfig[]
 //Configuration for the export script 'exportEA.vbs'.
 // The following parameters can be used to change the default behaviour of 'exportEA'.
@@ -361,9 +368,9 @@ exportEA.with {
 // connection = "DBType=1;Connect=Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=[THE_DB_NAME_OF_THE_PROJECT];Data Source=[server_hosting_database.com];LazyLoad=1;"
 // OPTIONAL: Add one or multiple packageGUIDs to be used for export. All packages are analysed, if no packageFilter is set.
 // packageFilter = [
-//                    "{A237ECDE-5419-4d47-AECC-B836999E7AE0}",
-//                    "{B73FA2FB-267D-4bcd-3D37-5014AD8806D6}"
-//                  ]
+//                  "{A237ECDE-5419-4d47-AECC-B836999E7AE0}",
+//                  "{B73FA2FB-267D-4bcd-3D37-5014AD8806D6}"
+//                 ]
 // OPTIONAL: tag used to filter diagrams to be exported - based on diagram.Stereotype.
 //           If not set all diagrams in the selected packages are exported.
 // diagramFilter = "myProject"
@@ -395,7 +402,7 @@ jira.with {
     rateLimit = 10
 
     /*
-    WARNING: It is strongly recommended to store credentials securely instead of commiting plain text values to your git repository!!!
+    WARNING: It is strongly recommended to store credentials securely instead of committing plain text values to your git repository!!!
 
     Tool expects credentials that belong to an account which has the right permissions to read the JIRA issues for a given project.
     Credentials can be used in a form of:
@@ -409,7 +416,7 @@ jira.with {
     project = 'PROJECTKEY'
 
     // the format of the received date time values to parse
-    dateTimeFormatParse = "yyyy-MM-dd'T'H:m:s.SSSz" // i.e. 2020-07-24'T'9:12:40.999 CEST
+    dateTimeFormatParse = "yyyy-MM-dd'T'H:m:s.SSSZ" // i.e. 2020-07-24'T'9:12:40.999 CEST
 
     // the format in which the date time should be saved to output
     dateTimeFormatOutput = "dd.MM.yyyy HH:mm:ss z" // i.e. 24.07.2020 09:02:40 CEST
@@ -433,7 +440,7 @@ jira.with {
     List of requests to Jira API:
     These are basically JQL expressions bundled with a filename in which results will be saved.
     User can configure custom fields IDs and name those for column header,
-    i.e. customfield_10026:'Story Points' for Jira instance that has custom field with that name and will be saved in a coloumn named "Story Points"
+    i.e. customfield_10026:'Story Points' for Jira instance that has custom field with that name and will be saved in a column named "Story Points"
     */
     exports = [
         [
@@ -519,7 +526,7 @@ structurizr.with {
         // path = 'src/docs/structurizr'
 
         // By default `exportStructurizr` looks for a file '${structurizr.workspace.path}/workspace.dsl'.
-        // You can customize this behavior with 'filename'. Note that the workspace filename is provided without '.dsl' extension.
+        // You can customize this behaviour with 'filename'. Note that the workspace filename is provided without '.dsl' extension.
         // filename = 'workspace'
     }
 
@@ -548,7 +555,7 @@ openAI = [:]
 openAI.with {
     // This task requires a person access token for openAI.
     // Ensure to pass this token as parameters when calling the task
-    // using -PopenAI.token=xx-xxxxxxxxxxxxxx
+    // using -PopenAI.token=xx-xxxxxxxxxxxx
 
     //model = "text-davinci-003"
     //maxToken = '500'
