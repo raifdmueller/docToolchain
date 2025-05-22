@@ -1,18 +1,18 @@
 ifndef::imagesdir[:imagesdir: ../../images]
 
-= Kroki Configuration Guide
+== Kroki Configuration Guide
 
 This guide provides comprehensive instructions for configuring Kroki with docToolchain, including the background story of why multiple attribute sets exist.
 
-== Overview
+=== Overview
 
 Kroki is a service that converts text-based diagrams (PlantUML, Mermaid, GraphViz, etc.) into images without requiring local tool installations. However, configuring Kroki in docToolchain can be confusing due to historical evolution of diagram extensions.
 
-== The Two Extensions
+=== The Two Extensions
 
 There are two different AsciiDoc extensions that support Kroki:
 
-=== asciidoctor-diagram: The All-Rounder
+==== asciidoctor-diagram: The All-Rounder
 
 The original `asciidoctor-diagram` extension existed before Kroki and supported local tools. In version 2.1.0, Kroki support was added:
 
@@ -24,7 +24,7 @@ The original `asciidoctor-diagram` extension existed before Kroki and supported 
 
 This extension can use both local tools AND delegate to Kroki servers.
 
-=== asciidoctor-kroki: The Specialist
+==== asciidoctor-kroki: The Specialist
 
 The specialized `asciidoctor-kroki` extension was built exclusively for Kroki:
 
@@ -35,9 +35,9 @@ The specialized `asciidoctor-kroki` extension was built exclusively for Kroki:
 
 This extension is optimized specifically for Kroki integration.
 
-== Recommended Configuration
+=== Recommended Configuration
 
-=== Defensive Configuration Strategy
+==== Defensive Configuration Strategy
 
 To ensure compatibility with both extensions, use all attributes:
 
@@ -49,7 +49,7 @@ To ensure compatibility with both extensions, use all attributes:
 :kroki-server-url: https://kroki.io/
 ----
 
-=== Configuration in docToolchainConfig.groovy
+==== Configuration in docToolchainConfig.groovy
 
 [source,groovy]
 ----
@@ -65,11 +65,11 @@ asciidoctorAttributes = [
 ]
 ----
 
-== Enterprise Setup: Local Kroki Server
+=== Enterprise Setup: Local Kroki Server
 
 For organizations that prefer not to send diagrams to external services:
 
-=== Docker Setup
+==== Docker Setup
 
 [source,bash]
 ----
@@ -80,7 +80,7 @@ docker run -d --name kroki -p 8000:8000 yuzutech/kroki
 curl http://localhost:8000/health
 ----
 
-=== Configuration for Local Server
+==== Configuration for Local Server
 
 [source,asciidoc]
 ----
@@ -101,11 +101,13 @@ asciidoctorAttributes = [
 ]
 ----
 
-== Practical Examples
+=== Practical Examples
 
-=== PlantUML Sequence Diagram
+==== PlantUML Sequence Diagram
 
-[source,asciidoc]
+[cols="2"]
+|===
+a|[source,asciidoc]
 ----
 [plantuml]
 ....
@@ -125,9 +127,29 @@ DTC -> User: HTML with diagram
 ....
 ----
 
-=== Mermaid Flowchart
+a|[plantuml]
+....
+@startuml
+actor User
+participant "docToolchain" as DTC
+participant "Kroki Server" as Kroki
+participant "PlantUML" as PUML
 
-[source,asciidoc]
+User -> DTC: generateHTML
+DTC -> Kroki: POST diagram source
+Kroki -> PUML: render diagram
+PUML -> Kroki: SVG/PNG
+Kroki -> DTC: diagram image
+DTC -> User: HTML with diagram
+@enduml
+....
+|===
+
+==== Mermaid Flowchart
+
+[cols="2"]
+|===
+a|[source,asciidoc]
 ----
 [mermaid]
 ....
@@ -141,9 +163,23 @@ graph TD
 ....
 ----
 
-=== GraphViz Diagram
+a|[mermaid]
+....
+graph TD
+    A[AsciiDoc Document] --> B{Extension Type?}
+    B -->|asciidoctor-diagram| C[diagram-server-url]
+    B -->|asciidoctor-kroki| D[kroki-server-url]
+    C --> E[Kroki Server]
+    D --> E
+    E --> F[Rendered Diagram]
+....
+|===
 
-[source,asciidoc]
+==== GraphViz Diagram
+
+[cols="2"]
+|===
+a|[source,asciidoc]
 ----
 [graphviz]
 ....
@@ -163,7 +199,25 @@ digraph G {
 ....
 ----
 
-== Supported Diagram Types
+a|[graphviz]
+....
+digraph G {
+    rankdir=LR;
+    node [shape=box, style=rounded];
+    
+    "Local Tools" -> "asciidoctor-diagram";
+    "Kroki Server" -> "asciidoctor-diagram";
+    "Kroki Server" -> "asciidoctor-kroki";
+    
+    "asciidoctor-diagram" -> "docToolchain";
+    "asciidoctor-kroki" -> "docToolchain";
+    
+    "docToolchain" -> "Beautiful Docs";
+}
+....
+|===
+
+=== Supported Diagram Types
 
 Kroki supports numerous diagram types:
 
@@ -178,9 +232,9 @@ Kroki supports numerous diagram types:
 
 For a complete list, visit https://kroki.io/#support[kroki.io].
 
-== Troubleshooting
+=== Troubleshooting
 
-=== Diagrams Not Rendering
+==== Diagrams Not Rendering
 
 1. **Check server connectivity**:
    [source,bash]
@@ -201,7 +255,7 @@ For a complete list, visit https://kroki.io/#support[kroki.io].
    ....
    ----
 
-=== Local Server Issues
+==== Local Server Issues
 
 1. **Container not starting**:
    [source,bash]
@@ -220,7 +274,7 @@ For a complete list, visit https://kroki.io/#support[kroki.io].
    - Ensure port 8000 (or your chosen port) is accessible
    - Check corporate firewall settings
 
-=== Network Configuration
+==== Network Configuration
 
 For corporate environments:
 
@@ -233,9 +287,9 @@ System.setProperty("https.proxyHost", "proxy.company.com")
 System.setProperty("https.proxyPort", "8080")
 ----
 
-== Advanced Configuration
+=== Advanced Configuration
 
-=== Custom Kroki Instance with Additional Services
+==== Custom Kroki Instance with Additional Services
 
 Some diagram types require additional containers:
 
@@ -249,7 +303,7 @@ docker run -d --name kroki-mermaid yuzutech/kroki-mermaid
 docker run -d --name kroki-bpmn yuzutech/kroki-bpmn
 ----
 
-=== Performance Optimization
+==== Performance Optimization
 
 For high-volume documentation:
 
@@ -261,21 +315,21 @@ asciidoctorAttributes = [
 ]
 ----
 
-== Security Considerations
+=== Security Considerations
 
-=== Network Security
+==== Network Security
 
 * Use HTTPS for external Kroki servers
 * Consider VPN for remote team access to local instances
 * Implement proper firewall rules
 
-=== Data Privacy
+==== Data Privacy
 
 * Evaluate whether diagram content contains sensitive information
 * Consider local deployment for confidential projects
 * Review data retention policies of external services
 
-== Why Use Defensive Configuration?
+=== Why Use Defensive Configuration?
 
 This approach offers several benefits:
 
@@ -284,14 +338,14 @@ This approach offers several benefits:
 ✅ **Robust**: No breaking changes with upgrades +
 ✅ **Team-friendly**: Team members don't need to know implementation details
 
-== Further Resources
+=== Further Resources
 
 * https://docs.kroki.io/[Kroki Documentation]
 * https://docs.asciidoctor.org/diagram-extension/latest/[Asciidoctor Diagram Extension]
 * https://github.com/asciidoctor/asciidoctor-kroki[Asciidoctor Kroki Extension]
 * https://github.com/docToolchain/docToolchain/issues[docToolchain Issues]
 
-== Contributing
+=== Contributing
 
 Found an issue with this guide or have improvements? Please contribute:
 
