@@ -1,37 +1,37 @@
 :filename: 030_news/2025/kroki-configuration-complete-guide.adoc
-:jbake-title: Die vollständige Geschichte der Kroki-Konfiguration in docToolchain
+:jbake-title: The Complete History of Kroki Configuration in docToolchain
 :jbake-date: 2025-05-22
 :jbake-type: post
 :jbake-tags: docToolchain, kroki, configuration, diagrams
 :jbake-status: published
 :jbake-menu: news
-:jbake-author: RaifDMueller mit Claude Sonnet 4
+:jbake-author: RaifDMueller with Claude Sonnet 4
 :icons: font
 
 ifndef::imagesdir[:imagesdir: ../../../images]
 
-== Die vollständige Geschichte der Kroki-Konfiguration in docToolchain
+== The Complete History of Kroki Configuration in docToolchain
 
-_Ein Deep-Dive in die Evolution der Diagramm-Attribute und wie Sie Kroki richtig konfigurieren_
+_A deep dive into the evolution of diagram attributes and how to configure Kroki correctly_
 
-=== Das Problem
+=== The Problem
 
-Haben Sie schon einmal versucht, Kroki in docToolchain zu konfigurieren und sind auf widersprüchliche Dokumentation gestoßen? Sie sind nicht allein! In GitHub Issues und Community-Diskussionen tauchen immer wieder verschiedene Attribut-Namen auf:
+Have you ever tried to configure Kroki in docToolchain and encountered conflicting documentation? You're not alone! In GitHub issues and community discussions, different attribute names keep appearing:
 
-- `:diagram-server-url:` und `:diagram-server-type:`
+- `:diagram-server-url:` and `:diagram-server-type:`
 - `:kroki-server-url:`
 
-Welche sind korrekt? Warum gibt es unterschiedliche Varianten? Und vor allem: Wie konfiguriert man Kroki richtig in docToolchain?
+Which ones are correct? Why do different variants exist? And most importantly: How do you configure Kroki correctly in docToolchain?
 
-=== Die Geschichte hinter den Attributen
+=== The Story Behind the Attributes
 
-Die Verwirrung hat einen historischen Grund - es gibt tatsächlich **zwei verschiedene AsciiDoc-Extensions** für Diagramme:
+The confusion has a historical reason - there are actually **two different AsciiDoc extensions** for diagrams:
 
-==== asciidoctor-diagram: Der Allrounder
+==== asciidoctor-diagram: The All-Rounder
 
-Die ursprüngliche `asciidoctor-diagram` Extension war schon lange vor Kroki da. Sie unterstützte lokale Tools wie PlantUML, GraphViz und andere. 
+The original `asciidoctor-diagram` extension existed long before Kroki. It supported local tools like PlantUML, GraphViz, and others.
 
-**Der Wendepunkt** kam mit Version 2.1.0 (Issue #226), als Kroki-Support hinzugefügt wurde:
+**The turning point** came with version 2.1.0 (Issue #226), when Kroki support was added:
 
 [source,asciidoc]
 ----
@@ -39,34 +39,34 @@ Die ursprüngliche `asciidoctor-diagram` Extension war schon lange vor Kroki da.
 :diagram-server-type: kroki_io
 ----
 
-Diese Extension sagt: _"Ich kann alles - lokale Tools UND Kroki-Server"_
+This extension says: _"I can do everything - local tools AND Kroki servers"_
 
-==== asciidoctor-kroki: Der Spezialist
+==== asciidoctor-kroki: The Specialist
 
-Parallel entwickelte sich die spezialisierte `asciidoctor-kroki` Extension, die ausschließlich für Kroki entwickelt wurde:
+In parallel, the specialized `asciidoctor-kroki` extension was developed, which was built exclusively for Kroki:
 
 [source,asciidoc]
 ----
 :kroki-server-url: https://kroki.io/
 ----
 
-Diese Extension sagt: _"Ich bin nur für Kroki da, aber dafür bin ich perfekt optimiert"_
+This extension says: _"I'm only for Kroki, but I'm perfectly optimized for it"_
 
-=== Praktisches Beispiel: Beide Konfigurationen in Aktion
+=== Practical Example: Both Configurations in Action
 
-Lassen Sie uns das mit echten Diagrammen demonstrieren. Hier ist ein vollständiges Beispiel:
+Let's demonstrate this with real diagrams. Here's a complete example:
 
 [source,asciidoc]
 ----
-= Kroki-Diagramme Demo
+= Kroki Diagrams Demo
 :toc:
 
-// Kroki-Konfiguration (funktioniert mit beiden Extensions)
+// Kroki configuration (works with both extensions)
 :diagram-server-url: https://kroki.io/
 :diagram-server-type: kroki_io
 :kroki-server-url: https://kroki.io/
 
-== PlantUML Sequenzdiagramm
+== PlantUML Sequence Diagram
 
 [plantuml]
 ....
@@ -98,7 +98,7 @@ graph TD
     E --> F[Rendered Diagram]
 ....
 
-== GraphViz Diagramm
+== GraphViz Diagram
 
 [graphviz]
 ....
@@ -118,13 +118,13 @@ digraph G {
 ....
 ----
 
-=== Die Lösung: Defensive Konfiguration
+=== The Solution: Defensive Configuration
 
-Um sicherzustellen, dass Ihre Diagramme unabhängig von der verwendeten Extension funktionieren, empfehlen wir die **defensive Konfiguration**:
+To ensure your diagrams work regardless of the extension used, we recommend the **defensive configuration**:
 
 [source,asciidoc]
 ----
-// Kroki-Konfiguration (kompatibel mit allen Extensions)
+// Kroki configuration (compatible with all extensions)
 :diagram-server-url: https://kroki.io/
 :diagram-server-type: kroki_io
 :kroki-server-url: https://kroki.io/
@@ -135,52 +135,52 @@ Um sicherzustellen, dass Ihre Diagramme unabhängig von der verwendeten Extensio
 [source,groovy]
 ----
 asciidoctorAttributes = [
-    // Defensive Kroki-Konfiguration
+    // Defensive Kroki configuration
     'diagram-server-url': 'https://kroki.io/',
     'diagram-server-type': 'kroki_io',
     'kroki-server-url': 'https://kroki.io/',
     
-    // Andere Attribute...
+    // Other attributes...
     'toc': 'left',
     'icons': 'font'
 ]
 ----
 
-=== Lokaler Kroki-Server für Unternehmen
+=== Local Kroki Server for Enterprises
 
-Für Organisationen, die sensible Diagramme nicht an externe Services senden möchten:
+For organizations that don't want to send sensitive diagrams to external services:
 
 [source,bash]
 ----
-# Kroki lokal starten
+# Start Kroki locally
 docker run -d --name kroki -p 8000:8000 yuzutech/kroki
 
-# In der Konfiguration verwenden
+# Use in configuration
 :diagram-server-url: http://localhost:8000/
 :diagram-server-type: kroki_io
 :kroki-server-url: http://localhost:8000/
 ----
 
-=== Warum ist das wichtig?
+=== Why Is This Important?
 
-Diese defensive Konfiguration bietet mehrere Vorteile:
+This defensive configuration offers several advantages:
 
-✅ **Zukunftssicher**: Funktioniert mit Extension-Updates +
-✅ **Flexibel**: docToolchain kann zwischen Extensions wechseln +
-✅ **Robust**: Keine Breaking Changes bei Upgrades +
-✅ **Benutzerfreundlich**: Teams müssen nicht wissen, welche Extension verwendet wird
+✅ **Future-proof**: Works with extension updates +
+✅ **Flexible**: docToolchain can switch between extensions +
+✅ **Robust**: No breaking changes with upgrades +
+✅ **User-friendly**: Teams don't need to know which extension is used
 
-=== Fazit
+=== Conclusion
 
-Die verschiedenen Kroki-Attribute sind nicht das Resultat von Verwirrung, sondern spiegeln die natürliche Evolution des AsciiDoc-Ökosystems wider. Zwei verschiedene Ansätze - ein generischer und ein spezialisierter - führten zu verschiedenen Attribut-Namen.
+The different Kroki attributes are not the result of confusion, but reflect the natural evolution of the AsciiDoc ecosystem. Two different approaches - one generic and one specialized - led to different attribute names.
 
-Mit der defensiven Konfiguration können Sie beide Welten nutzen und sind für die Zukunft gerüstet. Ihre Diagramme werden funktionieren, egal welche Extension docToolchain intern verwendet.
+With the defensive configuration, you can use both worlds and are prepared for the future. Your diagrams will work regardless of which extension docToolchain uses internally.
 
-=== Was kommt als nächstes?
+=== What's Next?
 
-Diese Erkenntnisse fließen in die offizielle docToolchain-Dokumentation ein. Haben Sie weitere Konfigurationsfragen oder Verbesserungsvorschläge? 
+These insights will flow into the official docToolchain documentation. Do you have further configuration questions or suggestions for improvement?
 
-Diskutieren Sie mit uns auf:
+Discuss with us on:
 
 - https://github.com/docToolchain/docToolchain/issues[GitHub Issues]
 - https://doctoolchain.org[docToolchain Community]
