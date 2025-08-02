@@ -425,11 +425,13 @@
         End If
       End If
       EAapp.Repository.CloseFile()
+      EAapp.Repository.ShutdownEA(0)
+      EAapp.Repository = Nothing
       ' Since EA 15.2 the Enterprise Architect background process hangs without calling Exit explicitly
       On Error Resume Next
         EAapp.Repository.CloseFile()
-        EAapp.Repository.Exit()
-        EAapp.Repository = null
+        EAapp.Repository.ShutdownEA(0)
+        EAapp.Repository = Nothing
       ' end fix EA
     End Sub
 
