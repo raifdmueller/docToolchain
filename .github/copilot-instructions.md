@@ -318,6 +318,57 @@ ls -la build/pdf/
 - **Version Control**: Git-based changelog and contributor exports
 - **Container Support**: Full Docker containerization available
 
+## Critical Timing Expectations and Validation
+
+### Build and Test Timing (NEVER CANCEL - Set Long Timeouts)
+
+**CRITICAL**: All commands below have been validated. Set timeouts of 600+ seconds for safety.
+
+```bash
+# First-time dtcw task listing: ~95 seconds (downloads Gradle)
+./dtcw tasks --group doctoolchain
+
+# Core tests (always pass): ~11 seconds  
+./gradlew core:test
+
+# Full build with tests: ~3-5 minutes (with expected failures)
+./gradlew clean build
+
+# Document generation: ~15-20 seconds each
+./dtcw generateHTML  # ~13-19 seconds
+./dtcw generatePDF   # ~19-20 seconds
+
+# CI pipeline: ~3-4 minutes total
+./.ci.sh
+```
+
+**Expected Test Results**:
+- **Core tests**: 66 tests pass, 3 skipped (should never fail)
+- **Main project tests**: 53 tests, ~11 failures expected (external tools missing)
+- **Common failures**: PandocSpec, ExportEASpec (normal when pandoc/EA not installed)
+
+### Manual Validation Scenarios
+
+After making any changes, ALWAYS run these validation scenarios:
+
+```bash
+# 1. Basic functionality test (13-20 seconds each)
+./dtcw --version                    # Should show dtcw 0.51, docToolchain 3.4.2
+./dtcw local tasks --group doctoolchain  # Should list ~20 tasks
+./dtcw local generateHTML           # Should create build/html5/manual_test_script.html
+./dtcw local generatePDF            # Should create build/pdf/manual_test_script.pdf
+
+# 2. Verify outputs exist
+ls -la build/html5/manual_test_script.html  # Should be ~37KB
+ls -la build/pdf/manual_test_script.pdf     # Should be ~62KB
+
+# 3. Test core functionality (11 seconds)
+./gradlew core:test                 # Should pass all 66 tests
+
+# 4. Shell script validation (<1 second)
+find . -name "*.sh" -exec shellcheck {} \;  # Should pass without errors
+```
+
 ---
 
 ## Agent Instructions
@@ -328,20 +379,26 @@ ls -la build/pdf/
 
 ### Quick Command Reference
 ```bash
-# Essential commands for agents
-./dtcw --version              # Check version and environment status
-./dtcw tasks --group doctoolchain  # List all available tasks (~20 tasks)
-./dtcw generateHTML           # Basic document generation test
-./gradlew clean build         # Full build with tests  
-./gradlew core:test           # Core functionality tests (should pass)
+# Essential commands for agents (with expected timing)
+./dtcw --version              # Check version and environment status (~2 seconds)
+./dtcw tasks --group doctoolchain  # List all available tasks (~95 seconds first run)
+./dtcw generateHTML           # Basic document generation test (~13-19 seconds)
+./gradlew clean build         # Full build with tests (~3-5 minutes, NEVER CANCEL)
+./gradlew core:test           # Core functionality tests (~11 seconds, should pass)
 ```
+
+**CRITICAL TIMEOUT SETTINGS**:
+- Use 600+ second timeouts for all build and test commands
+- Use 120+ second timeouts for document generation
+- Use 30+ second timeouts for basic dtcw commands
 
 **Key Success Factors:**
 1. Use Java 17 exactly (other versions will fail)
 2. Use `./dtcw` for all docToolchain operations  
-3. Allow sufficient time for document generation (15-60 seconds)
-4. Expect some test failures related to optional external tools
-5. Check `build/` directory for generated outputs
+3. **NEVER CANCEL builds or tests** - Set 600+ second timeouts
+4. Expect some test failures related to optional external tools (11 failures out of 53 tests is normal)
+5. Check `build/` directory for generated outputs (HTML in `build/html5/`, PDF in `build/pdf/`)
+6. Always run manual validation scenarios after changes
 
 **For new features or changes:**
 1. Add tests in `/test/` (BATS) or `/core/src/test/` (Spock)
