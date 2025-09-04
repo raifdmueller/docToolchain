@@ -2,6 +2,7 @@ package org.docToolchain.tasks
 
 import org.docToolchain.atlassian.confluence.clients.ConfluenceClient
 import org.docToolchain.atlassian.transformer.HtmlTransformer
+import org.docToolchain.atlassian.constants.ConfluenceTags
 
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -45,8 +46,6 @@ class Asciidoc2ConfluenceTask extends DocToolchainTask {
     private String docDir
     private ConfluenceService confluenceService
     private ConfluenceClient confluenceClient
-    private CDATA_PLACEHOLDER_START = '<cdata-placeholder>'
-    private CDATA_PLACEHOLDER_END = '</cdata-placeholder>'
     private baseUrl
     private Map allPages
     // #938-mksiva: global variable to hold input spaceKey passed in the Config.groovy
@@ -265,7 +264,7 @@ class Asciidoc2ConfluenceTask extends DocToolchainTask {
                 code.parent()
                     .wrap('<ac:structured-macro ac:name="confluence-open-api" ac:schema-version="1" ac:macro-id="1dfde21b-6111-4535-928a-470fa8ae3e7d"></ac:structured-macro>')
                     .unwrap()
-                code.wrap("<ac:plain-text-body>${CDATA_PLACEHOLDER_START}${CDATA_PLACEHOLDER_END}</ac:plain-text-body>")
+                code.wrap("<ac:plain-text-body>${ConfluenceTags.CDATA_PLACEHOLDER_START}${ConfluenceTags.CDATA_PLACEHOLDER_END}</ac:plain-text-body>")
                     .replaceWith(new TextNode(rawYaml))
             }
         } else if (config.confluence.useOpenapiMacro == 'swagger-open-api') {
@@ -275,7 +274,7 @@ class Asciidoc2ConfluenceTask extends DocToolchainTask {
                 code.parent()
                     .wrap('<ac:structured-macro ac:name="swagger-open-api" ac:schema-version="1" ac:macro-id="f9deda8a-1375-4488-8ca5-3e10e2e4ee70"></ac:structured-macro>')
                     .unwrap()
-                code.wrap("<ac:plain-text-body>${CDATA_PLACEHOLDER_START}${CDATA_PLACEHOLDER_END}</ac:plain-text-body>")
+                code.wrap("<ac:plain-text-body>${ConfluenceTags.CDATA_PLACEHOLDER_START}${ConfluenceTags.CDATA_PLACEHOLDER_END}</ac:plain-text-body>")
                     .replaceWith(new TextNode(rawYaml))
             }
         } else if (config.confluence.useOpenapiMacro == 'open-api') {
@@ -306,7 +305,7 @@ class Asciidoc2ConfluenceTask extends DocToolchainTask {
                 else {
                     //default: show download button
                     code.before('<ac:parameter ac:name="showDownloadButton">true</ac:parameter>')
-                    code.wrap("<ac:plain-text-body>${CDATA_PLACEHOLDER_START}${CDATA_PLACEHOLDER_END}</ac:plain-text-body>")
+                    code.wrap("<ac:plain-text-body>${ConfluenceTags.CDATA_PLACEHOLDER_START}${ConfluenceTags.CDATA_PLACEHOLDER_END}</ac:plain-text-body>")
                         .replaceWith(new TextNode(rawYaml))
                 }
             }
