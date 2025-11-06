@@ -13,7 +13,7 @@ Either way, this task lets you export an Excel spreadsheet and include it direct
 It searches for `.xlsx` files and exports each contained worksheet as `.csv` and as `.adoc`.
 Note that formulas contained in your spreadsheet are evaluated and exported statically.
 
-The generated files are written to `src/excel/[filename]/[worksheet].(adoc|cvs)`.
+The generated files are written to `src/excel/[filename]/[worksheet].(adoc|csv)`.
 The `src` folder is used instead of the `build` folder because a better history of worksheet changes is captured.
 
 The files can be included either as AsciiDoc:
