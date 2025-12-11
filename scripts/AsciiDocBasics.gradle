@@ -88,7 +88,11 @@ config = new ConfigBuilder(docDir, mainConfigFile)
     def autoCreate = project.hasProperty('createConfig') ? project.createConfig.toBoolean() : false
     
     if (isHeadless || autoCreate) {
-        println "${color 'green', 'Headless mode: automatically creating default config file'}"
+        if (isHeadless) {
+            println "${color 'green', 'Headless mode: automatically creating default config file'}"
+        } else {
+            println "${color 'green', 'Auto-creating default config file (createConfig=true)'}"
+        }
         ant.yesno = "y"
     } else {
         def input = ant.input(message: "\n${color 'green', 'do you want me to create a default one for you?'}", validargs: 'y,n', addproperty: 'yesno')

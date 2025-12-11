@@ -40,7 +40,7 @@ You can override specific options using Gradle project properties:
 * `-PdtcTemplate=<template>` - Template name (e.g., `arc42`, `req42`)
 * `-PdtcLang=<language>` - Language code (e.g., `EN`, `DE`, `FR`)
 * `-PdtcHelp=<variant>` - Help variant: `plain` or `withhelp`
-* `-PdtcAntora=<boolean>` - Antora setup: `y` or `n`
+* `-PdtcAntora=<boolean>` - Antora setup: `y`, `yes`, `true`, or `n`, `no`, `false`
 
 [source, bash]
 ----

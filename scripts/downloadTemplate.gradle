@@ -83,6 +83,7 @@ task downloadTemplate(
             
             // Handle Antora setup selection
             if (project.hasProperty('dtcAntora')) {
+                // Accept y/yes/true as true, anything else as false
                 antora = project.dtcAntora.toLowerCase() in ['y', 'yes', 'true']
                 println "${color 'green', "Using Antora setting from property: ${antora ? 'y' : 'n'}"}"
             } else if (isHeadless) {
@@ -90,7 +91,8 @@ task downloadTemplate(
                 println "${color 'green', 'Headless mode: using default Antora setting n'}"
             } else {
                 ant.input(message: "${color 'green', 'Do you want the template to be setup for Antora? (experimental)'}", validargs: 'n,y', addproperty: 'antora')
-                antora = ant.antora.toBoolean()
+                // Convert ant input 'y'/'n' to boolean
+                antora = ant.antora == 'y'
             }
         }
         def outputDir = new File(docDir, Paths.get(inputPath, template).toString())
