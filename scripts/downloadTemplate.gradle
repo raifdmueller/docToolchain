@@ -29,28 +29,69 @@ task downloadTemplate(
                 templates << [(name):template]
             }
         }
+        // Check if running in headless mode or if properties are provided
+        def isHeadless = System.getenv('DTC_HEADLESS') == 'true'
+        
+        // Determine template to use
         def template = 'arc42'
-        if (templates.size()>1) {
+        if (project.hasProperty('dtcTemplate')) {
+            template = project.dtcTemplate
+            println "${color 'green', "Using template from property: ${template}"}"
+        } else if (templates.size()>1 && !isHeadless) {
             def prompt = ""
             templates.eachWithIndex { templateName, url, i ->
                 prompt += "\n ${color 'green', "${i+1}) $templateName"}"
             }
             ant.input(message: "${color 'green', "Which template do you want to install?"}$prompt\n", validargs: (1..templates.size()).join(","), addproperty: 'template')
             template = templates.keySet()[(ant.template as Integer)-1]
+        } else if (isHeadless && templates.size()>1) {
+            println "${color 'green', 'Headless mode: using default template arc42'}"
         }
+        
         println "${color 'green', 'Install '+template+' documentation template.'}"
+        
         if (template in ['arc42', 'req42']) {
             if (template=='arc42') {
                 println "For more information about arc42 see https://arc42.org"
             } else {
                 println "For more information about req42 see https://req42.de/en"
             }
-            ant.input(message: "${color 'green', 'Which language do you want to install?'}", validargs: languages[template].join(','), addproperty: 'lang')
-            ant.input(message: "${color 'green', 'Do you want the template with or without help?'}", validargs: 'withhelp,plain', addproperty: 'help')
-            ant.input(message: "${color 'green', 'Do you want the template to be setup for Antora? (experimental)'}", validargs: 'n,y', addproperty: 'antora')
-            lang = ant.lang
-            help = ant.help
-            antora = ant.antora.toBoolean()
+            
+            // Handle language selection
+            if (project.hasProperty('dtcLang')) {
+                lang = project.dtcLang
+                println "${color 'green', "Using language from property: ${lang}"}"
+            } else if (isHeadless) {
+                lang = 'EN'
+                println "${color 'green', "Headless mode: using default language ${lang}"}"
+            } else {
+                ant.input(message: "${color 'green', 'Which language do you want to install?'}", validargs: languages[template].join(','), addproperty: 'lang')
+                lang = ant.lang
+            }
+            
+            // Handle help variant selection
+            if (project.hasProperty('dtcHelp')) {
+                help = project.dtcHelp
+                println "${color 'green', "Using help variant from property: ${help}"}"
+            } else if (isHeadless) {
+                help = 'plain'
+                println "${color 'green', "Headless mode: using default help variant ${help}"}"
+            } else {
+                ant.input(message: "${color 'green', 'Do you want the template with or without help?'}", validargs: 'withhelp,plain', addproperty: 'help')
+                help = ant.help
+            }
+            
+            // Handle Antora setup selection
+            if (project.hasProperty('dtcAntora')) {
+                antora = project.dtcAntora.toLowerCase() in ['y', 'yes', 'true']
+                println "${color 'green', "Using Antora setting from property: ${antora ? 'y' : 'n'}"}"
+            } else if (isHeadless) {
+                antora = false
+                println "${color 'green', 'Headless mode: using default Antora setting n'}"
+            } else {
+                ant.input(message: "${color 'green', 'Do you want the template to be setup for Antora? (experimental)'}", validargs: 'n,y', addproperty: 'antora')
+                antora = ant.antora.toBoolean()
+            }
         }
         def outputDir = new File(docDir, Paths.get(inputPath, template).toString())
         outputDir.mkdirs()
