@@ -33,6 +33,31 @@ You can also specify the `mainConfigFile` using the environment variable `DTC_CO
 
     export DTC_CONFIG_FILE=path/to/config.groovy
 
+=== Automatic Config File Creation
+
+If the config file does not exist, docToolchain will prompt you to create a default one. For unattended use (e.g., with CI/CD pipelines or LLM agents), you can enable automatic config file creation:
+
+==== Using the DTC_HEADLESS Environment Variable
+
+When `DTC_HEADLESS=true` is set, docToolchain will automatically create a default config file without prompting:
+
+[source, bash]
+----
+export DTC_HEADLESS=true
+./dtcw generateHTML
+----
+
+==== Using Project Property
+
+You can also explicitly request automatic config creation using the `-PcreateConfig=true` property:
+
+[source, bash]
+----
+./dtcw generateHTML -PcreateConfig=true
+----
+
+This is useful when you want to ensure a config file exists without enabling full headless mode.
+
 === dynamic configuration properties
 
 Sometimes you need a more dynamic configuration.

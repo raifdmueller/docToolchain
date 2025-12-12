@@ -82,9 +82,25 @@ config = new ConfigBuilder(docDir, mainConfigFile)
 .prepareConfigFileIfNotExists({
     def configFile = new File(docDir, mainConfigFile)
     println "\n${color 'green', """Config file '${configFile.getCanonicalPath()}' does not exist' """}"
-    def input = ant.input(message: "\n${color 'green', 'do you want me to create a default one for you?'}", validargs: 'y,n', addproperty: 'yesno')
+    
+    // Check if running in headless mode or if createConfig property is set
+    def isHeadless = System.getenv('DTC_HEADLESS') == 'true'
+    def autoCreate = project.hasProperty('createConfig') ? project.createConfig.toBoolean() : false
+    
+    if (isHeadless || autoCreate) {
+        if (isHeadless) {
+            println "${color 'green', 'Headless mode: automatically creating default config file'}"
+        } else {
+            println "${color 'green', 'Auto-creating default config file (createConfig=true)'}"
+        }
+        ant.yesno = "y"
+    } else {
+        def input = ant.input(message: "\n${color 'green', 'do you want me to create a default one for you?'}", validargs: 'y,n', addproperty: 'yesno')
+    }
+    
     if (ant.yesno=="y") {
-        configFile.write(new File("./template_config/Config.groovy").text)
+        configFile.parentFile.mkdirs()
+        configFile.write(new File(projectDir, "template_config/Config.groovy").text)
     } else {
         throw new Exception("can't continue without a config file")
     }
