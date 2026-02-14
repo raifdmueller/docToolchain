@@ -1,7 +1,7 @@
-ifndef::imagesdir[:imagesdir: ../../images]
-:diagram-server-url: https://kroki.io/
-:diagram-server-type: kroki_io
-:kroki-server-url: https://kroki.io/
+:jbake-title: Kroki Configuration Guide
+:jbake-order: 170
+
+include::_config.adoc[]
 
 == Kroki Configuration Guide
 
@@ -11,7 +11,7 @@ This guide provides comprehensive instructions for configuring Kroki with docToo
 
 Kroki is a service that converts text-based diagrams (PlantUML, Mermaid, GraphViz, etc.) into images without requiring local tool installations. However, configuring Kroki in docToolchain can be confusing due to historical evolution of diagram extensions.
 
-IMPORTANT: **docToolchain uses the `asciidoctor-diagram` extension version 2.3.2** with Kroki delegation capabilities. This means you should use the `:diagram-server-*` attributes for proper functionality.
+IMPORTANT: **docToolchain uses the `asciidoctor-diagram` extension version 2.3.1** with Kroki delegation capabilities. This means you should use the `:diagram-server-*` attributes for proper functionality.
 
 
 === The Two Extensions
@@ -320,18 +320,6 @@ docker run -d --name kroki-mermaid yuzutech/kroki-mermaid
 docker run -d --name kroki-bpmn yuzutech/kroki-bpmn
 ----
 
-==== Performance Optimization
-
-For high-volume documentation:
-
-[source,groovy]
-----
-asciidoctorAttributes = [
-    'kroki-fetch-diagram': 'true',  // Cache diagrams locally
-    'kroki-default-format': 'svg',  // Use SVG for better quality
-]
-----
-
 === Security Considerations
 
 ==== Network Security
@@ -351,7 +339,7 @@ asciidoctorAttributes = [
 This approach offers several benefits:
 
 ✅ **Future-proof**: Works with extension updates +
-✅ **Flexible**: docToolchain can switch between extensions +
+✅ **Flexible**: if docToolchain ever switches between extensions, this setup will still work +
 ✅ **Robust**: No breaking changes with upgrades +
 ✅ **Team-friendly**: Team members don't need to know implementation details
 
