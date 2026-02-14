@@ -54,3 +54,6 @@ resources/asciidoctor-reveal.js
 # VSC config file
 .vscode/
 tmp/
+
+# PR Analysis Report
+PR-ANALYSIS.md
