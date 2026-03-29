@@ -296,17 +296,19 @@ Configuration (one line in `docToolchainConfig.groovy`):
 +
 [source,groovy]
 ----
+// Option 1: dtcw starts a local Kroki Docker container automatically
+diagramServer = 'docker'
+
+// Option 2: Public Kroki service
 diagramServer = 'https://kroki.io/'
-----
-+
-Or for enterprise GitLab with Kroki:
-+
-[source,groovy]
-----
+
+// Option 3: Enterprise server (GitLab PlantUML / self-hosted Kroki)
 diagramServer = 'https://gitlab.company.com/kroki/'
 ----
 +
-`asciidoctor-diagram` passes this URL via `:diagram-server-url:` and `:diagram-server-type: kroki_io` attributes.
+When `diagramServer = 'docker'`, dtcw checks if Docker is available, starts `yuzutech/kroki` as a container on port 8000, and sets the URL to `http://localhost:8000/`. The container persists between runs — dtcw only starts it if not already running.
++
+`asciidoctor-diagram` receives the resolved URL via `:diagram-server-url:` and `:diagram-server-type: kroki_io` attributes.
 
 * **Alternatives considered**:
 
