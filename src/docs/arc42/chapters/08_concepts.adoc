@@ -15,106 +15,123 @@ ifndef::imagesdir[:imagesdir: ../../images]
 
 === Configuration Management
 
-docToolchain uses a three-layer configuration model:
+Unchanged from v3 in principle, simplified in implementation.
 
 [options="header",cols="1,2,2"]
 |===
 |Layer |Source |Precedence
 
-|Build-time defaults
-|`gradle.properties` -- JVM args, version, paths, repository URLs
-|Lowest. Provides defaults that rarely change.
-
 |Project configuration
-|`docToolchainConfig.groovy` (or legacy `Config.groovy`) -- Groovy DSL parsed by `ConfigSlurper` into a `ConfigObject`. Contains all task-specific settings: input files, output paths, Jira/Confluence endpoints, microsite config.
-|Middle. Project-specific settings override build defaults.
+|`docToolchainConfig.groovy` — Groovy DSL parsed by `ConfigSlurper`. Contains all task-specific settings. (`Config.groovy` is the template, not a separate config file.)
+|Primary. Project-specific settings.
 
 |CLI overrides
-|Gradle `-P` flags and environment variables (e.g., `-Pconfluence.credentials=...`, `DTC_CONFIG_FILE=...`). Passed through `dtcw` or directly to Gradle.
-|Highest. Enables CI/CD and per-invocation customization.
+|Environment variables (`DTC_CONFIG_FILE`, `DTC_HEADLESS`) and script arguments.
+|Highest. Per-invocation customization.
 |===
 
-**Key classes:**
+`gradle.properties` is removed with Gradle. Build-time settings that were in `gradle.properties` (e.g., JVM memory, version) move to `dtcw` defaults or `docToolchainConfig.groovy`.
 
-* `ConfigBuilder` (`core/src/main/groovy/org/docToolchain/configuration/ConfigBuilder.groovy`): Locates and parses the configuration file. Creates a default configuration if none exists.
-* `ConfigService` (`core/src/main/groovy/org/docToolchain/configuration/ConfigService.groovy`): Wraps `ConfigObject` with typed access methods -- `getConfigProperty("confluence.api")` for dot-notation paths and `getFlatConfigSubTree("jira")` for flattened section access.
+**LLM-first principle (QS-15):** The config file contains **only deviations from defaults**. All defaults are defined in code and documented in a machine-readable reference. This enables LLMs to read a config, understand what the user has customized, and make targeted changes — without hallucinating or duplicating default values. A minimal config for a project that only generates HTML might be just:
 
-// Source: scripts/AsciiDocBasics.gradle (config loading), ConfigBuilder.groovy, ConfigService.groovy
+```groovy
+inputFiles = [
+    [file: 'arc42/arc42.adoc', formats: ['html','pdf']],
+]
+```
 
-=== Plugin / Extension Mechanism
+Everything else (outputPath, inputPath, imageDirs, etc.) comes from sensible defaults in the scripts.
 
-docToolchain's modularity is based on Gradle's `apply from:` pattern:
+=== Script Execution Model
 
-1. Each feature is implemented as a `scripts/*.gradle` file.
-2. `build.gradle` applies these scripts: `apply from: 'scripts/exportJiraIssues.gradle'`.
-3. Each script registers one or more Gradle tasks in the `docToolchain` group.
-4. Scripts with complex business logic delegate to classes in the `core/` module.
-5. Users can add custom tasks via `scripts/customTasks.gradle`.
+v4 replaces Gradle's task model with direct script invocation:
 
-This pattern achieves QS-1 (Extensibility): adding a new feature requires one script file, one core class, and one `apply from:` line.
+1. User runs `./dtcw <taskName>` (e.g., `./dtcw generateHTML`)
+2. `dtcw` constructs the classpath from the `lib/` directory (or resolves via Grape)
+3. `dtcw` invokes `java -cp <classpath> groovy.ui.GroovyMain scripts/<taskName>.groovy`
+4. The script loads configuration, executes its logic, writes output, and exits
+5. No daemon persists between invocations
 
-**Script plugin lifecycle:**
-
-* At Gradle configuration time, all `apply from:` statements execute, registering tasks.
-* At execution time, only the requested tasks (and their dependencies) run.
-* Unused plugins add negligible overhead -- they register tasks but do not execute them.
-
-// Source: build.gradle (lines 100-127)
+Tasks are independent. There are no implicit dependencies. Users call them in the order they need: `./dtcw generateHTML` then `./dtcw publishToConfluence`. This matches real-world usage patterns.
 
 === Authentication and Security
 
-All external API integrations (Confluence, Jira) support two authentication methods:
+Unchanged from v3:
 
-* **Basic Auth**: Username + API token, passed as `credentials` in configuration. Encoded as Base64 for the `Authorization` header.
-* **Bearer Token**: OAuth or personal access token, passed as `bearerToken` in configuration.
-
-**Security measures:**
-
-* Credentials can be supplied via CLI flags (`-Pconfluence.credentials=...`) to avoid storing them in configuration files.
-* Properties containing `credential`, `token`, or `secret` in their name are masked in log output.
-* Proxy configuration is supported for Confluence via `confluence.proxy` settings.
-* User-Agent header is set to `docToolchain_v<version>` for API call identification.
-
-// Source: scripts/AsciiDocBasics.gradle (credential masking),
-// core/src/main/groovy/org/docToolchain/atlassian/confluence/clients/RestClient.groovy
-
-=== Error Handling
-
-Error handling is currently inconsistent across the codebase (see ADR-TBD-5):
-
-* **Core module**: Throws `RequestFailedException` for HTTP errors and `RuntimeException` for logic errors. Some methods return null on failure.
-* **Gradle scripts**: Use `GradleException` for user-facing errors. Some scripts use `println` with error messages and continue silently.
-* **Wrapper (dtcw)**: Uses shell exit codes. Propagates Gradle's exit code to the caller.
-
-There is no centralized error handling strategy, no structured logging, and no standard for user-facing error messages. This is documented as a technical risk in <<section-technical-risks>>.
-
-// Source: core/src/main/groovy/org/docToolchain/http/RequestFailedException.groovy,
-// various scripts/*.gradle files
+* **Basic Auth**: Username + API token, encoded as Base64 for `Authorization` header.
+* **Bearer Token**: OAuth or personal access token.
+* Credentials supplied via CLI arguments or environment variables — never stored in config files.
+* Properties containing `credential`, `token`, or `secret` are masked in output.
+* User-Agent header identifies docToolchain version for API calls.
 
 === Headless / CI Mode
 
-docToolchain supports non-interactive execution for CI/CD pipelines (QS-5):
+Unchanged from v3:
 
-* The `dtcw` wrapper detects headless mode by checking for a TTY (`DTC_HEADLESS` environment variable or absence of an interactive terminal).
-* In headless mode, all interactive prompts are suppressed; default choices are auto-accepted.
-* This is critical for GitHub Actions, Jenkins, and other CI/CD platforms where no user is present to respond to prompts.
-* Exit codes are well-defined: 0 for success, non-zero for failure.
+* `dtcw` detects headless mode via `DTC_HEADLESS` environment variable or absence of TTY.
+* All interactive prompts suppressed; defaults auto-accepted.
+* Critical for GitHub Actions, Jenkins, and other CI/CD platforms.
 
-// Source: dtcw (DTC_HEADLESS detection logic)
+=== LLM Integration Architecture
+
+New in v4. docToolchain supports LLMs through an ecosystem of companion tools:
+
+**daCLI (MCP Server)** provides 10 tools for structured document access:
+
+* `get_structure(max_depth)` — Hierarchical table of contents
+* `get_section(path)` — Read section content by path
+* `search(query)` — Full-text search with relevance scoring
+* `update_section(path, content, expected_hash)` — Modify with optimistic locking
+* `insert_content(path, position, content)` — Insert before/after/append
+* `get_elements(type, section)` — Extract code blocks, tables, diagrams
+* `get_metadata()` — Project-wide statistics
+* `get_dependencies()` — Include tree
+* `get_sections_at_level(level)` — Sections by depth
+* `validate_structure()` — Structural integrity checks
+
+**Semantic Anchors** are well-defined terms, methodologies, and frameworks that serve as precise reference points when communicating with LLMs.
+Rather than lengthy instructions, a single anchor like "arc42", "SOLID Principles", or "Socratic Method" activates a rich body of interconnected knowledge in the LLM.
+Quality criteria for anchors: Precise, Rich, Consistent, Attributable. (See https://llm-coding.github.io/Semantic-Anchors/)
+
+**Semantic Contracts** bundle multiple anchors into reusable working agreements, defined in `CLAUDE.md` files:
+
+* "Specification = Use Cases with Activity Diagrams + Gherkin acceptance criteria"
+* "Architecture Documentation = arc42 + C4 diagrams + ADRs with Pugh Matrix"
+* "Writing Style = Plain English according to Strunk & White"
+
+These contracts ensure that LLMs apply consistent conventions across a project without repeating detailed instructions in every prompt.
+
+**LLM-Prompts** provide reusable interaction patterns:
+
+* arc42 Chapter Generator — step-by-step architecture documentation
+* Architecture Decision Record — structured decisions with Pugh Matrix
+* Quality Scenarios Builder — testable quality requirements
+* Risk Assessment, Stakeholder Analysis, Context Diagram Generator, etc.
+
+**Bausteinsicht** provides architecture-as-code:
+
+* JSONC models that LLMs read/write natively
+* Bidirectional draw.io sync — model changes update diagrams and vice versa
+* CLI with `--format json` for programmatic access
 
 === Content Transformation Pipeline
 
-When publishing to Confluence, HTML content undergoes a transformation pipeline:
+Unchanged from v3 for Confluence publishing:
 
-1. **AsciiDoctor** generates HTML5 from AsciiDoc sources.
-2. **jsoup** parses the HTML into a DOM tree.
-3. **HtmlTransformer** rewrites the DOM for Confluence compatibility:
-   - Admonition blocks (note, warning, tip) become Confluence info/warning/tip macros.
-   - Description lists (`dl/dt/dd`) become HTML tables (Confluence does not support `dl`).
-   - Code blocks become `<ac:structured-macro ac:name="code">` elements.
-   - Local image references become `<ri:attachment>` references.
-   - Embedded images (data: URIs) are decoded, saved as files, and attached.
-4. **LinkTransformer** rewrites cross-reference links and inserts anchors.
-5. **CodeBlockTransformer** formats code blocks with language hints.
+1. AsciiDoctor generates HTML5 from AsciiDoc sources
+2. jsoup parses HTML into DOM tree
+3. HtmlTransformer rewrites DOM for Confluence compatibility
+4. LinkTransformer rewrites cross-references
+5. CodeBlockTransformer formats code blocks as Confluence macros
 
-// Source: core/src/main/groovy/org/docToolchain/atlassian/transformer/
+=== Custom Site Generator (replacing jBake)
+
+New in v4. The site generator is a Groovy script implementing:
+
+1. **Content scanning**: Recursively scan `src/docs/` for `.adoc` files
+2. **Metadata extraction**: Parse jBake-compatible headers (`:jbake-title:`, `:jbake-type:`, `:jbake-menu:`, `:jbake-order:`)
+3. **In-memory model**: Build content model (pages, menu structure, tags) — no database
+4. **AsciiDoc rendering**: Call AsciiDoctor CLI (external tool, ADR-6) for each page
+5. **Template application**: Apply Groovy SimpleTemplate templates (reused from v3's `src/site/templates/`)
+6. **Static output**: Write HTML + assets to `build/microsite/output/`
+7. **Modern theme**: Clean, responsive design with dark mode and search (Phase 1)

@@ -1,0 +1,84 @@
+:jbake-title: Architecture Constraints
+:jbake-type: page_toc
+:jbake-status: published
+:jbake-menu: arc42
+:jbake-order: 2
+:filename: /chapters/02_architecture_constraints.adoc
+ifndef::imagesdir[:imagesdir: ../../images]
+
+:toc:
+
+
+
+[[section-architecture-constraints]]
+== Architecture Constraints
+
+=== Technical Constraints
+
+[options="header",cols="1,3"]
+|===
+|Constraint |Explanation
+
+|Java 17
+|Exact major version required. The `dtcw` wrapper enforces this and can auto-install Adoptium JDK 17. PDF generation needs `-Xmx2048m` heap.
+
+|Groovy 3.0.13
+|Primary implementation language. Chosen for JVM compatibility and native Gradle integration (see ADR-1). All core logic and scripts are written in Groovy.
+
+|Gradle 8.1.1
+|Build system and task orchestration framework. docToolchain is deeply integrated with Gradle's task model, dependency resolution, and plugin ecosystem. The Gradle wrapper (`gradlew`) pins the exact version.
+
+|AsciiDoc format
+|All documentation sources must be in AsciiDoc. This is a fundamental design decision -- docToolchain is an AsciiDoc-first tool chain. Markdown sources can be converted via Pandoc as a preprocessing step.
+
+|PlantUML + Graphviz
+|Diagram rendering requires PlantUML (via `asciidoctorj-diagram` 2.3.2) and optionally Graphviz for certain diagram types. These must be available at build time.
+
+|Cross-platform support
+|Must run on Linux, macOS, and Windows. This constrains the wrapper scripts (Bash, PowerShell, Batch) and prohibits platform-specific features in the core pipeline. Enterprise Architect and Visio export are exceptions -- they require Windows COM automation.
+|===
+
+// Source: gradle.properties, libs.versions.toml, dtcw
+
+=== Organizational Constraints
+
+[options="header",cols="1,3"]
+|===
+|Constraint |Explanation
+
+|MIT License
+|Open-source license. All dependencies must be compatible. No proprietary libraries in the core distribution.
+
+|Community-driven development
+|Contributions come from volunteers. The architecture must be approachable for external contributors -- clear module boundaries, documented conventions, and fast feedback loops.
+
+|GitHub as development platform
+|Source code, issues, pull requests, CI/CD, and releases are hosted on GitHub. The CI/CD pipeline uses GitHub Actions exclusively.
+
+|Docs-as-code philosophy
+|Documentation is treated as source code: version-controlled, peer-reviewed, and built automatically. This philosophy shapes both the product (what docToolchain does) and the project (how docToolchain itself is documented).
+|===
+
+=== Conventions
+
+[options="header",cols="1,3"]
+|===
+|Convention |Explanation
+
+|Architecture Decision Records
+|Significant architecture decisions are documented as ADRs in `src/docs/050_ADRs/`. Format follows Nygard's template (Context, Decision, Status, Consequences).
+
+|Groovy as scripting language
+|ADR-1 mandates Groovy as the primary scripting language. Exception: Visual Basic scripts for Windows COM automation (Enterprise Architect, PowerPoint export).
+
+|Semantic Versioning
+|Project follows SemVer. Current development version: 4.0.0 (in `gradle.properties`). Released version distributed via dtcw: 3.4.2.
+
+|Spock testing framework
+|Unit tests use the Spock framework (2.3-groovy-3.0) with JUnit 5 runner. Integration tests use BATS (Bash Automated Testing System) for wrapper script testing.
+
+|Conventional configuration
+|Project configuration uses a Groovy DSL file (`docToolchainConfig.groovy`). A legacy alternative (`Config.groovy`) exists for backward compatibility. Build-time settings live in `gradle.properties`.
+|===
+
+// Source: ADR-1, ADR-2, gradle.properties, libs.versions.toml, core/build.gradle

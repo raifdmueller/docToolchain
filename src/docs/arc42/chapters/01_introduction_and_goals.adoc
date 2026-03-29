@@ -17,23 +17,24 @@ docToolchain is an open-source implementation of the _docs-as-code_ approach for
 It processes AsciiDoc source files and generates documentation in multiple output formats (HTML, PDF, DocBook, Reveal.js slides, microsites).
 Beyond format conversion, docToolchain integrates with external systems -- Atlassian Confluence and Jira, Enterprise Architect, Structurizr, Excel, PowerPoint, and Visio -- to import data into documentation or publish documentation to collaboration platforms.
 
-// Source: README.adoc, docToolchainConfig.groovy
+v4 represents a fundamental shift: from a Gradle-based build tool to a lightweight, LLM-native docs-as-code platform.
+Gradle is removed entirely (ADR-3), the `core/` compilation module is dissolved back into scripts, jBake is replaced by a custom Groovy-based site generator (ADR-4), and the strategic focus shifts to LLM integration via MCP, Skills, Prompts, and Semantic Anchors (ADR-5).
 
 === Requirements Overview
 
 The core functional requirements are:
 
 * **Document generation**: Convert AsciiDoc sources with embedded PlantUML diagrams to HTML, PDF, DocBook, and Reveal.js slides
-* **Microsite generation**: Build complete static documentation websites using jBake
+* **Microsite generation**: Build complete static documentation websites with a modern UI, using a custom Groovy-based generator (replacing jBake)
 * **Confluence publishing**: Publish generated HTML pages to Atlassian Confluence, maintaining page hierarchies, attachments, and labels
 * **Jira integration**: Export Jira issues and sprint changelogs to AsciiDoc or Excel format for inclusion in documentation
 * **External tool import**: Extract diagrams from Enterprise Architect, Structurizr, Visio, and PowerPoint; import tables from Excel; convert Markdown to AsciiDoc
 * **Git metadata extraction**: Generate changelogs and contributor lists from Git history
-* **Cross-platform CLI**: Provide a single command-line interface (`dtcw`) that works on Linux, macOS, and Windows
+* **Cross-platform CLI**: Provide a single command-line interface (`dtcw`) that works on Linux, macOS (including Apple Silicon), and Windows
 * **Multiple execution environments**: Support local installation, Docker containers, and SDKMAN-based installation
 * **Zero-configuration start**: Enable first-time users to generate documentation with minimal setup
-
-// Source: build.gradle (apply from lines 100-127), docToolchainConfig.groovy, dtcw
+* **LLM-native document access**: Provide structured document navigation and modification via MCP server (daCLI), supporting Skills, Prompts, and Semantic Anchors
+* **Fast execution**: Minimal startup overhead — no build framework initialization, no daemon, no dependency resolution at runtime
 
 === Quality Goals
 
@@ -42,27 +43,41 @@ The core functional requirements are:
 |Priority |Quality Goal |Scenario
 
 |1
-|Extensibility
-|A new export/import feature can be added by creating one Gradle script file in `scripts/` and one Groovy class in `core/` -- no changes to the build system beyond a single `apply from:` line.
+|Performance (Startup + Throughput)
+|Startup under 3 seconds, 50-page HTML generation under 10 seconds. No Gradle daemon, no dependency resolution overhead. (QS-9)
 
 |2
-|Cross-platform portability
-|The same documentation project produces identical output on Linux, macOS, and Windows, regardless of whether execution uses local, Docker, or SDKMAN environments.
+|Script-first Maintainability
+|A new feature is added by creating one Groovy script in `scripts/`. No compilation, no JAR rebuild. Change-to-test cycle under 5 seconds. (QS-11)
 
 |3
-|Ease of adoption
-|A developer with no prior docToolchain experience can generate HTML documentation in under 5 minutes using only the `dtcw` wrapper script.
+|Cross-platform portability
+|Identical output on Linux, macOS (including Apple Silicon), and Windows across local, Docker, and SDKMAN environments. (QS-2, QS-10)
 
 |4
-|Docs-as-code integration
-|Documentation sources live alongside application code in version control and are built automatically via CI/CD pipelines without interactive prompts.
+|LLM Friendliness
+|LLMs navigate and modify documentation via daCLI MCP server with at most 3 tool calls to locate any section. Token usage under 10% of full-file reading. (QS-12)
 
 |5
-|Modularity
-|Features are independently loadable script plugins. Unused integrations (e.g., Jira, Confluence) add no overhead to projects that do not configure them.
-|===
+|LLM-managed configuration
+|The config file contains only deviations from defaults. An LLM can read, explain, and modify `docToolchainConfig.groovy` correctly. No boilerplate, no commented-out defaults. (QS-15)
 
-// Source: README.adoc, build.gradle plugin architecture, dtcw wrapper design
+|6
+|Actionable error guidance
+|When something fails, docToolchain tells the user what to do — not what went wrong. Every error message is a concrete action: which file to close, which config to set, which command to run. (QS-16)
+
+|7
+|Ease of adoption
+|A developer generates HTML documentation in under 5 minutes using only `dtcw`, including automatic Java and docToolchain installation. (QS-3, QS-6)
+
+|8
+|Modern documentation UI
+|Generated microsites have a modern, responsive design with dark mode, fast search, and clean navigation. (QS-13)
+
+|9
+|v3 backward compatibility
+|Existing `docToolchainConfig.groovy` files work without changes. Deprecated features emit warnings but do not fail. (QS-14)
+|===
 
 === Stakeholders
 
@@ -72,21 +87,25 @@ The core functional requirements are:
 
 |Documentation Author
 |Technical writers and developers writing docs
-|Simple CLI to generate and preview documentation in multiple formats. Seamless integration with their editor and version control workflow.
+|Simple CLI to generate and preview documentation. Seamless integration with editors, version control, and LLM assistants.
+
+|LLM Agent
+|AI assistants (Claude, ChatGPT, etc.) via daCLI MCP server
+|Structured document access, section-level read/write, search, validation. Machine-readable Semantic Anchors for reliable navigation.
 
 |Contributor / Developer
 |Open-source contributors extending docToolchain
-|Clear architecture, modular codebase, fast test feedback. Ability to add new features without understanding the entire system.
+|Script-first architecture — no compilation step, no build system knowledge required. Fast feedback loop. Clear, simple codebase.
 
 |DevOps Engineer
 |CI/CD pipeline maintainers
-|Headless execution mode, Docker support, predictable exit codes. No interactive prompts during automated builds.
+|Headless execution mode, Docker support, predictable exit codes. Fast builds without Gradle overhead.
 
 |Project Maintainer
 |Ralf D. Mueller and core team
-|Sustainable architecture that supports community contributions. Backward compatibility for existing users. Clear separation between core logic and build system (see ADR-2).
+|Sustainable, lightweight architecture. No dependency on unmaintained upstream projects (Gradle plugins, jBake). Full control over the stack.
 
 |End User
 |Readers of generated documentation
-|Well-formatted, accessible output in HTML and PDF. Functional navigation in microsites.
+|Modern, accessible UI in HTML and PDF. Responsive microsites with dark mode, search, and clear navigation.
 |===

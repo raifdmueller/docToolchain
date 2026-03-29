@@ -69,29 +69,5 @@ ifndef::imagesdir[:imagesdir: ../../images]
 |A concrete, measurable acceptance criterion for an architecture quality goal. Defined in Section 10 and referenced by all ADRs to evaluate architectural tradeoffs.
 
 |streamingExecute
-|A Groovy helper method used in scripts to invoke external processes (e.g., VBScript, shell commands) with real-time console output streaming. Manages process lifecycle and output capture.
-
-|MCP (Model Context Protocol)
-|A protocol for communication between LLMs and external tools. daCLI implements an MCP server that exposes 10 tools for structured document access via stdio transport. Enables LLMs to navigate, search, and modify documentation.
-
-|Semantic Anchors
-|Well-defined terms, methodologies, and frameworks that serve as precise reference points when communicating with LLMs. Examples: "SOLID Principles", "arc42", "Socratic Method", "MECE". Each anchor activates a rich, interconnected body of knowledge in the LLM. Quality criteria: Precise, Rich, Consistent, Attributable. See https://llm-coding.github.io/Semantic-Anchors/
-
-|Semantic Contracts
-|Bundles of Semantic Anchors composed into reusable working agreements. Defined in `CLAUDE.md` files. Example: "Specification = Use Cases with Activity Diagrams + Gherkin acceptance criteria". Contracts ensure consistent collaboration conventions between humans and LLMs across a project. See https://llm-coding.github.io/Semantic-Anchors/#/contracts
-
-|daCLI
-|Documentation Access CLI. A Python-based tool providing both a command-line interface and an MCP server for structured document access. Builds an in-memory index from AsciiDoc/Markdown sources for O(1) section lookups. 10 MCP tools for navigation, search, and modification.
-
-|Bausteinsicht
-|Architecture-as-code tool (Go). Defines architecture in JSONC text files with bidirectional draw.io synchronization. LLMs read/write JSONC natively. Exports PlantUML, Mermaid, PNG for embedding in AsciiDoc.
-
-|Groovy SimpleTemplate
-|Groovy's built-in template engine. Used for microsite HTML generation in v4 (replacing jBake's template system). The 23 existing `.gsp` template files from v3 are compatible.
-
-|Groovy Grape
-|Groovy's built-in dependency manager. Scripts declare dependencies via `@Grab('group:artifact:version')`. Automatically downloads JARs from Maven Central and caches them in `~/.groovy/grapes/`. One of the options for dependency management in v4 (ADR-TBD-6).
-
-|Pugh Matrix
-|A structured decision-making technique used in ADRs. Criteria are scored on a 3-point scale (–1, 0, +1) for each alternative. The alternative with the highest total score wins.
+|A Groovy helper method used in Gradle scripts to invoke external processes (e.g., VBScript, shell commands) with real-time console output streaming. Manages process lifecycle and output capture.
 |===

@@ -1,68 +1,70 @@
-# Open Questions and Assumptions
+# Open Questions and Assumptions — docToolchain v4
 
-This document tracks open questions and assumptions made during the creation of the arc42 architecture documentation for docToolchain.
-Each entry includes the source file reference where the question originated and the arc42 section it affects.
+This document tracks open questions and assumptions for the v4 architecture.
+Each entry includes source references and the arc42 section it affects.
 
 ## Open Questions
 
-### Q1: What is the intended precedence between Config.groovy and docToolchainConfig.groovy?
+### Q1: How should dependencies be managed without Gradle? (ADR-TBD-6)
 
-- **Source**: `gradle.properties` line 39 (`mainConfigFile = Config.groovy`) vs. `dtcw` line 29 (`DTC_CONFIG_FILE:=docToolchainConfig.groovy`)
-- **Affects**: Section 02 (Constraints), Section 08 (Configuration Concept), ADR-TBD-3
-- **Impact**: New users receive conflicting signals about which config file to use. The dtcw wrapper and the Gradle default disagree.
+- **Source**: ADR-3 removes Gradle. AsciiDoctor JVM alone has ~20 transitive JARs.
+- **Affects**: Section 05 (Building Blocks), Section 06 (Runtime), Section 08 (Concepts)
+- **Options**: lib/ directory with bundled JARs, download-on-demand, Groovy Grape (@Grab)
+- **Impact**: Affects startup time (QS-9), distribution size, offline capability, and first-run experience (QS-6).
 
-### Q2: Is the Confluence v1 API planned for deprecation?
+### Q2: Is the Confluence v1 API planned for deprecation? (ADR-TBD-1)
 
-- **Source**: `core/src/main/groovy/org/docToolchain/tasks/AbstractConfluenceTask.groovy`, `core/src/main/groovy/org/docToolchain/atlassian/confluence/clients/ConfluenceClientV1.groovy`
-- **Affects**: Section 09 (ADR-TBD-1), Section 11 (Risks)
-- **Impact**: Atlassian is deprecating v1 for Cloud. Maintaining two client implementations indefinitely doubles integration effort.
+- **Source**: `ConfluenceClientV1.groovy`, `ConfluenceClientV2.groovy` — two parallel implementations
+- **Affects**: Section 09 (ADRs), Section 11 (Risks)
+- **Impact**: Maintaining two clients doubles integration effort. Atlassian is deprecating v1 for Cloud.
 
-### Q3: What is the target state for the core module migration?
+### Q3: What is the modern UI design direction?
 
-- **Source**: `src/docs/050_ADRs/ADR-2-separate-core-logic-from-gradle.adoc` (status: "under ongoing discussion"), `core/src/main/groovy/org/docToolchain/tasks/` (7 task classes)
-- **Affects**: Section 05 (Building Block View Level 2), Section 09 (ADR-TBD-4), Section 11 (Risks)
-- **Impact**: The migration boundary is unclear. Should all tasks move to core, or only those with external API calls?
+- **Source**: ADR-4 (jBake replacement) creates the opportunity for a new theme.
+- **Affects**: Section 08 (Concepts — Custom Site Generator)
+- **Status**: Phase 1: modern, clean design with dark mode and search. Phase 2 (future): LLM-augmented UI.
+- **Open**: Specific design system, CSS framework, search implementation not yet decided.
 
-### Q4: Is there a formal versioning policy for external API integrations?
+### Q4: How will the v3 → v4 migration path work?
 
-- **Source**: No documentation found. API versions are hardcoded in `ConfluenceClientV1.groovy`, `ConfluenceClientV2.groovy`, `JiraServerClient.groovy`.
-- **Affects**: Section 02 (Constraints), Section 10 (Quality Requirements)
-- **Impact**: Atlassian API changes could break publishing without warning. No policy exists for API version support lifecycle.
+- **Source**: ADR-3 (Gradle removal), ADR-4 (jBake replacement)
+- **Affects**: Section 11 (Risks), QS-14 (v3 compatibility)
+- **Impact**: Users with custom Gradle tasks, Gradle plugins, or `./gradlew` invocations need a migration path. `docToolchainConfig.groovy` compatibility is confirmed.
 
-### Q5: What is the strategy for Enterprise Architect export on non-Windows platforms?
+### Q5: Should docToolchain itself become an MCP server?
 
-- **Source**: `scripts/exportEA.gradle`, VBScript files in `scripts/`
-- **Affects**: Section 03 (Context), Section 11 (Risks)
-- **Impact**: EA export is Windows-only (COM automation). Non-Windows users cannot export EA diagrams. No fallback or alternative approach is documented.
+- **Source**: ADR-5 (LLM-native architecture). Currently LLM access is via daCLI (separate tool).
+- **Affects**: Section 03 (Context), Section 05 (Building Blocks)
+- **Status**: Deferred. daCLI handles MCP for now. docToolchain remains a CLI tool. Future version may add MCP endpoint for task invocation (generateHTML, publishToConfluence as MCP tools).
 
 ## Assumptions
 
-### A1: The 4-layer architecture is the intended design
+### A1: Scripts are the right granularity for task logic
 
-- **Basis**: Consistent code structure across all execution paths: `dtcw` → `build.gradle` → `scripts/*.gradle` → `core/`
-- **Confidence**: HIGH
-- **Verified by**: CLAUDE.md, copilot-instructions.md, and codebase structure all describe this layering consistently.
+- **Basis**: User requirement — "Scripts are easier to adapt and maintain than compiled Java code." Community contributors can modify behavior without understanding build systems.
+- **Confidence**: HIGH — explicit decision by project maintainer.
+- **Used in**: Section 04 (Solution Strategy), Section 05 (Building Block View)
 
-### A2: ADR-2 represents the current strategic direction
+### A2: Task dependencies are not needed
 
-- **Basis**: ADR-2 status says "under ongoing discussion" but the `core/` module exists, is actively used, and new Confluence/Jira features are being built there.
-- **Confidence**: MEDIUM — The migration is partially complete, but no timeline or completion criteria exist.
-- **Assumption used in**: Section 04 (Solution Strategy), Section 05 (Building Block View)
+- **Basis**: User observation — "I used to think people would chain tasks, but they don't. They call them individually."
+- **Confidence**: HIGH — based on real-world usage patterns.
+- **Used in**: Section 06 (Runtime View), Section 08 (Script Execution Model)
 
-### A3: Quality goals are inferred from design choices, not from a formal requirements document
+### A3: Existing Groovy SimpleTemplate files are compatible with the custom SSG
 
-- **Basis**: No explicit quality requirements document was found. Quality goals in Section 01 and scenarios in Section 10 were derived from observed architectural patterns, README.adoc, test structure, and wrapper script design.
-- **Confidence**: MEDIUM — The goals reflect what the architecture achieves, but may not capture all stakeholder priorities.
-- **Assumption used in**: Section 01 (Quality Goals), Section 10 (Quality Scenarios)
+- **Basis**: jBake uses Groovy's `SimpleTemplateEngine`, which is a standard Groovy feature. The custom SSG will use the same engine.
+- **Confidence**: MEDIUM — templates may reference jBake-specific variables (`published_posts`, `config.site_*`) that need to be provided by the new generator.
+- **Used in**: ADR-4 (jBake replacement), Section 08 (Custom Site Generator)
 
-### A4: The three execution environments (local, Docker, SDKMAN) are all equally supported
+### A4: Docker remains equally important in v4
 
-- **Basis**: `dtcw` wrapper supports all three with equal feature coverage. Docker images are built in CI. SDKMAN release is part of the release workflow.
-- **Confidence**: HIGH — Evidence in `dtcw`, `.github/workflows/release.yml`, and `docker-image/` repository.
-- **Assumption used in**: Section 07 (Deployment View)
+- **Basis**: User confirmation — "Docker bleibt gleichwertig."
+- **Confidence**: HIGH — explicit decision.
+- **Used in**: Section 07 (Deployment View)
 
-### A5: Spock was chosen deliberately for testing, despite no formal ADR
+### A5: v3 docToolchainConfig.groovy files work without changes in v4
 
-- **Basis**: A stub ADR-3 exists in `src/test/groovy/docToolchain/ADR-3-useSpock.adoc` containing only placeholder text. However, Spock 2.3 is extensively used across all 66 core tests and is listed in `libs.versions.toml`.
-- **Confidence**: HIGH for the de facto decision, LOW for formal documentation.
-- **Assumption used in**: Section 02 (Conventions), Section 04 (Technology Decisions)
+- **Basis**: User requirement — backward compatibility is a top-level quality goal (QS-14).
+- **Confidence**: HIGH for core features (generateHTML, generatePDF, publishToConfluence). MEDIUM for site generation (jBake metadata headers must be supported by new SSG).
+- **Used in**: Section 02 (Constraints), ADR-4

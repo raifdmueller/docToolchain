@@ -14,110 +14,376 @@ ifndef::imagesdir[:imagesdir: ../../images]
 == Architecture Decisions
 
 All architecture decisions are evaluated against the quality scenarios defined in <<section-quality-scenarios>>.
-Decisions with status "to be decided" were identified from codebase analysis and require formal team discussion.
+docToolchain v4 represents a fundamental shift: from a Gradle-based build tool to an LLM-native docs-as-code platform.
+v3 is the current production version.
 
 === ADR-1: Use Groovy as Primary Scripting Language
 
-* **Status**: In effect
+* **Status**: In effect (carried forward to v4)
 * **Context**: docToolchain uses scripts in multiple languages. The team needed a consistent primary language for maintainability.
 * **Decision**: Use Groovy for all scripting tasks. Exception: Visual Basic for Windows COM automation (Enterprise Architect, PowerPoint export) where no Java library exists.
 * **Quality Tradeoffs**:
 ** Supports **QS-1 (Extensibility)**: Contributors need only one language to extend the system.
 ** Supports **QS-2 (Portability)**: Groovy runs on the JVM, same bytecode on all platforms.
+** Supports **QS-11 (Script-first)**: Groovy scripts run without compilation.
 ** Compromises **QS-2 (Portability)** partially: VBScript exceptions limit some features to Windows.
-* **Consequences**: Gradle tasks invoke non-Groovy scripts via shell using `streamingExecute` helper. Legacy scripts are updated reactively.
 
 // Source: src/docs/050_ADRs/ADR-1-Scripting-Languages.adoc
 
-=== ADR-2: Separate Core Logic from Gradle
+=== ADR-2: Separate Core Logic from Gradle — SUPERSEDED
 
-* **Status**: Under discussion (partially implemented)
-* **Context**: docToolchain's business logic was historically embedded in Gradle build scripts. This led to complex build setup, slow test execution, tight Gradle coupling, and poor IDE support.
-* **Decision**: Isolate core logic into an independent Groovy library (`core/` submodule). Gradle becomes a consumer of the core library, not the host.
-* **Quality Tradeoffs**:
-** Supports **QS-1 (Extensibility)**: New features are standard Groovy classes with proper IDE support.
-** Supports **QS-7 (Reliable tests)**: Core tests run without Gradle -- faster feedback (~11 seconds for 66 tests).
-** Supports **QS-5 (Maintainability)**: Business logic concentrated in one place, not scattered across scripts.
-** Neutral on **QS-2 (Portability)**: No direct impact, but enables future non-Gradle usage.
-* **Consequences**: Migration is ongoing. Currently only Confluence and Jira tasks have been migrated to `core/`. New features should be implemented in `core/`; Gradle scripts serve as thin task wrappers.
+* **Status**: Superseded by ADR-3
+* **Context**: ADR-2 proposed isolating business logic into a compiled `core/` submodule (Shadow JAR) to decouple from Gradle.
+* **Superseded because**: v4 removes Gradle entirely (ADR-3) and reverts to scripts as the primary code organization. Compiled code requires a build step that slows the edit-run cycle. Scripts are easier to adapt and maintain, especially for community contributors. The problem ADR-2 tried to solve (Gradle coupling) is better addressed by removing Gradle, not by adding a compilation layer.
 
 // Source: src/docs/050_ADRs/ADR-2-separate-core-logic-from-gradle.adoc
 
+=== ADR-3: Remove Gradle — Direct Groovy Script Execution
+
+* **Status**: Decided for v4
+* **Context**: Gradle has been the task orchestration framework since docToolchain's inception. Over time it has caused significant problems:
+** Slow startup (~95 seconds first run, 10-15 seconds subsequent runs)
+** Complex configuration hard for contributors to understand
+** Tight coupling between business logic and build system
+** Gradle daemon management issues (zombie processes, port conflicts)
+** Dependency resolution overhead for simple documentation tasks
+* **Decision**: Remove Gradle entirely. The `dtcw` wrapper invokes Groovy scripts directly via the `java`/`groovy` runtime. AsciiDoctor is an external CLI tool, auto-installed by dtcw (ADR-6). Task orchestration is handled by simple script conventions, not a build framework.
+* **Alternatives considered**:
+
+[cols="1,1,1,1,1", options="header"]
+|===
+|Criterion |Keep Gradle |dtcw + Groovy direct |Switch to Maven |Custom task runner
+
+|Startup time
+|–1
+|+1
+|0
+|+1
+
+|Contributor friendliness
+|–1
+|+1
+|0
+|0
+
+|Ecosystem compatibility
+|+1
+|0
+|+1
+|–1
+
+|Maintenance burden
+|–1
+|+1
+|0
+|0
+
+|LLM-friendliness
+|–1
+|+1
+|–1
+|+1
+
+|**Total**
+|**–3**
+|**+4**
+|**0**
+|**+1**
+|===
+
+* **Quality Tradeoffs**:
+** Supports **QS-9 (Fast startup)**: No Gradle wrapper, no daemon, no dependency resolution. Startup under 3 seconds.
+** Supports **QS-11 (Script-first)**: Scripts are the primary code artifacts, no compilation needed.
+** Supports **QS-1 (Extensibility)**: Adding a feature requires no build system knowledge.
+** Supports **QS-3 (Usability)**: Simpler mental model for contributors.
+** Risk on **QS-14 (v3 compatibility)**: v3 projects using `./gradlew` directly will need to switch to `./dtcw`. The `dtcw` interface remains stable.
+* **Consequences**: `build.gradle`, `settings.gradle`, `gradle.properties`, `libs.versions.toml`, and the `gradle/` wrapper directory are removed. The `core/` module is dissolved back into scripts. Dependencies are managed as JARs in a `lib/` directory or downloaded on demand.
+
+=== ADR-4: Replace jBake for Static Site Generation
+
+* **Status**: Decided for v4
+* **Context**: jBake is the current static site generator for docToolchain's microsite feature. Critical problems:
+** **Unmaintained**: Governance crisis (Issue #785). PRs not reviewed. v2.7.0 not published to Maven Central.
+** **Apple Silicon**: Does not run on modern Macs without workarounds (OrientDB JNI issue #709). Fix exists but is not released.
+** **Java 21 incompatible**: Bundled Groovy too old for JDK 21 class files (Issue #797).
+** **Heavy**: OrientDB adds 38MB of JARs for a database that could be an in-memory list.
+** **Best available fork**: rschwietzke/jbake removes OrientDB + upgrades to Java 21 (PR #800), but is stuck waiting for review.
+* **Decision**: Build a custom Groovy-based static site generator using Groovy SimpleTemplate. The core requirement is: AsciiDoc files + templates -> static HTML site with navigation, search, and theming.
+* **Alternatives considered**:
+
+[cols="1,1,1", options="header"]
+|===
+|Criterion |jBake Fork (rschwietzke) |Custom Groovy SSG
+
+|Groovy template reuse
+|+1
+|+1
+
+|Stack consistency
+|0 (external Java project)
+|+1 (own code)
+
+|Maintenance control
+|0 (dependent on fork maintainer)
+|+1 (full control)
+
+|Apple Silicon
+|+1 (fork removes OrientDB)
+|+1
+
+|Implementation effort
+|+1 (fork exists, PR #800)
+|–1 (must be developed)
+
+|Dependency footprint
+|–1 (jBake + ~15 JARs)
+|+1 (no additional JARs)
+
+|Future-proofing (Phase 2 LLM UI)
+|–1 (jBake rendering pipeline limits control)
+|+1 (full control over HTML output)
+
+|Gradle independence
+|–1 (needs custom runner or jBake Java API)
+|+1 (pure Groovy script)
+|0
+|–1
+|+1
+|+1
+
+|**Total**
+|**0**
+|**+6**
+|===
+
+NOTE: With AsciiDoctor externalized (ADR-6), the custom SSG only needs to handle template rendering and content model — AsciiDoc processing is done by the external AsciiDoctor CLI. This reduces the estimated effort to ~300 LOC of new code. Metadata parsing (~50 LOC) and menu builder (167 LOC) are reused from v3's `generateSite.gradle` and `menu.groovy`.
+
+* **Quality Tradeoffs**:
+** Supports **QS-10 (Apple Silicon)**: No OrientDB, no JNI issues.
+** Supports **QS-13 (Modern UI)**: Full control over output HTML enables modern theme.
+** Supports **QS-11 (Script-first)**: Generator is a Groovy script, not a compiled plugin.
+** Risk on **QS-8 (Performance)**: Must match jBake generation speed (~5s for typical sites).
+** Risk on **QS-14 (v3 compatibility)**: Must support jBake metadata headers (`:jbake-title:`, `:jbake-type:`) for backward compatibility.
+* **Consequences**: Existing 23 Groovy SimpleTemplate files can be reused with minimal changes. The custom SSG parses AsciiDoc metadata (`:jbake-*:` attributes) itself — a simple regex pass over file headers (~20 LOC, reused from v3's `generateSite.gradle`). AsciiDoctor CLI handles HTML rendering (ADR-6). No database — in-memory content model. Modern UI theme replaces Docsy (Phase 1: modern look; Phase 2: LLM-augmented UI in future version).
+
+=== ADR-5: LLM-Native Architecture
+
+* **Status**: Decided for v4
+* **Context**: The GenAI era changes how documentation is created and consumed. Traditional export scripts (EA, PPT, Visio, Excel) address a workflow where humans manually extract data from tools. LLMs can handle these transformations directly. Meanwhile, LLMs need structured document access (daCLI) and benefit from Skills, Prompts, and Semantic Anchors.
+* **Decision**: Shift docToolchain's strategic focus toward LLM-native tooling:
+** **daCLI integration**: MCP server for structured document access (10 tools, already operational)
+** **Semantic Anchors and Contracts**: Precise reference terms (anchors like "arc42", "SOLID", "Docs-as-Code") and bundled working agreements (contracts in `CLAUDE.md`) that enable consistent LLM collaboration without verbose instructions
+** **Skills and Prompts**: Reusable LLM interaction patterns for documentation tasks (arc42 generation, ADR creation, quality scenario extraction — see LLM-Prompts repository)
+** **Bausteinsicht integration**: Architecture-as-code with JSONC models and bidirectional draw.io sync — LLMs read/write JSONC natively
+* **Quality Tradeoffs**:
+** Supports **QS-12 (LLM Friendliness)**: Structured document access via MCP. Semantic Anchors and Contracts enable precise, consistent LLM communication.
+** Supports **QS-1 (Extensibility)**: New capabilities can be added as Prompts/Skills without code changes.
+** Supports **QS-3 (Usability)**: LLMs lower the barrier to creating quality architecture documentation.
+* **Consequences**: Existing scripts remain available but strategic investment shifts to MCP tools, Prompts, and Semantic Anchors. The docToolchain ecosystem becomes: docToolchain (generation) + daCLI (LLM access) + Bausteinsicht (architecture diagrams) + LLM-Prompts (interaction patterns). Traditional scripts are maintained but not the primary growth area.
+
+=== ADR-6: AsciiDoctor as External Tool with Versioned Auto-Installation
+
+* **Status**: Decided for v4
+* **Context**: In v3, AsciiDoctor is embedded as `asciidoctorj` — a Java wrapper that bundles JRuby (~30 MB). Together with transitive dependencies, this adds ~25 JARs and ~45 MB to the classpath. JRuby initialization adds 2-3 seconds to every startup. AsciiDoctor also exists as a standalone CLI tool installable via `gem`, `brew`, or `apt`.
+* **Decision**: Use AsciiDoctor as an external tool, auto-installed by `dtcw` in a pinned version. This follows the same pattern as Java auto-installation. AsciiDoctor CLI supports batch processing (`asciidoctor *.adoc`), so 50 files are handled in one process invocation.
+* **Alternatives considered**:
+
+[cols="1,1,1,1", options="header"]
+|===
+|Criterion |Library (asciidoctorj) |External Tool |Both (fallback)
+
+|Startup overhead (QS-9)
+|0 (2-3s JRuby init)
+|+1 (no JRuby)
+|+1
+
+|Throughput 50 pages (QS-9)
+|0
+|0 (batch mode)
+|0
+
+|First-run experience (QS-3)
+|+1 (bundled)
+|0 (auto-installed by dtcw)
+|0
+
+|Distribution size (QS-6)
+|–1 (+45 MB)
+|+1 (0 MB)
+|0
+
+|Offline capability (QS-2)
+|+1 (always available)
+|0 (offline after install)
+|+1
+
+|Determinism (QS-4)
+|+1 (exact JAR version)
+|0 (dtcw pins version)
+|0
+
+|Docker compatibility (QS-2)
+|0
+|0
+|0
+
+|Apple Silicon (QS-10)
+|0
+|0
+|0
+
+|Solution complexity
+|0
+|0
+|–1 (two code paths)
+
+|**Total**
+|**+2**
+|**+2**
+|**+1**
+|===
+
+At equal score, **QS-9 (Startup + Throughput) is Quality Goal #1** and breaks the tie in favor of the external tool. The –1 for First-Run and Determinism in the raw external-tool score are eliminated by `dtcw` auto-installing a pinned version.
+
+* **Quality Tradeoffs**:
+** Supports **QS-9 (Startup + Throughput)**: No JRuby overhead. Batch processing for multiple files.
+** Supports **QS-6 (Installability)**: Distribution 45 MB smaller. AsciiDoctor installed automatically on first use.
+** Neutral on **QS-4 (Determinism)**: `dtcw` pins the AsciiDoctor version (e.g., `gem install asciidoctor:2.0.23`).
+** Neutral on **QS-3 (First-Run)**: Auto-installation is transparent — same UX as Java auto-install.
+* **Consequences**: `dtcw` gains an AsciiDoctor installation step (parallel to existing Java install logic). Scripts call `asciidoctor` CLI instead of asciidoctorj Java API. The `asciidoctorj`, `asciidoctorj-diagram`, `asciidoctorj-pdf`, and JRuby JARs are removed from the distribution. Remaining Java dependencies (~27 JARs, ~23 MB) are small enough for a simple `lib/` directory.
+
+=== ADR-7: lib/ Directory for Remaining Java Dependencies
+
+* **Status**: Decided for v4
+* **Context**: With AsciiDoctor externalized (ADR-6), the remaining Java dependencies are:
+** Groovy runtime (~15 JARs, ~10 MB)
+** jsoup 1.18.1 (1 JAR, 0.5 MB) — HTML parsing for Confluence publishing
+** Apache HttpClient 5.3 (~5 JARs, ~2 MB) — REST API calls to Confluence/Jira
+** Apache POI 5.3.0 (~10 JARs, ~10 MB) — Excel export (only needed for exportExcel)
+** Total: ~30 JARs, ~23 MB
+* **Decision**: Ship all remaining JARs in a `lib/` directory. `dtcw` sets the classpath via `java -cp lib/*`. No runtime resolution, no Grape, no downloads.
+* **Rationale**: 23 MB is small enough to bundle. Zero resolution overhead supports QS-9. Fully offline-capable. Deterministic — every user gets the same JARs. The simplest possible solution.
+* **Quality Tradeoffs**:
+** Supports **QS-9 (Startup + Throughput)**: Zero dependency resolution overhead. Classpath construction is one glob: `lib/*`.
+** Supports **QS-4 (Determinism)**: Exact JARs pinned at release time.
+** Supports **QS-2 (Offline)**: Works without internet after installation.
+** Neutral on **QS-6 (Distribution size)**: 23 MB is acceptable (v3 with Gradle is ~50 MB).
+* **Consequences**: Release process must resolve all transitive dependencies and package them into `lib/`. A simple shell script or one-time Gradle/Maven call at release time handles this. POI JARs could be made optional in a future optimization (load only when `saveExcel=true`).
+** Affects **QS-2 (Portability)**: All options work cross-platform. Docker image can pre-bundle JARs.
+** Affects **QS-3 (Usability)**: lib/ is simplest to understand. Grape is most Groovy-idiomatic.
+** Affects **QS-6 (Installability)**: Download-on-demand keeps the initial download small.
+
 === ADR-TBD-1: Confluence API Version Strategy
 
-* **Status**: To be decided
-* **Context**: The codebase maintains two parallel Confluence client implementations: `ConfluenceClientV1` (REST API v1, for Server/Data Center) and `ConfluenceClientV2` (REST API v2, for Cloud). A configuration flag `confluence.useV1Api` toggles between them. Atlassian is deprecating the v1 API for Cloud instances.
-* **Options**:
-  1. Deprecate v1 and make v2 the default
-  2. Auto-detect API version based on instance type
-  3. Maintain both indefinitely
-* **Quality Tradeoffs**:
-** Affects **QS-4 (Reliability)**: API version mismatch causes publishing failures.
-** Affects **QS-1 (Extensibility)**: Maintaining two client implementations doubles the integration surface for new features.
-* **Open Question**: Should v1 be deprecated on a timeline, or is long-term dual support necessary for enterprise Server/Data Center customers?
-
-// Source: core/src/main/groovy/org/docToolchain/tasks/AbstractConfluenceTask.groovy,
-// core/src/main/groovy/org/docToolchain/atlassian/confluence/clients/ConfluenceClientV1.groovy,
-// core/src/main/groovy/org/docToolchain/atlassian/confluence/clients/ConfluenceClientV2.groovy
+* **Status**: Deferred — decide when Confluence publishing is reworked
+* **Context**: Two parallel Confluence client implementations (V1 for Server, V2 for Cloud). Lower priority in the LLM era — documentation increasingly consumed via daCLI/MCP rather than pushed to Confluence.
 
 === ADR-TBD-2: Jira Cloud vs. Server Client Architecture
 
-* **Status**: To be decided
-* **Context**: Only `JiraServerClient` implements the abstract `JiraClient` interface. Despite Jira Cloud being the dominant deployment model, there is no dedicated Cloud client. The Server client uses a `useV1Api` flag as a workaround.
-* **Options**:
-  1. Create a dedicated `JiraCloudClient` with Cloud-specific API handling
-  2. Extend `JiraServerClient` to handle both via configuration flags
-  3. Accept the current workaround as sufficient
+* **Status**: Deferred — decide when Jira integration is reworked
+* **Context**: Only `JiraServerClient` exists. Lower priority — LLMs can query Jira directly via MCP tools, reducing the need for batch export scripts.
+
+=== ADR-8: Actionable Error Guidance
+
+* **Status**: Decided for v4
+* **Context**: v3 error handling is inconsistent: `RuntimeException` in core, `GradleException` in scripts, `println` + silent continuation in some scripts. With Gradle removed, `GradleException` is gone. More importantly, the fundamental problem is not *how* errors are thrown, but *what* the user sees. v3 shows stack traces and technical error messages. Users cannot determine what to do next.
++
+Real example from v3: PDF generation fails with a cryptic `IOException: Access denied` when the output PDF is still open in Adobe Acrobat. Users who know the tool recognize this — new users are stuck.
+* **Decision**: Every user-recoverable error must include an **actionable remediation step** — not what went wrong, but what the user should do to fix it. Implemented as a lightweight exception hierarchy with mandatory guidance messages:
++
+[source,groovy]
+----
+// Shared helper (lib/DtcException.groovy, ~25 LOC)
+class DtcException extends RuntimeException {
+    String guidance  // What the user should do
+    int exitCode
+    DtcException(String guidance, int exitCode = 1, Throwable cause = null) {
+        super(guidance, cause)
+        this.guidance = guidance
+        this.exitCode = exitCode
+    }
+}
+class DtcConfigException extends DtcException {
+    DtcConfigException(String guidance) { super(guidance, 2) }
+}
+class DtcApiException extends DtcException {
+    DtcApiException(String guidance) { super(guidance, 3) }
+}
+
+// Usage in scripts:
+if (!outputFile.canWrite()) {
+    throw new DtcException(
+        "Die Datei ${outputFile.name} ist gesperrt. " +
+        "Bitte schließe sie in deinem PDF-Viewer und führe den Befehl erneut aus."
+    )
+}
+
+if (!configFile.exists()) {
+    throw new DtcConfigException(
+        "Config-Datei '${configFile.name}' nicht gefunden. " +
+        "Erstelle sie mit: ./dtcw downloadTemplate"
+    )
+}
+
+if (response.statusCode == 401) {
+    throw new DtcApiException(
+        "Confluence-Authentifizierung fehlgeschlagen. " +
+        "Prüfe confluence.credentials in docToolchainConfig.groovy oder übergib -Pconfluence.credentials=user:token"
+    )
+}
+
+// Top-level runner (in dtcw wrapper or bootstrap script):
+try { script.run() }
+catch (DtcConfigException e) { System.err.println("⚙ ${e.guidance}"); System.exit(2) }
+catch (DtcApiException e)    { System.err.println("🌐 ${e.guidance}"); System.exit(3) }
+catch (DtcException e)       { System.err.println("→ ${e.guidance}"); System.exit(1) }
+catch (Exception e)          { System.err.println("BUG: ${e.message}"); e.printStackTrace(System.err); System.exit(99) }
+----
++
+Exit codes: 0 = success, 1 = user-fixable error, 2 = config error, 3 = API/network error, 99 = bug.
++
+Stack traces are shown **only** for exit code 99 (bugs). All other errors show only the guidance message.
+
+* **Alternatives considered**:
+
+[cols="1,1,1,1", options="header"]
+|===
+|Criterion |A: Exit + stderr (plain) |B: Exception hierarchy with guidance |C: Return codes
+
+|Actionable guidance (QS-15)
+|0 (message is free-form, no structure enforces guidance)
+|+1 (guidance field is mandatory in constructor)
+|0 (message is free-form)
+
+|No silent failures (QS-4)
+|+1 (try/catch enforces handling)
+|+1
+|–1 (easy to forget check)
+
+|Differentiated exit codes (QS-5)
+|0 (only 0/1)
+|+1 (0/1/2/3/99)
+|+1
+
+|Compatibility with existing code
+|0
+|+1 (existing exceptions wrapped)
+|–1 (rewrite needed)
+
+|Script-first simplicity (QS-11)
+|+1 (no imports)
+|0 (one import)
+|0 (new pattern)
+
+|**Total**
+|**+2**
+|**+4**
+|**–1**
+|===
+
 * **Quality Tradeoffs**:
-** Affects **QS-2 (Portability)**: Cloud users may encounter API incompatibilities.
-** Affects **QS-1 (Extensibility)**: A clean client hierarchy would make adding new Jira features easier.
-
-// Source: core/src/main/groovy/org/docToolchain/atlassian/jira/JiraService.groovy,
-// core/src/main/groovy/org/docToolchain/atlassian/jira/clients/JiraServerClient.groovy
-
-=== ADR-TBD-3: Configuration File Consolidation
-
-* **Status**: To be decided
-* **Context**: Three configuration sources exist with unclear precedence: `docToolchainConfig.groovy` (modern), `Config.groovy` (legacy), and `gradle.properties`. The `dtcw` wrapper defaults to `docToolchainConfig.groovy`, but `gradle.properties` sets `mainConfigFile = Config.groovy`. Both files contain overlapping configuration sections.
-* **Options**:
-  1. Deprecate `Config.groovy` and standardize on `docToolchainConfig.groovy`
-  2. Merge both into a single `docToolchainConfig.groovy` with migration guide
-  3. Formalize the precedence chain and document it
-* **Quality Tradeoffs**:
-** Affects **QS-3 (Usability)**: New users encounter confusing dual-config setup.
-** Affects **QS-5 (Maintainability)**: Configuration loading code must handle both files.
-
-// Source: scripts/AsciiDocBasics.gradle (config loading), gradle.properties (mainConfigFile),
-// dtcw (DTC_CONFIG_FILE default)
-
-=== ADR-TBD-4: Core Module Migration Completeness
-
-* **Status**: To be decided
-* **Context**: ADR-2 mandates migrating business logic to the `core/` module. Currently, only Confluence and Jira tasks have been migrated (7 task classes). The remaining ~20 features (exportEA, exportExcel, exportChangelog, generateSite, etc.) are implemented purely in Gradle scripts without corresponding core classes.
-* **Options**:
-  1. Migrate all tasks to core (full ADR-2 compliance)
-  2. Migrate only tasks with complex business logic; keep simple Gradle-native tasks as-is
-  3. Define a clear boundary: tasks using external APIs go to core, file-only tasks stay in scripts
-* **Quality Tradeoffs**:
-** Affects **QS-1 (Extensibility)**: Incomplete migration means contributors must understand two patterns.
-** Affects **QS-7 (Reliable tests)**: Unmigrated tasks can only be tested with Gradle Test Kit (slower).
-** Affects **QS-5 (Maintainability)**: Business logic split between `core/` and `scripts/` complicates reasoning about the system.
-
-// Source: core/src/main/groovy/org/docToolchain/tasks/ (7 classes),
-// build.gradle lines 100-127 (25+ apply from statements)
-
-=== ADR-TBD-5: Error Handling Strategy
-
-* **Status**: To be decided
-* **Context**: Error handling is inconsistent across the codebase. Core module classes throw `RuntimeException` or `RequestFailedException`. Gradle scripts use `GradleException`. Some scripts simply `println` an error message and return silently. There is no centralized error handling, logging strategy, or user-facing error message standard.
-* **Options**:
-  1. Define a docToolchain exception hierarchy with clear user-facing messages
-  2. Standardize on Gradle's exception model (`GradleException` for user errors, `RuntimeException` for bugs)
-  3. Keep current approach but document conventions for new code
-* **Quality Tradeoffs**:
-** Affects **QS-4 (Reliability)**: Silent failures mask problems; users cannot distinguish configuration errors from bugs.
-** Affects **QS-3 (Usability)**: Unclear error messages frustrate users.
-** Affects **QS-5 (Maintainability)**: Inconsistent patterns make debugging harder for contributors.
-
-// Source: core/src/main/groovy/org/docToolchain/http/RequestFailedException.groovy,
-// scripts/exportEA.gradle, scripts/publishToConfluence.gradle
+** Supports **QS-16 (Actionable Guidance)**: The `guidance` field in `DtcException` enforces that every thrown error contains a user-actionable message. This is not optional — it's the constructor parameter.
+** Supports **QS-4 (Reliability)**: No more silent `println` + continue. Every error is thrown and caught at the top level.
+** Supports **QS-5 (CI/CD)**: Differentiated exit codes (2=config, 3=API, 99=bug) enable targeted CI/CD responses.
+** Neutral on **QS-11 (Script-first)**: One import per script (`import DtcException`). ~25 LOC in a shared file.
+* **Consequences**: Every script must use `DtcException` (or subclass) instead of `println` for errors. Existing `RequestFailedException` is replaced by `DtcApiException`. A catalog of common error scenarios with guidance messages should be maintained (see examples in Risks section). The guidance messages should be in English (matching the codebase language), with the tone of a helpful colleague, not a system log.

@@ -1,0 +1,120 @@
+:jbake-title: Cross-cutting Concepts
+:jbake-type: page_toc
+:jbake-status: published
+:jbake-menu: arc42
+:jbake-order: 8
+:filename: /chapters/08_concepts.adoc
+ifndef::imagesdir[:imagesdir: ../../images]
+
+:toc:
+
+
+
+[[section-concepts]]
+== Cross-cutting Concepts
+
+=== Configuration Management
+
+docToolchain uses a three-layer configuration model:
+
+[options="header",cols="1,2,2"]
+|===
+|Layer |Source |Precedence
+
+|Build-time defaults
+|`gradle.properties` -- JVM args, version, paths, repository URLs
+|Lowest. Provides defaults that rarely change.
+
+|Project configuration
+|`docToolchainConfig.groovy` (or legacy `Config.groovy`) -- Groovy DSL parsed by `ConfigSlurper` into a `ConfigObject`. Contains all task-specific settings: input files, output paths, Jira/Confluence endpoints, microsite config.
+|Middle. Project-specific settings override build defaults.
+
+|CLI overrides
+|Gradle `-P` flags and environment variables (e.g., `-Pconfluence.credentials=...`, `DTC_CONFIG_FILE=...`). Passed through `dtcw` or directly to Gradle.
+|Highest. Enables CI/CD and per-invocation customization.
+|===
+
+**Key classes:**
+
+* `ConfigBuilder` (`core/src/main/groovy/org/docToolchain/configuration/ConfigBuilder.groovy`): Locates and parses the configuration file. Creates a default configuration if none exists.
+* `ConfigService` (`core/src/main/groovy/org/docToolchain/configuration/ConfigService.groovy`): Wraps `ConfigObject` with typed access methods -- `getConfigProperty("confluence.api")` for dot-notation paths and `getFlatConfigSubTree("jira")` for flattened section access.
+
+// Source: scripts/AsciiDocBasics.gradle (config loading), ConfigBuilder.groovy, ConfigService.groovy
+
+=== Plugin / Extension Mechanism
+
+docToolchain's modularity is based on Gradle's `apply from:` pattern:
+
+1. Each feature is implemented as a `scripts/*.gradle` file.
+2. `build.gradle` applies these scripts: `apply from: 'scripts/exportJiraIssues.gradle'`.
+3. Each script registers one or more Gradle tasks in the `docToolchain` group.
+4. Scripts with complex business logic delegate to classes in the `core/` module.
+5. Users can add custom tasks via `scripts/customTasks.gradle`.
+
+This pattern achieves QS-1 (Extensibility): adding a new feature requires one script file, one core class, and one `apply from:` line.
+
+**Script plugin lifecycle:**
+
+* At Gradle configuration time, all `apply from:` statements execute, registering tasks.
+* At execution time, only the requested tasks (and their dependencies) run.
+* Unused plugins add negligible overhead -- they register tasks but do not execute them.
+
+// Source: build.gradle (lines 100-127)
+
+=== Authentication and Security
+
+All external API integrations (Confluence, Jira) support two authentication methods:
+
+* **Basic Auth**: Username + API token, passed as `credentials` in configuration. Encoded as Base64 for the `Authorization` header.
+* **Bearer Token**: OAuth or personal access token, passed as `bearerToken` in configuration.
+
+**Security measures:**
+
+* Credentials can be supplied via CLI flags (`-Pconfluence.credentials=...`) to avoid storing them in configuration files.
+* Properties containing `credential`, `token`, or `secret` in their name are masked in log output.
+* Proxy configuration is supported for Confluence via `confluence.proxy` settings.
+* User-Agent header is set to `docToolchain_v<version>` for API call identification.
+
+// Source: scripts/AsciiDocBasics.gradle (credential masking),
+// core/src/main/groovy/org/docToolchain/atlassian/confluence/clients/RestClient.groovy
+
+=== Error Handling
+
+Error handling is currently inconsistent across the codebase (see ADR-TBD-5):
+
+* **Core module**: Throws `RequestFailedException` for HTTP errors and `RuntimeException` for logic errors. Some methods return null on failure.
+* **Gradle scripts**: Use `GradleException` for user-facing errors. Some scripts use `println` with error messages and continue silently.
+* **Wrapper (dtcw)**: Uses shell exit codes. Propagates Gradle's exit code to the caller.
+
+There is no centralized error handling strategy, no structured logging, and no standard for user-facing error messages. This is documented as a technical risk in <<section-technical-risks>>.
+
+// Source: core/src/main/groovy/org/docToolchain/http/RequestFailedException.groovy,
+// various scripts/*.gradle files
+
+=== Headless / CI Mode
+
+docToolchain supports non-interactive execution for CI/CD pipelines (QS-5):
+
+* The `dtcw` wrapper detects headless mode by checking for a TTY (`DTC_HEADLESS` environment variable or absence of an interactive terminal).
+* In headless mode, all interactive prompts are suppressed; default choices are auto-accepted.
+* This is critical for GitHub Actions, Jenkins, and other CI/CD platforms where no user is present to respond to prompts.
+* Exit codes are well-defined: 0 for success, non-zero for failure.
+
+// Source: dtcw (DTC_HEADLESS detection logic)
+
+=== Content Transformation Pipeline
+
+When publishing to Confluence, HTML content undergoes a transformation pipeline:
+
+1. **AsciiDoctor** generates HTML5 from AsciiDoc sources.
+2. **jsoup** parses the HTML into a DOM tree.
+3. **HtmlTransformer** rewrites the DOM for Confluence compatibility:
+   - Admonition blocks (note, warning, tip) become Confluence info/warning/tip macros.
+   - Description lists (`dl/dt/dd`) become HTML tables (Confluence does not support `dl`).
+   - Code blocks become `<ac:structured-macro ac:name="code">` elements.
+   - Local image references become `<ri:attachment>` references.
+   - Embedded images (data: URIs) are decoded, saved as files, and attached.
+4. **LinkTransformer** rewrites cross-reference links and inserts anchors.
+5. **CodeBlockTransformer** formats code blocks with language hints.
+
+// Source: core/src/main/groovy/org/docToolchain/atlassian/transformer/
