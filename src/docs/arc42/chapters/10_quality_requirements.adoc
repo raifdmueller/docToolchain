@@ -51,6 +51,8 @@ Each leaf maps to one or more quality scenarios below.
 ** Performance Efficiency
 *** Fast startup (no build framework overhead)
 *** Fast HTML generation
+** Security / Privacy
+*** No implicit cloud data processing
 ** Compatibility
 *** v3 config backward compatibility
 @endmindmap
@@ -165,6 +167,12 @@ Each ADR must state which quality scenarios it supports or compromises.
 |The config file contains only explicit deviations from defaults. Defaults are defined in code and documented in a machine-readable reference. An LLM can read the config, explain what is configured, and modify it correctly — without hallucinating defaults or duplicating them.
 
 |QS-16
+|Privacy (No Implicit Cloud Processing)
+|A user runs `./dtcw generateHTML` with diagrams in their AsciiDoc sources. The `diagramServer` is set to `https://kroki.io/` (external service).
+|docToolchain prints a clear warning: "Diagramm-Quelltexte werden an kroki.io gesendet. Für lokale Verarbeitung setze `diagramServer = 'docker'`." The user must explicitly acknowledge or configure an external server. No data leaves the machine without the user's informed consent.
+|Zero external API calls unless the user has explicitly configured an external `diagramServer` URL. Default should be `docker` (local) or no diagrams rendered. External URLs trigger a warning on every run.
+
+|QS-17
 |Usability (Actionable Guidance)
 |A task fails due to a problem the user can fix (locked file, missing config, wrong credentials, unreachable API, missing tool).
 |Instead of a stack trace or cryptic error message, docToolchain tells the user **what to do next**: which file to close, which config key to set, which command to run. The message is a concrete action, not a diagnosis.

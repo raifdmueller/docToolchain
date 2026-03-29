@@ -306,7 +306,14 @@ diagramServer = 'https://kroki.io/'
 diagramServer = 'https://gitlab.company.com/kroki/'
 ----
 +
-When `diagramServer = 'docker'`, dtcw checks if Docker is available, starts `yuzutech/kroki` as a container on port 8000, and sets the URL to `http://localhost:8000/`. The container persists between runs — dtcw only starts it if not already running.
+When `diagramServer = 'docker'` (default), dtcw checks if Docker is available, starts `yuzutech/kroki` as a container on port 8000, and sets the URL to `http://localhost:8000/`. The container persists between runs — dtcw only starts it if not already running.
++
+**Privacy rule (QS-16):** When `diagramServer` points to an external URL (anything other than `docker` or `localhost`), docToolchain prints a warning on every run:
++
+    ⚠ Diagramm-Quelltexte werden an kroki.io gesendet.
+      Für lokale Verarbeitung setze diagramServer = 'docker' in docToolchainConfig.groovy.
++
+No data leaves the machine without the user's explicit, informed configuration. The default `docker` mode processes everything locally.
 +
 `asciidoctor-diagram` receives the resolved URL via `:diagram-server-url:` and `:diagram-server-type: kroki_io` attributes.
 
@@ -366,7 +373,7 @@ When `diagramServer = 'docker'`, dtcw checks if Docker is available, starts `yuz
 ** Supports **QS-15 (LLM-managed Config)**: One config key (`diagramServer`). An LLM understands "set the diagram server URL" — no per-OS tool installation knowledge needed.
 ** Supports **QS-3 (Usability)**: One URL instead of installing PlantUML + Graphviz + Mermaid + Node.js.
 ** Supports **QS-10 (Apple Silicon)**: Rendering happens server-side — no local native binaries.
-** Supports **QS-16 (Actionable Guidance)**: If diagram rendering fails, the message is: "Setze `diagramServer = 'https://kroki.io/'` in docToolchainConfig.groovy" — not "install PlantUML from https://... and add it to PATH".
+** Supports **QS-17 (Actionable Guidance)**: If diagram rendering fails, the message is: "Setze `diagramServer = 'https://kroki.io/'` in docToolchainConfig.groovy" — not "install PlantUML from https://... and add it to PATH".
 ** Risk on **QS-2 (Offline)**: Requires network access to diagram server. Mitigation: enterprises run Kroki locally. For fully offline scenarios, local PlantUML remains an option via `asciidoctor-diagram` without server config.
 * **Consequences**: `kroki.io` is the default diagram server. `asciidoctor-diagram` configuration attributes are set automatically based on `diagramServer` config key. Enterprise users point to their GitLab PlantUML server or self-hosted Kroki. The docToolchain Docker image does NOT bundle Kroki — it connects to the configured server. A `docker-compose.yml` example is provided for users who want to run Kroki locally alongside docToolchain.
 
@@ -469,7 +476,7 @@ Stack traces are shown **only** for exit code 99 (bugs). All other errors show o
 |===
 
 * **Quality Tradeoffs**:
-** Supports **QS-16 (Actionable Guidance)**: The `guidance` field in `DtcException` enforces that every thrown error contains a user-actionable message. This is not optional — it's the constructor parameter.
+** Supports **QS-17 (Actionable Guidance)**: The `guidance` field in `DtcException` enforces that every thrown error contains a user-actionable message. This is not optional — it's the constructor parameter.
 ** Supports **QS-4 (Reliability)**: No more silent `println` + continue. Every error is thrown and caught at the top level.
 ** Supports **QS-5 (CI/CD)**: Differentiated exit codes (2=config, 3=API, 99=bug) enable targeted CI/CD responses.
 ** Neutral on **QS-11 (Script-first)**: One import per script (`import DtcException`). ~25 LOC in a shared file.

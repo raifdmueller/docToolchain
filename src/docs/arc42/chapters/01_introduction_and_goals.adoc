@@ -63,18 +63,22 @@ The core functional requirements are:
 |The config file contains only deviations from defaults. An LLM can read, explain, and modify `docToolchainConfig.groovy` correctly. No boilerplate, no commented-out defaults. (QS-15)
 
 |6
-|Actionable error guidance
-|When something fails, docToolchain tells the user what to do — not what went wrong. Every error message is a concrete action: which file to close, which config to set, which command to run. (QS-16)
+|No implicit cloud processing
+|No data leaves the user's machine unless explicitly configured. External services (kroki.io, Confluence, Jira) trigger a warning. Default diagram rendering is local via Docker. (QS-16)
 
 |7
+|Actionable error guidance
+|When something fails, docToolchain tells the user what to do — not what went wrong. Every error message is a concrete action: which file to close, which config to set, which command to run. (QS-17)
+
+|8
 |Ease of adoption
 |A developer generates HTML documentation in under 5 minutes using only `dtcw`, including automatic Java and docToolchain installation. (QS-3, QS-6)
 
-|8
+|9
 |Modern documentation UI
 |Generated microsites have a modern, responsive design with dark mode, fast search, and clean navigation. (QS-13)
 
-|9
+|10
 |v3 backward compatibility
 |Existing `docToolchainConfig.groovy` files work without changes. Deprecated features emit warnings but do not fail. (QS-14)
 |===
