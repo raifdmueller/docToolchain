@@ -43,44 +43,44 @@ The core functional requirements are:
 |Priority |Quality Goal |Scenario
 
 |1
-|Performance (Startup + Throughput)
-|Startup under 3 seconds, 50-page HTML generation under 10 seconds. No Gradle daemon, no dependency resolution overhead. (QS-9)
+|No implicit cloud processing
+|No data leaves the user's machine unless explicitly configured. External services (kroki.io, Confluence, Jira) trigger a warning. Default diagram rendering is local via Docker. (QS-16)
 
 |2
-|Script-first Maintainability
-|A new feature is added by creating one Groovy script in `scripts/`. No compilation, no JAR rebuild. Change-to-test cycle under 5 seconds. (QS-11)
+|Performance (Startup + Throughput)
+|Startup under 3 seconds, 50-page HTML generation under 10 seconds. No Gradle daemon, no dependency resolution overhead. (QS-9)
 
 |3
 |Cross-platform portability
 |Identical output on Linux, macOS (including Apple Silicon), and Windows across local, Docker, and SDKMAN environments. (QS-2, QS-10)
 
 |4
-|LLM Friendliness
-|LLMs navigate and modify documentation via daCLI MCP server with at most 3 tool calls to locate any section. Token usage under 10% of full-file reading. (QS-12)
-
-|5
-|LLM-managed configuration
-|The config file contains only deviations from defaults. An LLM can read, explain, and modify `docToolchainConfig.groovy` correctly. No boilerplate, no commented-out defaults. (QS-15)
-
-|6
-|No implicit cloud processing
-|No data leaves the user's machine unless explicitly configured. External services (kroki.io, Confluence, Jira) trigger a warning. Default diagram rendering is local via Docker. (QS-16)
-
-|7
 |Actionable error guidance
 |When something fails, docToolchain tells the user what to do — not what went wrong. Every error message is a concrete action: which file to close, which config to set, which command to run. (QS-17)
 
-|8
+|5
 |Ease of adoption
 |A developer generates HTML documentation in under 5 minutes using only `dtcw`, including automatic Java and docToolchain installation. (QS-3, QS-6)
 
-|9
+|6
+|LLM Friendliness
+|LLMs navigate and modify documentation via daCLI MCP server with at most 3 tool calls to locate any section. Token usage under 10% of full-file reading. (QS-12)
+
+|7
+|LLM-managed configuration
+|The config file contains only deviations from defaults. An LLM can read, explain, and modify `docToolchainConfig.groovy` correctly. No boilerplate, no commented-out defaults. (QS-15)
+
+|8
 |Modern documentation UI
 |Generated microsites have a modern, responsive design with dark mode, fast search, and clean navigation. (QS-13)
 
-|10
+|9
 |v3 backward compatibility
 |Existing `docToolchainConfig.groovy` files work without changes. Deprecated features emit warnings but do not fail. (QS-14)
+
+|10
+|Script-first Maintainability
+|A new feature is added by creating one Groovy script in `scripts/`. No compilation, no JAR rebuild. Change-to-test cycle under 5 seconds. (QS-11)
 |===
 
 === Stakeholders
