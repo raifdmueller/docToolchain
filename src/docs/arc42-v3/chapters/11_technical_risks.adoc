@@ -1,0 +1,89 @@
+:jbake-title: Risks and Technical Debts
+:jbake-type: page_toc
+:jbake-status: published
+:jbake-menu: arc42
+:jbake-order: 11
+:filename: /chapters/11_technical_risks.adoc
+ifndef::imagesdir[:imagesdir: ../../images]
+
+:toc:
+
+
+
+[[section-technical-risks]]
+== Risks and Technical Debts
+
+Risks and debts are ordered by priority. Each entry references the quality scenarios it affects.
+
+[options="header",cols="1,1,3,2"]
+|===
+|Priority |Risk / Debt |Description |Affected Quality Scenarios
+
+|HIGH
+|Incomplete core module migration
+|ADR-2 mandates migrating business logic to `core/`, but only 7 task classes have been migrated (Confluence and Jira). The remaining ~20 features (exportEA, exportExcel, exportChangelog, generateSite, etc.) are implemented purely in Gradle scripts. This means contributors must understand two patterns, and unmigrated tasks can only be tested with the slow Gradle Test Kit.
+|QS-1 (Extensibility), QS-7 (Reliable tests), QS-5 (Maintainability)
+
+|MEDIUM
+|Dual configuration file confusion
+|Both `docToolchainConfig.groovy` and `Config.groovy` are supported. `gradle.properties` sets `mainConfigFile = Config.groovy`, but `dtcw` defaults to `docToolchainConfig.groovy`. New users encounter this ambiguity during initial setup.
+|QS-3 (Usability), QS-5 (Maintainability)
+
+|MEDIUM
+|No dedicated Jira Cloud client
+|Only `JiraServerClient` implements the abstract `JiraClient` interface. Jira Cloud is the dominant deployment model, but there is no Cloud-specific client. The Server client uses a `useV1Api` workaround flag for Cloud compatibility.
+|QS-2 (Portability), QS-1 (Extensibility)
+
+|MEDIUM
+|Inconsistent error handling
+|Core module uses `RuntimeException` and `RequestFailedException`. Gradle scripts use `GradleException`. Some scripts print errors and continue silently. No centralized error handling, no structured logging, no user-facing error message standard.
+|QS-4 (Reliability), QS-3 (Usability)
+
+|LOW
+|Windows-only features
+|Enterprise Architect, PowerPoint, and Visio export rely on Windows COM automation (VBScript). These features are non-functional on Linux and macOS with no fallback or graceful degradation. Users on non-Windows platforms discover this only at runtime.
+|QS-2 (Portability)
+
+|LOW
+|Test coverage gaps
+|11 out of 53 integration tests fail in CI due to missing external tools (Pandoc, Enterprise Architect, etc.). This is documented as "expected" but means those code paths are untested in CI. The core module has 66 tests, but Gradle script tasks have minimal unit test coverage.
+|QS-4 (Reliability), QS-7 (Reliable tests)
+
+|LOW
+|Legacy Jira processor
+|`LegacyJiraProcessor` converts old-style `iql` configuration to the modern `exports` array. This backward-compatibility layer adds complexity and may mask configuration errors. No timeline for deprecation.
+|QS-5 (Maintainability)
+|===
+
+=== Suggested Mitigations
+
+[options="header",cols="1,3"]
+|===
+|Risk |Suggested Mitigation
+
+|Incomplete core module migration
+|Define a clear boundary (ADR-TBD-4): tasks with external API calls go to `core/`, pure file-processing tasks stay in scripts. Prioritize migrating tasks with the most complex logic.
+
+|Dual config file confusion
+|Deprecate `Config.groovy` with a migration guide (ADR-TBD-3). Add a startup warning when `Config.groovy` is detected.
+
+|No Jira Cloud client
+|Create `JiraCloudClient` implementing `JiraClient` with proper Cloud API handling (ADR-TBD-2). Auto-detect Cloud vs. Server based on API response.
+
+|Inconsistent error handling
+|Define a docToolchain exception hierarchy (ADR-TBD-5). Standardize on `GradleException` for user errors, `RuntimeException` for bugs, and structured logging for diagnostics.
+
+|Windows-only features
+|Document platform requirements per feature. Add graceful error messages on non-Windows platforms. Consider headless EA export via EA's command-line interface where available.
+
+|Test coverage gaps
+|Add Spock unit tests for Gradle script logic that can be tested without external tools. Consider mock-based tests for external tool integration points.
+
+|Legacy Jira processor
+|Set a deprecation timeline. Add a warning message when legacy configuration is detected. Remove after two major versions.
+|===
+
+// Source: core/src/main/groovy/org/docToolchain/tasks/ (7 classes vs 25+ scripts),
+// gradle.properties (mainConfigFile), core/src/main/groovy/org/docToolchain/atlassian/jira/,
+// core/src/main/groovy/org/docToolchain/http/RequestFailedException.groovy,
+// scripts/exportEA.gradle, scripts/exportPPT.gradle, scripts/exportVisio.gradle

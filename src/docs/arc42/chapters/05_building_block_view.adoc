@@ -15,11 +15,12 @@ ifndef::imagesdir[:imagesdir: ../../images]
 
 == Building Block View
 
-This section decomposes docToolchain into its static building blocks at three levels of detail.
+This section decomposes docToolchain v4 into its static building blocks at three levels of detail.
+The key structural change from v3: Gradle Orchestration and the compiled Core Module are removed. The architecture simplifies to two layers plus an ecosystem of companion tools.
 
 === Level 1: Whitebox Overall System
 
-[plantuml,level1-container,png]
+[plantuml,level1-container-v4,png]
 ----
 @startuml
 !include <C4/C4_Container>
@@ -27,32 +28,38 @@ This section decomposes docToolchain into its static building blocks at three le
 LAYOUT_WITH_LEGEND()
 
 Person(user, "Documentation Author", "Writes AsciiDoc,\nruns dtcw commands")
+Person(llm, "LLM Agent", "Navigates and modifies\ndocs via MCP")
 
-System_Boundary(dtc, "docToolchain") {
-    Container(wrapper, "Wrapper Layer", "Bash / PowerShell / Batch", "dtcw, dtcw.ps1, dtcw.bat\nCLI entry point, environment\ndetection, Java installation")
-    Container(gradle, "Gradle Orchestration", "Gradle 8.1.1 + Groovy DSL", "build.gradle, settings.gradle\nTask registration, dependency\nmanagement, plugin loading")
-    Container(scripts, "Script Plugins", "Gradle scripts", "25+ scripts/*.gradle files\nModular task definitions\nfor each feature")
-    Container(core, "Core Library", "Groovy Shadow JAR", "core/ module\nBusiness logic for Confluence,\nJira, Configuration, HTTP")
+System_Boundary(dtc, "docToolchain v4") {
+    Container(wrapper, "Wrapper Layer", "Bash / PowerShell / Batch", "dtcw, dtcw.ps1, dtcw.bat\nCLI entry point,\nclasspath construction,\nJava/tool installation")
+    Container(scripts, "Groovy Scripts", "Groovy", "scripts/*.groovy\nAll task logic:\ngeneration, publishing,\nexport, site building")
 }
 
-System_Ext(asciidoctor, "AsciiDoctor JVM", "Document processor\n(Gradle plugin)")
-System_Ext(jbake, "jBake", "Static site generator\n(Gradle plugin)")
+System_Boundary(ecosystem, "Ecosystem") {
+    Container(dacli, "daCLI", "Python / FastMCP", "MCP server for structured\ndocument access (10 tools)")
+    Container(bausteinsicht, "Bausteinsicht", "Go / Cobra", "Architecture-as-code\nJSONC + draw.io sync")
+    Container(prompts, "LLM-Prompts", "AsciiDoc", "Reusable prompts for\narc42 documentation")
+}
+
+System_Ext(asciidoctor, "AsciiDoctor CLI", "Document processor\n(external tool, auto-installed)")
 System_Ext(confluence, "Atlassian Confluence", "REST API v1/v2")
 System_Ext(jira, "Atlassian Jira", "REST API v3")
 
 Rel(user, wrapper, "Invokes tasks via CLI")
-Rel(wrapper, gradle, "Delegates to Gradle")
-Rel(gradle, scripts, "Applies script plugins\nvia apply from:")
-Rel(scripts, core, "Uses core library\nclasses")
+Rel(wrapper, scripts, "Invokes Groovy scripts\nvia java/groovy runtime")
 Rel(scripts, asciidoctor, "Renders AsciiDoc")
-Rel(scripts, jbake, "Generates microsite")
-Rel(core, confluence, "Publishes pages")
-Rel(core, jira, "Exports issues")
+Rel(scripts, confluence, "Publishes pages")
+Rel(scripts, jira, "Exports issues")
+
+Rel(llm, dacli, "MCP tool calls")
+Rel(dacli, scripts, "Reads/writes\ndoc sources")
+Rel(llm, bausteinsicht, "Reads/writes\nJSONC models")
+Rel(llm, prompts, "Uses prompts")
 @enduml
 ----
 
 Motivation::
-docToolchain's four-layer architecture separates concerns cleanly: the wrapper handles platform abstraction, Gradle provides build orchestration, script plugins define features, and the core library contains reusable business logic.
+v4 simplifies from four layers (Wrapper -> Gradle -> Script Plugins -> Core Module) to two layers (Wrapper -> Scripts). The Gradle orchestration layer and the compiled Core Module are eliminated. Business logic returns to scripts. Companion tools (daCLI, Bausteinsicht, LLM-Prompts) handle LLM integration as an ecosystem rather than embedding it into docToolchain itself.
 
 Contained Building Blocks::
 
@@ -61,125 +68,68 @@ Contained Building Blocks::
 |Building Block |Responsibility |Location
 
 |Wrapper Layer
-|Cross-platform CLI entry point. Detects execution environment (local/Docker/SDKMAN), manages Java 17 installation, invokes Gradle with correct arguments.
+|Cross-platform CLI entry point. Constructs classpath from `lib/` directory (or resolves via Grape). Manages Java installation. Invokes Groovy scripts directly — no build framework intermediary. Detects execution environment (local/Docker/SDKMAN).
 |`dtcw`, `dtcw.ps1`, `dtcw.bat`
 
-|Gradle Orchestration
-|Build configuration, task registration via `apply from:`, dependency resolution, plugin loading. Central coordination point for all tasks.
-|`build.gradle`, `settings.gradle`, `gradle.properties`, `libs.versions.toml`
+|Groovy Scripts
+|All task logic: document generation (AsciiDoctor invocation), site generation (custom SSG), Confluence publishing, Jira export, changelog extraction, and all other features. Each script is a self-contained unit that runs without compilation.
+|`scripts/*.groovy`
 
-|Script Plugins
-|Feature-specific Gradle task definitions. Each script is a self-contained module that registers tasks in the `docToolchain` group.
-|`scripts/*.gradle` (25+ files)
+|daCLI (Ecosystem)
+|MCP server providing 10 tools for structured document access: navigation, search, section-level read/write, validation. Separate Python process communicating via stdio.
+|Separate repository (`dacli/`)
 
-|Core Library
-|Business logic independent of Gradle. Provides services for Confluence publishing, Jira export, configuration management, and HTTP communication. Packaged as a Shadow JAR.
-|`core/src/main/groovy/org/docToolchain/`
+|Bausteinsicht (Ecosystem)
+|Architecture-as-code tool. JSONC models with bidirectional draw.io sync. Exports PlantUML/PNG for embedding in AsciiDoc. CLI with `--format json` for LLM interaction.
+|Separate repository (`Bausteinsicht/`)
+
+|LLM-Prompts (Ecosystem)
+|Reusable prompt collection for arc42 documentation: chapter generation, ADR creation, quality scenarios, risk assessment, stakeholder analysis.
+|Separate repository (`LLM-Prompts/`)
 |===
 
-// Source: build.gradle (apply from lines 100-127), settings.gradle, dtcw
+=== Level 2: Whitebox Groovy Scripts
 
-=== Level 2: Whitebox Core Module
-
-[plantuml,level2-core,png]
-----
-@startuml
-!include <C4/C4_Component>
-
-LAYOUT_WITH_LEGEND()
-
-Container_Boundary(core, "Core Library (core/)") {
-    Component(tasks, "Tasks", "Groovy", "DocToolchainTask base class\nAsciidoc2ConfluenceTask\nExportJiraIssuesTask\nExportJiraSprintChangelogTask")
-    Component(config, "Configuration", "Groovy", "ConfigService\nConfigBuilder\nGroovy DSL config loading")
-    Component(confSub, "Confluence Subsystem", "Groovy", "ConfluenceService\nConfluenceClientV1 / V2\nPage CRUD, attachments, labels")
-    Component(jiraSub, "Jira Subsystem", "Groovy", "JiraService\nJiraServerClient\nIssue export, sprint data")
-    Component(http, "HTTP Layer", "Groovy", "BasicRestClient\nRequestFailedException")
-    Component(transformer, "Transformers", "Groovy", "HtmlTransformer\nCodeBlockTransformer\nLinkTransformer")
-}
-
-Rel(tasks, config, "Reads configuration")
-Rel(tasks, confSub, "Delegates Confluence ops")
-Rel(tasks, jiraSub, "Delegates Jira ops")
-Rel(confSub, http, "REST calls")
-Rel(jiraSub, http, "REST calls")
-Rel(confSub, transformer, "HTML to Confluence\nstorage format")
-@enduml
-----
-
-==== Tasks
-
-* **Purpose**: Gradle task implementations. Each task class encapsulates the logic for one docToolchain operation.
-* **Key classes**: `DocToolchainTask` (abstract base), `Asciidoc2ConfluenceTask`, `ExportJiraIssuesTask`, `ExportJiraSprintChangelogTask`, `VerifyConfluenceApiAccessTask`, `WipeConfluenceSpaceTask`
-* **Location**: `core/src/main/groovy/org/docToolchain/tasks/`
-
-==== Configuration
-
-* **Purpose**: Load and provide typed access to project configuration.
-* **Key classes**: `ConfigBuilder` (bootstraps ConfigObject from Groovy DSL file), `ConfigService` (provides `getConfigProperty(path)` and `getFlatConfigSubTree(path)`)
-* **Location**: `core/src/main/groovy/org/docToolchain/configuration/`
-
-==== Confluence Subsystem
-
-* **Purpose**: Publish HTML documentation to Confluence. Handles page creation/update, attachment upload, label management, and content hash comparison for idempotent publishing.
-* **Key classes**: `ConfluenceService`, `ConfluenceClient` (abstract), `ConfluenceClientV1`, `ConfluenceClientV2`, `RestClient`
-* **Location**: `core/src/main/groovy/org/docToolchain/atlassian/confluence/`
-
-==== Jira Subsystem
-
-* **Purpose**: Export Jira issues and sprint data to AsciiDoc or Excel format.
-* **Key classes**: `JiraService`, `JiraClient` (abstract), `JiraServerClient`, `AsciiDocConverter`, `ExcelConverter`, `LegacyJiraProcessor`
-* **Location**: `core/src/main/groovy/org/docToolchain/atlassian/jira/`
-
-==== HTTP Layer
-
-* **Purpose**: Generic HTTP client abstraction for REST API calls. Handles authentication, error responses, and proxy configuration.
-* **Key classes**: `BasicRestClient`, `RequestFailedException`
-* **Location**: `core/src/main/groovy/org/docToolchain/http/`
-
-==== Transformers
-
-* **Purpose**: Transform HTML output from AsciiDoctor into Confluence storage format. Handles code blocks, links, anchors, admonitions, and embedded images.
-* **Key classes**: `HtmlTransformer`, `CodeBlockTransformer`, `LinkTransformer`
-* **Location**: `core/src/main/groovy/org/docToolchain/atlassian/transformer/`
-
-=== Level 2: Script Plugin Categories
-
-The 25+ script plugins are organized into six functional groups:
+The scripts are organized into functional groups. Unlike v3 (where scripts were Gradle task definitions applied via `apply from:`), v4 scripts are standalone Groovy files invoked directly.
 
 [options="header",cols="1,2,3"]
 |===
 |Category |Scripts |Purpose
 
 |Document Generation
-|`AsciiDocBasics.gradle`, `generateDeck.gradle`
-|Core document generation: `generateHTML`, `generatePDF`, `generateDocbook`, `generateDeck` (Reveal.js slides). Configuration loading and AsciiDoctor setup.
-
-|Atlassian Integration
-|`publishToConfluence.gradle`, `exportJiraIssues.gradle`, `exportJiraSprintChangelog.gradle`, `exportConfluence.gradle`
-|Confluence publishing and Jira data export. These scripts delegate to core module task classes.
-
-|External Tool Export
-|`exportEA.gradle`, `exportPPT.gradle`, `exportVisio.gradle`, `exportStructurizr.gradle`, `exportOpenApi.gradle`
-|Extract diagrams and models from Enterprise Architect, PowerPoint, Visio, Structurizr DSL, and OpenAPI specs.
-
-|Data Import/Export
-|`exportExcel.gradle`, `exportMarkdown.gradle`, `exportChangelog.gradle`, `exportContributors.gradle`, `exportMetrics.gradle`, `pandoc.gradle`
-|Import data from Excel tables, convert Markdown, extract Git metadata, compute documentation metrics, and run Pandoc conversions.
+|`generateHTML.groovy`, `generatePDF.groovy`, `generateDocbook.groovy`, `generateDeck.groovy`
+|Core document generation. Calls AsciiDoctor CLI (external tool, ADR-6) for rendering. Replaces the `AsciiDocBasics.gradle` approach.
 
 |Site Generation
-|`generateSite.gradle`, `copyThemes.gradle`, `generateContent.gradle`
-|Generate static microsites using jBake. Handle theme management, content preparation, and jBake configuration.
+|`generateSite.groovy`, `copyThemes.groovy`
+|Custom Groovy-based static site generator replacing jBake (ADR-4). Groovy SimpleTemplate engine, in-memory content model, modern HTML output. Reads jBake-compatible metadata headers.
+
+|Atlassian Integration
+|`publishToConfluence.groovy`, `exportJiraIssues.groovy`, `exportJiraSprintChangelog.groovy`, `exportConfluence.groovy`
+|Confluence publishing (with smart MD5-based update detection) and Jira data export. Contains the Confluence client hierarchy (V1/V2) and Jira client/converter logic formerly in `core/`.
+
+|External Tool Export
+|`exportEA.groovy`, `exportPPT.groovy`, `exportVisio.groovy`, `exportStructurizr.groovy`, `exportOpenApi.groovy`
+|Extract diagrams and models from external tools. EA/PPT/Visio are Windows-only (VBScript).
+
+|Data Import/Export
+|`exportExcel.groovy`, `exportMarkdown.groovy`, `exportChangelog.groovy`, `exportContributors.groovy`, `exportMetrics.groovy`, `pandoc.groovy`
+|Import data from Excel, convert Markdown, extract Git metadata, run Pandoc conversions.
 
 |Utilities
-|`collectIncludes.gradle`, `fixEncoding.gradle`, `prependFilename.gradle`, `fixGlobalReferences.gradle`, `htmlSanityCheck.gradle`, `downloadTemplate.gradle`, `customTasks.gradle`
-|Supporting tasks: aggregate AsciiDoc includes, fix file encodings, validate HTML output, download arc42 templates, and user-defined custom tasks.
+|`collectIncludes.groovy`, `fixEncoding.groovy`, `htmlSanityCheck.groovy`, `downloadTemplate.groovy`
+|Supporting tasks: aggregate includes, fix encodings, validate HTML, download templates.
+
+|Configuration
+|`config.groovy` (or loaded inline)
+|Loads `docToolchainConfig.groovy` via Groovy `ConfigSlurper`. Provides config access to all scripts.
 |===
 
-// Source: build.gradle (apply from lines), scripts/*.gradle
+=== Level 3: Whitebox Atlassian Integration
 
-=== Level 3: Whitebox Atlassian Subsystem
+The Atlassian integration scripts contain the richest business logic. In v3 this was the compiled `core/` module; in v4 it returns to script form.
 
-[plantuml,level3-atlassian,png]
+[plantuml,level3-atlassian-v4,png]
 ----
 @startuml
 !include <C4/C4_Component>
@@ -187,71 +137,30 @@ The 25+ script plugins are organized into six functional groups:
 LAYOUT_WITH_LEGEND()
 LAYOUT_LEFT_RIGHT()
 
-Container_Boundary(atlassian, "Atlassian Subsystem") {
-    Component(confSvc, "ConfluenceService", "Groovy", "Page hierarchy management\nContent hash comparison\nAttachment change detection")
-    Component(confClient, "ConfluenceClient", "Abstract class", "Defines CRUD contract\nfor pages, attachments, labels")
-    Component(confV1, "ConfluenceClientV1", "Groovy", "REST API v1\n(Server / Data Center)")
-    Component(confV2, "ConfluenceClientV2", "Groovy", "REST API v2\n(Cloud)")
-    Component(confRest, "Confluence RestClient", "Groovy", "HTTP execution\nAuth header injection")
+Container_Boundary(atlassian, "Atlassian Integration Scripts") {
+    Component(pubConf, "publishToConfluence.groovy", "Groovy Script", "Orchestrates HTML parsing,\ntransformation, and publishing")
+    Component(confSvc, "ConfluenceService", "Groovy class", "Page management,\nhash comparison,\nattachment handling")
+    Component(confV1, "ConfluenceClientV1", "Groovy class", "REST API v1\n(Server / Data Center)")
+    Component(confV2, "ConfluenceClientV2", "Groovy class", "REST API v2\n(Cloud)")
+    Component(htmlTrans, "HtmlTransformer", "Groovy class", "HTML to Confluence\nstorage format")
 
-    Component(jiraSvc, "JiraService", "Groovy", "Export orchestration\nConverter registration\nSprint data retrieval")
-    Component(jiraClient, "JiraClient", "Abstract class", "JQL search contract\nSprint listing contract")
-    Component(jiraServer, "JiraServerClient", "Groovy", "REST API v3/v1\nimplementation")
-    Component(jiraRest, "Jira RestClient", "Groovy", "HTTP execution\nAuth header injection")
-
-    Component(adocConv, "AsciiDocConverter", "Groovy", "Issues to AsciiDoc\ntable format")
-    Component(excelConv, "ExcelConverter", "Groovy", "Issues to XLSX\nvia Apache POI")
-
-    Component(htmlTrans, "HtmlTransformer", "Groovy", "HTML to Confluence\nstorage format")
-    Component(codeTrans, "CodeBlockTransformer", "Groovy", "Code blocks to\nConfluence macros")
-    Component(linkTrans, "LinkTransformer", "Groovy", "Link and anchor\nrewriting")
+    Component(expJira, "exportJiraIssues.groovy", "Groovy Script", "Orchestrates Jira export")
+    Component(jiraSvc, "JiraService", "Groovy class", "JQL queries,\nconverter dispatch")
+    Component(jiraClient, "JiraServerClient", "Groovy class", "REST API v3/v1")
+    Component(adocConv, "AsciiDocConverter", "Groovy class", "Issues to AsciiDoc")
+    Component(excelConv, "ExcelConverter", "Groovy class", "Issues to XLSX")
 }
 
-Rel(confSvc, confClient, "Uses")
-Rel(confClient, confV1, "Implements")
-Rel(confClient, confV2, "Implements")
-Rel(confV1, confRest, "HTTP calls")
-Rel(confV2, confRest, "HTTP calls")
+Rel(pubConf, confSvc, "Uses")
+Rel(confSvc, confV1, "v1 API calls")
+Rel(confSvc, confV2, "v2 API calls")
+Rel(confSvc, htmlTrans, "Transforms HTML")
 
-Rel(jiraSvc, jiraClient, "Uses")
-Rel(jiraClient, jiraServer, "Implements")
-Rel(jiraServer, jiraRest, "HTTP calls")
-
+Rel(expJira, jiraSvc, "Uses")
+Rel(jiraSvc, jiraClient, "JQL queries")
 Rel(jiraSvc, adocConv, "Formats output")
 Rel(jiraSvc, excelConv, "Formats output")
-
-Rel(confSvc, htmlTrans, "Transforms pages")
-Rel(htmlTrans, codeTrans, "Delegates")
-Rel(htmlTrans, linkTrans, "Delegates")
 @enduml
 ----
 
-==== Confluence Publishing Flow
-
-The Confluence subsystem implements a **smart publishing** pattern:
-
-1. `ConfluenceService` parses generated HTML files using jsoup
-2. For each page, it computes an MD5 hash of the content
-3. It queries Confluence for existing pages in the target space
-4. If a page exists and its hash matches, the update is skipped (QS-4)
-5. If content changed, `HtmlTransformer` converts HTML to Confluence storage format
-6. `ConfluenceClient` (V1 or V2, based on config) creates or updates the page
-7. Attachments are uploaded only if their content changed
-8. Labels are applied or updated
-
-// Source: core/src/main/groovy/org/docToolchain/tasks/Asciidoc2ConfluenceTask.groovy,
-// core/src/main/groovy/org/docToolchain/atlassian/confluence/ConfluenceService.groovy
-
-==== Jira Export Flow
-
-The Jira subsystem implements a **converter chain** pattern:
-
-1. `JiraService` receives export configuration (JQL queries, output format, custom fields)
-2. `JiraServerClient` executes JQL queries via REST API, handling pagination
-3. For each export entry, the configured converter is invoked:
-   - `AsciiDocConverter`: Formats issues as AsciiDoc tables with configurable columns
-   - `ExcelConverter`: Creates XLSX workbooks via Apache POI with one sheet per export
-4. `LegacyJiraProcessor` handles backward-compatible configuration format from older docToolchain versions
-
-// Source: core/src/main/groovy/org/docToolchain/atlassian/jira/JiraService.groovy,
-// core/src/main/groovy/org/docToolchain/atlassian/jira/clients/JiraServerClient.groovy
+The key difference from v3: these classes are **not compiled into a Shadow JAR**. They are Groovy source files loaded at runtime. The script entry point (`publishToConfluence.groovy`) loads helper classes from a shared `lib/` directory or via inline `GroovyClassLoader`.

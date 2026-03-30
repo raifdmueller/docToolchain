@@ -1,0 +1,109 @@
+:jbake-title: Quality Requirements
+:jbake-type: page_toc
+:jbake-status: published
+:jbake-menu: arc42
+:jbake-order: 10
+:filename: /chapters/10_quality_requirements.adoc
+ifndef::imagesdir[:imagesdir: ../../images]
+
+:toc:
+
+
+
+[[section-quality-scenarios]]
+== Quality Requirements
+
+The quality goals from <<section-introduction-and-goals>> drive every architecture decision in docToolchain.
+This section refines those goals into a structured quality tree and concrete, measurable scenarios that serve as acceptance criteria for the architecture.
+
+=== Quality Requirements Overview
+
+The quality tree organizes requirements by ISO 25010 categories.
+Each leaf maps to one or more quality scenarios below.
+
+[plantuml,quality-tree,png]
+----
+@startmindmap
+* Quality
+** Functional Suitability
+*** Correct output generation
+*** Faithful Confluence publishing
+** Portability
+*** Cross-platform execution
+*** Environment equivalence
+** Usability
+*** Zero-config start
+*** Headless CI mode
+** Maintainability
+*** Plugin extensibility
+*** Core module isolation
+** Reliability
+*** Idempotent publishing
+*** Stable core tests
+** Performance Efficiency
+*** Fast HTML generation
+@endmindmap
+----
+
+// Source: Quality goals from Section 01, codebase patterns
+
+=== Quality Scenarios
+
+The following scenarios are the **evaluation framework** for all architecture decisions (Section 09).
+Each ADR must state which quality scenarios it supports or compromises.
+
+[options="header",cols="1,1,2,2,2"]
+|===
+|ID |Quality Goal |Stimulus |Response |Metric
+
+|QS-1
+|Extensibility
+|A contributor wants to add a new export feature (e.g., export to Notion).
+|They create one `scripts/exportNotion.gradle` file, one task class in `core/src/main/groovy/org/docToolchain/tasks/`, and add one `apply from:` line in `build.gradle`.
+|No other files need modification. The new task appears in `./dtcw tasks --group doctoolchain` output.
+
+|QS-2
+|Portability
+|A user runs `./dtcw docker generateHTML` on the same project that previously built with `./dtcw local generateHTML`.
+|Docker execution produces the same HTML output as the local execution.
+|Output files are byte-identical (excluding timestamps in HTML meta tags).
+
+|QS-3
+|Usability
+|A developer with no prior docToolchain experience clones a project containing `dtcw` and AsciiDoc sources.
+|They run `./dtcw local generateHTML` and get rendered documentation.
+|Time from first command to viewing HTML output is under 5 minutes (including automatic Java 17 and docToolchain installation).
+
+|QS-4
+|Reliability
+|Confluence publishing is triggered twice for the same documentation without changes.
+|The second run detects that page content has not changed (via MD5 hash comparison) and skips the update.
+|No new Confluence page versions are created. Existing attachments and labels are preserved.
+
+|QS-5
+|Maintainability
+|A CI/CD pipeline runs `./dtcw local generateHTML` in a container without a TTY.
+|The `dtcw` wrapper detects headless mode (`DTC_HEADLESS=true`) and suppresses all interactive prompts. The build completes unattended.
+|Exit code 0 on success; non-zero on failure. No hanging processes waiting for user input.
+
+|QS-6
+|Usability (Installability)
+|A user runs `./dtcw local generateHTML` on a machine without Java 17.
+|The `dtcw` wrapper detects the missing JDK, downloads Adoptium JDK 17 via the Adoptium API, installs it locally to `$HOME/.doctoolchain/`, and proceeds with the build.
+|No manual Java installation required. The installed JDK is reused for subsequent runs.
+
+|QS-7
+|Reliability
+|The core test suite (`./gradlew core:test`) is executed.
+|All 66 unit tests pass. 3 tests are skipped (environment-dependent).
+|Zero test failures. Test execution completes in under 15 seconds.
+
+|QS-8
+|Performance Efficiency
+|A user runs `./dtcw local generateHTML` on a typical documentation project (~50 AsciiDoc pages with PlantUML diagrams).
+|HTML output is generated in the `build/html5/` directory.
+|Generation completes in under 20 seconds (after initial Gradle download).
+|===
+
+// Source: dtcw (headless mode, Java install logic), Asciidoc2ConfluenceTask.groovy (MD5 hash comparison),
+// core/src/test/groovy/ (test structure), build.gradle (plugin architecture)
