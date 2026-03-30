@@ -1,0 +1,35 @@
+repos:
+  # Shell script checks
+  - repo: local
+    hooks:
+      - id: bash-syntax
+        name: bash syntax check (dtcw)
+        entry: bash -n
+        language: system
+        files: '^dtcw$'
+        types: [file]
+
+      - id: shellcheck
+        name: shellcheck (dtcw)
+        entry: shellcheck
+        language: system
+        files: '^dtcw$'
+        types: [file]
+
+  # AsciiDoc linting
+  - repo: local
+    hooks:
+      - id: asciidoc-linter
+        name: asciidoc-linter
+        entry: asciidoc-linter
+        language: python
+        additional_dependencies: ['asciidoc-linter@git+https://github.com/docToolchain/asciidoc-linter']
+        files: '\.adoc$'
+        # Exclude vendored/generated content
+        exclude: '^src/site/'
+
+  # Secret scanning
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
