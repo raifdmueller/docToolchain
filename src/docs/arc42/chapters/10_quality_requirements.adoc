@@ -41,6 +41,8 @@ Each leaf maps to one or more quality scenarios below.
 *** Modern documentation UI
 *** LLM-managed configuration
 *** Actionable error guidance
+*** Minimal repository footprint
+*** Clean uninstallation
 ** Maintainability
 *** Script-first extensibility
 *** No compilation step required
@@ -177,6 +179,18 @@ Each ADR must state which quality scenarios it supports or compromises.
 |A task fails due to a problem the user can fix (locked file, missing config, wrong credentials, unreachable API, missing tool).
 |Instead of a stack trace or cryptic error message, docToolchain tells the user **what to do next**: which file to close, which config key to set, which command to run. The message is a concrete action, not a diagnosis.
 |Every error message that a user can resolve contains a remediation step. Example: "Die PDF-Datei build/pdf/manual.pdf ist gesperrt. Bitte schließe sie in deinem PDF-Viewer und führe den Befehl erneut aus." Zero stack traces for user-recoverable errors. Stack traces only for bugs (unexpected exceptions).
+
+|QS-18
+|Usability (Minimal Repository Footprint)
+|A user adds docToolchain to an existing project repository.
+|Only `dtcw` (wrapper script) and `docToolchainConfig.groovy` (configuration) are committed to the project repository. All other files — JARs, scripts, templates, Java runtime — are installed externally in `$HOME/.doctoolchain/`.
+|Exactly 2 files added to the project repo (plus optional `dtcw.ps1`/`dtcw.bat` for Windows). The `build/` output directory is in `.gitignore`. No Gradle wrapper, no `build.gradle`, no `settings.gradle`, no `libs/` in the project.
+
+|QS-19
+|Usability (Clean Uninstallation)
+|A user decides to remove docToolchain from their system.
+|Deleting `$HOME/.doctoolchain/` removes the entire installation — binaries, JARs, Java runtime, caches. docToolchain does not modify shell profiles (`.bashrc`, `.zshrc`, `.profile`), does not register system services, and does not write to directories outside `$HOME/.doctoolchain/`.
+|Zero side effects after `rm -rf $HOME/.doctoolchain/`. No orphaned entries in PATH, no lingering environment variables, no modified shell config files. The project's `dtcw` and config file remain inert without the installation.
 |===
 
 // Source: v4 architecture requirements (Gradle removal, jBake replacement, LLM-native strategy),

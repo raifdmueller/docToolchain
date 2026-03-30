@@ -1,0 +1,104 @@
+=== ADR-8: Actionable Error Guidance
+
+* **Status**: Decided for v4
+* **Context**: v3 error handling is inconsistent: `RuntimeException` in core, `GradleException` in scripts, `println` + silent continuation in some scripts. With Gradle removed, `GradleException` is gone. More importantly, the fundamental problem is not *how* errors are thrown, but *what* the user sees. v3 shows stack traces and technical error messages. Users cannot determine what to do next.
++
+Real example from v3: PDF generation fails with a cryptic `IOException: Access denied` when the output PDF is still open in Adobe Acrobat. Users who know the tool recognize this — new users are stuck.
+* **Decision**: Every user-recoverable error must include an **actionable remediation step** — not what went wrong, but what the user should do to fix it. Implemented as a lightweight exception hierarchy with mandatory guidance messages:
++
+[source,groovy]
+----
+// Shared helper (lib/DtcException.groovy, ~25 LOC)
+class DtcException extends RuntimeException {
+    String guidance  // What the user should do
+    int exitCode
+    DtcException(String guidance, int exitCode = 1, Throwable cause = null) {
+        super(guidance, cause)
+        this.guidance = guidance
+        this.exitCode = exitCode
+    }
+}
+class DtcConfigException extends DtcException {
+    DtcConfigException(String guidance) { super(guidance, 2) }
+}
+class DtcApiException extends DtcException {
+    DtcApiException(String guidance) { super(guidance, 3) }
+}
+
+// Usage in scripts:
+if (!outputFile.canWrite()) {
+    throw new DtcException(
+        "Die Datei ${outputFile.name} ist gesperrt. " +
+        "Bitte schließe sie in deinem PDF-Viewer und führe den Befehl erneut aus."
+    )
+}
+
+if (!configFile.exists()) {
+    throw new DtcConfigException(
+        "Config-Datei '${configFile.name}' nicht gefunden. " +
+        "Erstelle sie mit: ./dtcw downloadTemplate"
+    )
+}
+
+if (response.statusCode == 401) {
+    throw new DtcApiException(
+        "Confluence-Authentifizierung fehlgeschlagen. " +
+        "Prüfe confluence.credentials in docToolchainConfig.groovy oder übergib -Pconfluence.credentials=user:token"
+    )
+}
+
+// Top-level runner (in dtcw wrapper or bootstrap script):
+try { script.run() }
+catch (DtcConfigException e) { System.err.println("⚙ ${e.guidance}"); System.exit(2) }
+catch (DtcApiException e)    { System.err.println("🌐 ${e.guidance}"); System.exit(3) }
+catch (DtcException e)       { System.err.println("→ ${e.guidance}"); System.exit(1) }
+catch (Exception e)          { System.err.println("BUG: ${e.message}"); e.printStackTrace(System.err); System.exit(99) }
+----
++
+Exit codes: 0 = success, 1 = user-fixable error, 2 = config error, 3 = API/network error, 99 = bug.
++
+Stack traces are shown **only** for exit code 99 (bugs). All other errors show only the guidance message.
+
+* **Alternatives considered**:
+
+[cols="1,1,1,1", options="header"]
+|===
+|Criterion |A: Exit + stderr (plain) |B: Exception hierarchy with guidance |C: Return codes
+
+|Actionable guidance (QS-15)
+|0 (message is free-form, no structure enforces guidance)
+|+1 (guidance field is mandatory in constructor)
+|0 (message is free-form)
+
+|No silent failures (QS-4)
+|+1 (try/catch enforces handling)
+|+1
+|–1 (easy to forget check)
+
+|Differentiated exit codes (QS-5)
+|0 (only 0/1)
+|+1 (0/1/2/3/99)
+|+1
+
+|Compatibility with existing code
+|0
+|+1 (existing exceptions wrapped)
+|–1 (rewrite needed)
+
+|Script-first simplicity (QS-11)
+|+1 (no imports)
+|0 (one import)
+|0 (new pattern)
+
+|**Total**
+|**+2**
+|**+4**
+|**–1**
+|===
+
+* **Quality Tradeoffs**:
+** Supports **QS-17 (Actionable Guidance)**: The `guidance` field in `DtcException` enforces that every thrown error contains a user-actionable message. This is not optional — it's the constructor parameter.
+** Supports **QS-4 (Reliability)**: No more silent `println` + continue. Every error is thrown and caught at the top level.
+** Supports **QS-5 (CI/CD)**: Differentiated exit codes (2=config, 3=API, 99=bug) enable targeted CI/CD responses.
+** Neutral on **QS-11 (Script-first)**: One import per script (`import DtcException`). ~25 LOC in a shared file.
+* **Consequences**: Every script must use `DtcException` (or subclass) instead of `println` for errors. Existing `RequestFailedException` is replaced by `DtcApiException`. A catalog of common error scenarios with guidance messages should be maintained (see examples in Risks section). The guidance messages should be in English (matching the codebase language), with the tone of a helpful colleague, not a system log.

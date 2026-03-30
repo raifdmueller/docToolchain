@@ -1,0 +1,66 @@
+=== ADR-4: Replace jBake for Static Site Generation
+
+* **Status**: Decided for v4
+* **Context**: jBake is the current static site generator for docToolchain's microsite feature. Critical problems:
+** **Unmaintained**: Governance crisis (Issue #785). PRs not reviewed. v2.7.0 not published to Maven Central.
+** **Apple Silicon**: Does not run on modern Macs without workarounds (OrientDB JNI issue #709). Fix exists but is not released.
+** **Java 21 incompatible**: Bundled Groovy too old for JDK 21 class files (Issue #797).
+** **Heavy**: OrientDB adds 38MB of JARs for a database that could be an in-memory list.
+** **Best available fork**: rschwietzke/jbake removes OrientDB + upgrades to Java 21 (PR #800), but is stuck waiting for review.
+* **Decision**: Build a custom Groovy-based static site generator using Groovy SimpleTemplate. The core requirement is: AsciiDoc files + templates -> static HTML site with navigation, search, and theming.
+* **Alternatives considered**:
+
+[cols="1,1,1", options="header"]
+|===
+|Criterion |jBake Fork (rschwietzke) |Custom Groovy SSG
+
+|Groovy template reuse
+|+1
+|+1
+
+|Stack consistency
+|0 (external Java project)
+|+1 (own code)
+
+|Maintenance control
+|0 (dependent on fork maintainer)
+|+1 (full control)
+
+|Apple Silicon
+|+1 (fork removes OrientDB)
+|+1
+
+|Implementation effort
+|+1 (fork exists, PR #800)
+|–1 (must be developed)
+
+|Dependency footprint
+|–1 (jBake + ~15 JARs)
+|+1 (no additional JARs)
+
+|Future-proofing (Phase 2 LLM UI)
+|–1 (jBake rendering pipeline limits control)
+|+1 (full control over HTML output)
+
+|Gradle independence
+|–1 (needs custom runner or jBake Java API)
+|+1 (pure Groovy script)
+|0
+|–1
+|+1
+|+1
+
+|**Total**
+|**0**
+|**+6**
+|===
+
+NOTE: With AsciiDoctor externalized (ADR-6), the custom SSG only needs to handle template rendering and content model — AsciiDoc processing is done by the external AsciiDoctor CLI. This reduces the estimated effort to ~300 LOC of new code. Metadata parsing (~50 LOC) and menu builder (167 LOC) are reused from v3's `generateSite.gradle` and `menu.groovy`.
+
+* **Quality Tradeoffs**:
+** Supports **QS-10 (Apple Silicon)**: No OrientDB, no JNI issues.
+** Supports **QS-13 (Modern UI)**: Full control over output HTML enables modern theme.
+** Supports **QS-11 (Script-first)**: Generator is a Groovy script, not a compiled plugin.
+** Risk on **QS-8 (Performance)**: Must match jBake generation speed (~5s for typical sites).
+** Risk on **QS-14 (v3 compatibility)**: Must support jBake metadata headers (`:jbake-title:`, `:jbake-type:`) for backward compatibility.
+* **Consequences**: Existing 23 Groovy SimpleTemplate files can be reused with minimal changes. The custom SSG parses AsciiDoc metadata (`:jbake-*:` attributes) itself — a simple regex pass over file headers (~20 LOC, reused from v3's `generateSite.gradle`). AsciiDoctor CLI handles HTML rendering (ADR-6). No database — in-memory content model. Modern UI theme replaces Docsy (Phase 1: modern look; Phase 2: LLM-augmented UI in future version).

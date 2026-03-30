@@ -1,0 +1,12 @@
+=== ADR-1: Use Groovy as Primary Scripting Language
+
+* **Status**: In effect (carried forward to v4)
+* **Context**: docToolchain uses scripts in multiple languages. The team needed a consistent primary language for maintainability.
+* **Decision**: Use Groovy for all scripting tasks. Exception: Visual Basic for Windows COM automation (Enterprise Architect, PowerPoint export) where no Java library exists.
+* **Quality Tradeoffs**:
+** Supports **QS-1 (Extensibility)**: Contributors need only one language to extend the system.
+** Supports **QS-2 (Portability)**: Groovy runs on the JVM, same bytecode on all platforms.
+** Supports **QS-11 (Script-first)**: Groovy scripts run without compilation.
+** Compromises **QS-2 (Portability)** partially: VBScript exceptions limit some features to Windows.
+
+// Source: src/docs/050_ADRs/ADR-1-Scripting-Languages.adoc

@@ -1,0 +1,20 @@
+=== ADR-7: lib/ Directory for Remaining Java Dependencies
+
+* **Status**: Decided for v4
+* **Context**: With AsciiDoctor externalized (ADR-6), the remaining Java dependencies are:
+** Groovy runtime (~15 JARs, ~10 MB)
+** jsoup 1.18.1 (1 JAR, 0.5 MB) — HTML parsing for Confluence publishing
+** Apache HttpClient 5.3 (~5 JARs, ~2 MB) — REST API calls to Confluence/Jira
+** Apache POI 5.3.0 (~10 JARs, ~10 MB) — Excel export (only needed for exportExcel)
+** Total: ~30 JARs, ~23 MB
+* **Decision**: Ship all remaining JARs in a `lib/` directory. `dtcw` sets the classpath via `java -cp lib/*`. No runtime resolution, no Grape, no downloads.
+* **Rationale**: 23 MB is small enough to bundle. Zero resolution overhead supports QS-9. Fully offline-capable. Deterministic — every user gets the same JARs. The simplest possible solution.
+* **Quality Tradeoffs**:
+** Supports **QS-9 (Startup + Throughput)**: Zero dependency resolution overhead. Classpath construction is one glob: `lib/*`.
+** Supports **QS-4 (Determinism)**: Exact JARs pinned at release time.
+** Supports **QS-2 (Offline)**: Works without internet after installation.
+** Neutral on **QS-6 (Distribution size)**: 23 MB is acceptable (v3 with Gradle is ~50 MB).
+* **Consequences**: Release process must resolve all transitive dependencies and package them into `lib/`. A simple shell script or one-time Gradle/Maven call at release time handles this. POI JARs could be made optional in a future optimization (load only when `saveExcel=true`).
+** Affects **QS-2 (Portability)**: All options work cross-platform. Docker image can pre-bundle JARs.
+** Affects **QS-3 (Usability)**: lib/ is simplest to understand. Grape is most Groovy-idiomatic.
+** Affects **QS-6 (Installability)**: Download-on-demand keeps the initial download small.
