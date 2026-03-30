@@ -1,4 +1,5 @@
 #!/usr/bin/env groovy
+// @task
 // v4: Direct Groovy script for Confluence publishing (replaces publishToConfluence.gradle)
 // Invoked by: java -cp <classpath> groovy.ui.GroovyMain scripts/publishToConfluence.groovy
 //

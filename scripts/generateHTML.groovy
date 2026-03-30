@@ -1,4 +1,5 @@
 #!/usr/bin/env groovy
+// @task
 // v4: Direct Groovy script for HTML generation (replaces AsciiDocBasics.gradle)
 // Invoked by: java -cp <classpath> groovy.ui.GroovyMain scripts/generateHTML.groovy
 //
@@ -88,16 +89,22 @@ htmlFiles.each { entry ->
 
     println "Processing: ${entry.file}"
 
-    // Build AsciiDoctor command
+    // Build AsciiDoctor command — read options from config with sensible defaults
+    def highlighter = config.sourceHighlighter ?: 'rouge'
+    def toc = config.toc ?: 'left'
+    def toclevels = config.toclevels ?: '3'
+    def icons = config.icons ?: 'font'
+    def requires = config.asciidoctorRequires ?: ['asciidoctor-diagram']
+
     def cmd = ['asciidoctor']
     cmd += ['-b', 'html5']
     cmd += ['-D', outputPath.absolutePath]
     cmd += ['-a', "imagesdir=${imageDirs[0]}"]
-    cmd += ['-a', 'source-highlighter=rouge']
-    cmd += ['-a', 'toc=left']
-    cmd += ['-a', 'toclevels=3']
-    cmd += ['-a', 'icons=font']
-    cmd += ['-r', 'asciidoctor-diagram']
+    cmd += ['-a', "source-highlighter=${highlighter}"]
+    cmd += ['-a', "toc=${toc}"]
+    cmd += ['-a', "toclevels=${toclevels}"]
+    cmd += ['-a', "icons=${icons}"]
+    requires.each { req -> cmd += ['-r', req] }
     cmd += [sourceFile.absolutePath]
 
     println "  ${cmd.join(' ')}"

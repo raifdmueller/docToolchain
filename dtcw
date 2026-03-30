@@ -94,6 +94,13 @@ main() {
 
     # No install command, so forward call to docToolchain but first we check if
     # everything is there.
+
+    # S1: Validate task name format early (applies to all environments incl. Docker)
+    if [[ ! "${1}" =~ ^[a-zA-Z][a-zA-Z0-9_-]*$ ]]; then
+        error "Invalid task name: '${1}'. Task names must be alphanumeric (letters, digits, hyphens, underscores)."
+        exit ${ERR_ARG}
+    fi
+
     docker_image_name=""
     docker_extra_arguments=""
     if [[ ${environment} != docker ]]; then
@@ -634,7 +641,7 @@ is_v4_installation() {
     # Fallback: check version number (for Docker where local lib/ doesn't exist)
     local major
     major=$(echo "${DTC_VERSION}" | cut -d'.' -f1)
-    [ "${major}" -ge 4 ] 2>/dev/null
+    [[ "${major}" =~ ^[0-9]+$ ]] && [ "${major}" -ge 4 ]
 }
 
 # Build Java classpath from all JARs in lib/
@@ -652,7 +659,7 @@ build_classpath() {
     echo "$cp"
 }
 
-# List available v4 tasks (Groovy scripts in scripts/)
+# List available v4 tasks (only scripts with '// @task' marker in first 5 lines)
 list_v4_tasks() {
     local home=${1:-${DTC_HOME}}
     local scripts_dir="${home}/scripts"
@@ -661,9 +668,12 @@ list_v4_tasks() {
     echo ""
     for script in "${scripts_dir}/"*.groovy; do
         [ -f "$script" ] || continue
-        local name
-        name=$(basename "$script" .groovy)
-        echo "  ${name}"
+        # Only list scripts explicitly marked as tasks
+        if head -5 "$script" | grep -q '// @task'; then
+            local name
+            name=$(basename "$script" .groovy)
+            echo "  ${name}"
+        fi
     done
     echo ""
     echo "Usage: ./dtcw [environment] <task>"
@@ -741,8 +751,12 @@ build_command() {
             local task=${1}
             shift
             local java_opts="-Xmx2048m -Dfile.encoding=UTF-8"
-            java_opts="${java_opts} -DdocDir=. -DmainConfigFile=${DTC_CONFIG_FILE}"
-            cmd="docker ${docker_args} -c \"java ${java_opts} -cp \\\$(find /opt/docToolchain/lib -name '*.jar' | tr '\\\\n' ':') groovy.ui.GroovyMain /opt/docToolchain/scripts/${task}.groovy ${*} && exit\""
+            java_opts="${java_opts} -DdocDir=. -DmainConfigFile=\"${DTC_CONFIG_FILE}\""
+            java_opts="${java_opts} -DDTC_HEADLESS=true -DDTC_PROJECT_BRANCH=${DTC_PROJECT_BRANCH}"
+            # Expansion must happen inside container, not locally
+            # shellcheck disable=SC2016
+            local docker_cp='$(for f in /opt/docToolchain/lib/*.jar; do [ -f "$f" ] && printf "%s:" "$f"; done)'
+            cmd="docker ${docker_args} -c \"java ${java_opts} -cp ${docker_cp} groovy.ui.GroovyMain /opt/docToolchain/scripts/${task}.groovy ${*} && exit\""
         else
             # v3 Docker: Gradle via doctoolchain
             cmd="docker ${docker_args} -c \"doctoolchain . ${*} ${DTC_OPTS} && exit\""
@@ -766,7 +780,9 @@ build_command() {
             fi
 
             local java_opts="-Xmx2048m -Dfile.encoding=UTF-8"
-            java_opts="${java_opts} -DdocDir=. -DmainConfigFile=${DTC_CONFIG_FILE}"
+            java_opts="${java_opts} -DdocDir=. -DmainConfigFile=\"${DTC_CONFIG_FILE}\""
+            java_opts="${java_opts} -DDTC_HEADLESS=${DTC_HEADLESS}"
+            java_opts="${java_opts} -DDTC_PROJECT_BRANCH=${DTC_PROJECT_BRANCH}"
             # Pass remaining arguments as system properties or script args
             cmd="${JAVA_CMD:-java} ${java_opts} -cp \"${classpath}\" groovy.ui.GroovyMain \"${dtc_home}/scripts/${task}.groovy\" ${*}"
         else
