@@ -37,6 +37,8 @@ include::../adrs/adr-09-kroki-diagram-server.adoc[]
 
 include::../adrs/adr-10-risk-based-qa.adoc[]
 
+include::../adrs/adr-11-tier2-mitigations.adoc[]
+
 include::../adrs/adr-tbd-1-confluence-api.adoc[]
 
 include::../adrs/adr-tbd-2-jira-client.adoc[]
