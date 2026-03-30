@@ -1,0 +1,14 @@
+=== ADR-5: LLM-Native Architecture
+
+* **Status**: Decided for v4
+* **Context**: The GenAI era changes how documentation is created and consumed. Traditional export scripts (EA, PPT, Visio, Excel) address a workflow where humans manually extract data from tools. LLMs can handle these transformations directly. Meanwhile, LLMs need structured document access (daCLI) and benefit from Skills, Prompts, and Semantic Anchors.
+* **Decision**: Shift docToolchain's strategic focus toward LLM-native tooling:
+** **daCLI integration**: MCP server for structured document access (10 tools, already operational)
+** **Semantic Anchors and Contracts**: Precise reference terms (anchors like "arc42", "SOLID", "Docs-as-Code") and bundled working agreements (contracts in `CLAUDE.md`) that enable consistent LLM collaboration without verbose instructions
+** **Skills and Prompts**: Reusable LLM interaction patterns for documentation tasks (arc42 generation, ADR creation, quality scenario extraction — see LLM-Prompts repository)
+** **Bausteinsicht integration**: Architecture-as-code with JSONC models and bidirectional draw.io sync — LLMs read/write JSONC natively
+* **Quality Tradeoffs**:
+** Supports **QS-12 (LLM Friendliness)**: Structured document access via MCP. Semantic Anchors and Contracts enable precise, consistent LLM communication.
+** Supports **QS-1 (Extensibility)**: New capabilities can be added as Prompts/Skills without code changes.
+** Supports **QS-3 (Usability)**: LLMs lower the barrier to creating quality architecture documentation.
+* **Consequences**: Existing scripts remain available but strategic investment shifts to MCP tools, Prompts, and Semantic Anchors. The docToolchain ecosystem becomes: docToolchain (generation) + daCLI (LLM access) + Bausteinsicht (architecture diagrams) + LLM-Prompts (interaction patterns). Traditional scripts are maintained but not the primary growth area.
