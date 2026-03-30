@@ -101,20 +101,20 @@ main() {
         exit ${ERR_ARG}
     fi
 
+    # v4: handle 'tasks' command and validate task name (before environment split)
+    if is_v4_installation "${DTC_HOME}"; then
+        if [ "${1}" = "tasks" ]; then
+            list_v4_tasks "${DTC_HOME}"
+            exit 0
+        fi
+        assert_v4_task_exists "${1}" "${DTC_HOME}"
+    fi
+
     docker_image_name=""
     docker_extra_arguments=""
     if [[ ${environment} != docker ]]; then
         assert_doctoolchain_installed "${environment}" "${DTC_VERSION}"
         assert_java_version_supported
-
-        # v4: handle 'tasks' command and validate task name
-        if is_v4_installation "${DTC_HOME}"; then
-            if [ "${1}" = "tasks" ]; then
-                list_v4_tasks "${DTC_HOME}"
-                exit 0
-            fi
-            assert_v4_task_exists "${1}" "${DTC_HOME}"
-        fi
     else
         docker_image_name="doctoolchain/doctoolchain"
         if [ "${1}" = "image" ]; then
@@ -686,11 +686,11 @@ assert_v4_task_exists() {
     local home=${2:-${DTC_HOME}}
     local script="${home}/scripts/${task}.groovy"
 
-    if [ -f "$script" ]; then
+    if [ -f "$script" ] && head -5 "$script" | grep -q '// @task'; then
         return 0
     fi
 
-    # Task not found — provide actionable guidance (QS-17)
+    # Task not found or not marked as task — provide actionable guidance (QS-17)
     echo "" >&2
     echo "Error: Unknown task '${task}'" >&2
     echo "" >&2
@@ -752,7 +752,7 @@ build_command() {
             shift
             local java_opts="-Xmx2048m -Dfile.encoding=UTF-8"
             java_opts="${java_opts} -DdocDir=. -DmainConfigFile=\"${DTC_CONFIG_FILE}\""
-            java_opts="${java_opts} -DDTC_HEADLESS=true -DDTC_PROJECT_BRANCH=${DTC_PROJECT_BRANCH}"
+            java_opts="${java_opts} -DDTC_HEADLESS=true -DDTC_PROJECT_BRANCH=\"${DTC_PROJECT_BRANCH}\""
             # Expansion must happen inside container, not locally
             # shellcheck disable=SC2016
             local docker_cp='$(for f in /opt/docToolchain/lib/*.jar; do [ -f "$f" ] && printf "%s:" "$f"; done)'
@@ -782,7 +782,7 @@ build_command() {
             local java_opts="-Xmx2048m -Dfile.encoding=UTF-8"
             java_opts="${java_opts} -DdocDir=. -DmainConfigFile=\"${DTC_CONFIG_FILE}\""
             java_opts="${java_opts} -DDTC_HEADLESS=${DTC_HEADLESS}"
-            java_opts="${java_opts} -DDTC_PROJECT_BRANCH=${DTC_PROJECT_BRANCH}"
+            java_opts="${java_opts} -DDTC_PROJECT_BRANCH=\"${DTC_PROJECT_BRANCH}\""
             # Pass remaining arguments as system properties or script args
             cmd="${JAVA_CMD:-java} ${java_opts} -cp \"${classpath}\" groovy.ui.GroovyMain \"${dtc_home}/scripts/${task}.groovy\" ${*}"
         else
