@@ -9,17 +9,11 @@
 def docDir = System.getProperty('docDir', '.')
 def configFile = System.getProperty('mainConfigFile', 'docToolchainConfig.groovy')
 
-// Load configuration
-def configPath = new File(docDir, configFile)
-if (!configPath.exists()) {
-    System.err.println "Configuration file not found: ${configPath.absolutePath}"
-    System.err.println ""
-    System.err.println "Create a 'docToolchainConfig.groovy' in your project root."
-    System.err.println "You can download a template with: ./dtcw downloadTemplate"
-    System.exit(1)
-}
-
-def config = new ConfigSlurper().parse(configPath.toURI().toURL())
+// Load configuration via DtcConfig (v4-S8)
+def scriptDir = new File(getClass().protectionDomain.codeSource.location.toURI()).parentFile
+def DtcConfig = new GroovyClassLoader(this.class.classLoader).parseClass(new File(scriptDir, 'lib/DtcConfig.groovy'))
+def dtcConfig = DtcConfig.load(docDir, configFile)
+def config = dtcConfig.getRaw()
 
 // Resolve paths
 def inputPath = new File(docDir, config.inputPath ?: 'src/docs')
