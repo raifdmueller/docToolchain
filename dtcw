@@ -104,6 +104,10 @@ main() {
     # v4: handle 'tasks' command and validate task name (before environment split)
     if is_v4_installation "${DTC_HOME}"; then
         if [ "${1}" = "tasks" ]; then
+            # v4-S29: Warn about deprecated Gradle-style --group flag
+            if [[ "${2:-}" == "--group" ]]; then
+                echo "Note: v4 uses direct script invocation. --group is ignored." >&2
+            fi
             list_v4_tasks "${DTC_HOME}"
             exit 0
         fi
