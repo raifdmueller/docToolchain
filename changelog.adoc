@@ -8,15 +8,25 @@ and this project tries to adhere to https://semver.org/spec/v2.0.0.html[Semantic
 == Unreleased
 
 === fixed
-* https://github.com/docToolchain/docToolchain/issues/1526[dtcw.ps1: fix setting mainConfigFile via CLI argument]
 
+=== added
+
+=== changed
+
+== 3.5.0 - 2024-04-13
+
+=== fixed
+
+* https://github.com/docToolchain/docToolchain/issues/1526[dtcw.ps1: fix setting mainConfigFile via CLI argument]
 * https://github.com/docToolchain/docToolchain/issues/1524[Source blocks not rendered correctly when subpagesForSections greater than 1]
 * https://github.com/docToolchain/docToolchain/issues/1488[doctoolchain version 3.4.2 breaks code blocks in publishToConfluence task]
 
 === added
+
 * https://github.com/docToolchain/docToolchain/pull/1530[Add instruction for installing docToolchain using SDKMAN]
 
 === changed
+
 * https://github.com/docToolchain/docToolchain/pull/1511[exportEA: close application after export with ShutdownEA interface]
 
 == 3.4.2 - 2025-04-05
