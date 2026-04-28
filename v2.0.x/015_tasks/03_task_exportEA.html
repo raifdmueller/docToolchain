@@ -567,9 +567,10 @@ searching issues...
     <span style="font-size:x-small; display: block; text-align: right;">Anzeige</span><br />
     <b>Wissen,<br />direkt von der Quelle!</b><br /><br />
     Wir bieten ein remote Docs-as-Code Training unter Verwendung von docToolchain an.<br /><br />
-    <a href="https://www.socreatory.com/de/trainings/docascode">Nächster Termin: 28.-29.10.2024</a><br />
+    <a href="https://www.socreatory.com/de/trainings/docascode">Nächster Termin: auf Anfrage</a><br />
     <a href="https://www.socreatory.com/de/trainings/docascode" class="btn btn-primary" style="">jetzt buchen!</a>
 </div>
+
 
 
 				</div>
@@ -1416,11 +1417,13 @@ use `gradle exportEA` to re-export files
         End If
       End If
       EAapp.Repository.CloseFile()
+      EAapp.Repository.ShutdownEA(0)
+      EAapp.Repository = Nothing
       ' Since EA 15.2 the Enterprise Architect background process hangs without calling Exit explicitly
       On Error Resume Next
         EAapp.Repository.CloseFile()
-        EAapp.Repository.Exit()
-        EAapp.Repository = null
+        EAapp.Repository.ShutdownEA(0)
+        EAapp.Repository = Nothing
       ' end fix EA
     End Sub
 
