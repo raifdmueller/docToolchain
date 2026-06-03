@@ -77,6 +77,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JDK_VERSION: "${{ matrix.jdk }}-${{ matrix.java }}"
+          # deploy-only web analytics; injected into gh-pages by scripts/injectAnalytics.sh
+          GOATCOUNTER_ENDPOINT: ${{ secrets.GOATCOUNTER_ENDPOINT }}
         run: |
           ./.ci.sh
       - name: Archive test results
