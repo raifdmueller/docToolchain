@@ -77,8 +77,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JDK_VERSION: "${{ matrix.jdk }}-${{ matrix.java }}"
-          # deploy-only web analytics; injected into gh-pages by scripts/injectAnalytics.sh
-          GOATCOUNTER_ENDPOINT: ${{ secrets.GOATCOUNTER_ENDPOINT }}
+          # deploy-only web analytics; injected into gh-pages by scripts/injectAnalytics.sh.
+          # Only populated for non-PR events, since publishing never runs on PR builds.
+          GOATCOUNTER_ENDPOINT: ${{ github.event_name != 'pull_request' && secrets.GOATCOUNTER_ENDPOINT || '' }}
         run: |
           ./.ci.sh
       - name: Archive test results

@@ -22,6 +22,15 @@ if [ -z "${GOATCOUNTER_ENDPOINT:-}" ]; then
     exit 0
 fi
 
+# The endpoint is substituted into a double-quoted HTML attribute. Require a clean
+# https:// URL so a misconfigured secret cannot break the markup or inject content.
+# Fail the build rather than publish broken or unsafe HTML.
+endpoint_re='^https://[^[:space:]"'\''<>]+$'
+if [[ ! "${GOATCOUNTER_ENDPOINT}" =~ $endpoint_re ]]; then
+    echo "injectAnalytics: GOATCOUNTER_ENDPOINT must be a plain https:// URL without quotes or angle brackets." >&2
+    exit 1
+fi
+
 if [ -z "${TARGET_DIR}" ] || [ ! -d "${TARGET_DIR}" ]; then
     echo "injectAnalytics: target directory '${TARGET_DIR}' does not exist." >&2
     exit 1
@@ -45,13 +54,16 @@ printf '%s\n' "${snippet}" > "${snippet_file}"
 
 injected=0
 skipped=0
+nohead=0
 
 while IFS= read -r -d '' file; do
     if grep -q 'data-goatcounter' "${file}"; then
         skipped=$((skipped + 1))
         continue
     fi
-    awk -v snippetfile="${snippet_file}" '
+    # awk exits non-zero when it found no </head> to insert before, so the file
+    # is left untouched and counted separately instead of as an injection.
+    if awk -v snippetfile="${snippet_file}" '
         BEGIN {
             snippet = ""
             while ((getline line < snippetfile) > 0) {
@@ -70,8 +82,15 @@ while IFS= read -r -d '' file; do
             }
         }
         { print }
-    ' "${file}" > "${file}.tmp" && mv "${file}.tmp" "${file}"
-    injected=$((injected + 1))
+        END { exit(done ? 0 : 1) }
+    ' "${file}" > "${file}.tmp"; then
+        mv "${file}.tmp" "${file}"
+        injected=$((injected + 1))
+    else
+        rm -f "${file}.tmp"
+        nohead=$((nohead + 1))
+        echo "injectAnalytics: no </head> in '${file}', left unchanged." >&2
+    fi
 done < <(find "${TARGET_DIR}" -type f -name '*.html' -print0)
 
-echo "injectAnalytics: injected into ${injected} file(s), skipped ${skipped} already-instrumented file(s)."
+echo "injectAnalytics: injected into ${injected} file(s), skipped ${skipped} already-instrumented, ${nohead} without </head>."
