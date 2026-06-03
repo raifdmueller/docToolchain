@@ -144,6 +144,9 @@ publish_doc () {
       cd gh-pages
       rm -rf v2.0.x/*
       cp -Rf "${BUILD_DIR}"/build/microsite/output/* v2.0.x/.
+      # inject deploy-only analytics into the published copy (no-op when
+      # GOATCOUNTER_ENDPOINT is unset, e.g. on forks)
+      "${BUILD_DIR}"/scripts/injectAnalytics.sh v2.0.x
     fi
 
     #add, commit and push files
