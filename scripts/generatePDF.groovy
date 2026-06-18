@@ -62,8 +62,12 @@ pdfFiles.each { entry ->
 
     println "Processing: ${entry.file}"
 
+    def pdfThemeDir = config.pdfThemeDir ?: null
+    if (pdfThemeDir?.startsWith('.')) {
+        pdfThemeDir = new File(docDir, pdfThemeDir).canonicalPath
+    }
     def pdfTheme = config.pdfTheme ?: null
-    def pdfFontsDir = config.pdfFontsDir ?: null
+    def pdfFontsDir = config.pdfFontsDir ?: (pdfThemeDir ? "${pdfThemeDir}/fonts" : null)
 
     def attrsBuilder = Attributes.builder()
         .imagesDir(imageDirs[0])
@@ -72,6 +76,7 @@ pdfFiles.each { entry ->
         .attribute('doctype', 'book')
 
     if (pdfTheme) attrsBuilder.attribute('pdf-theme', pdfTheme)
+    if (pdfThemeDir) attrsBuilder.attribute('pdf-themesdir', pdfThemeDir)
     if (pdfFontsDir) attrsBuilder.attribute('pdf-fontsdir', pdfFontsDir)
 
     def options = Options.builder()
@@ -85,7 +90,7 @@ pdfFiles.each { entry ->
 
     try {
         asciidoctor.convertFile(sourceFile, options)
-        def outputFile = new File(pdfOutputDir, sourceFile.name.replaceAll(/\.adoc$/, '.pdf'))
+        def outputFile = new File(pdfOutputDir, sourceFile.name.replaceAll(/\.(adoc|ad|asciidoc)$/, '.pdf'))
         println "  -> ${outputFile.absolutePath} (${String.format('%.1f', outputFile.length() / 1024.0)} KB)"
     } catch (Exception e) {
         System.err.println "Failed: ${entry.file} — ${e.message}"

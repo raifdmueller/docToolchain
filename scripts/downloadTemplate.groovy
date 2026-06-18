@@ -35,7 +35,7 @@ def languages = [arc42: ['CZ', 'DE', 'EN', 'ES', 'FR', 'IT', 'NL', 'UA'], req42:
 for (int i = 1; i < 20; i++) {
     def tmpl = System.getenv("DTC_TEMPLATE${i}") ?: ""
     if (tmpl) {
-        def name = tmpl.replaceAll("^.*/", "").replaceAll(/.zip$/, "")
+        def name = tmpl.replaceAll("^.*/", "").replaceAll(/\.zip$/, "")
         templates[name] = { -> tmpl }
     }
 }
@@ -91,8 +91,12 @@ zipFile.bytes = new URL(url).bytes
 // Unzip
 new ZipInputStream(new FileInputStream(zipFile)).withCloseable { zis ->
     def entry
+    def canonicalDest = outputDir.canonicalPath + File.separator
     while ((entry = zis.nextEntry) != null) {
         def target = new File(outputDir, entry.name)
+        if (!target.canonicalPath.startsWith(canonicalDest)) {
+            throw new SecurityException("Zip entry '${entry.name}' would escape target directory")
+        }
         if (entry.isDirectory()) {
             target.mkdirs()
         } else {

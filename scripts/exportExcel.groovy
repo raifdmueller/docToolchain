@@ -60,8 +60,8 @@ def exportSheet = { sheet, evaluator, targetFileName ->
             numCols = row.lastCellNum
             numCols.times { width << sheet.getColumnWidth((int) it) }
             width = width.collect { Math.round(100 * it / width.sum()) }
-            targetFileAD.append('[options="header",cols="' + width.join(',') + '"]' + nl)
-            targetFileAD.append('|===' + nl)
+            targetFileAD.append('[options="header",cols="' + width.join(',') + '"]' + nl, 'UTF-8')
+            targetFileAD.append('|===' + nl, 'UTF-8')
         }
         def data = []
         def style = []

@@ -80,7 +80,7 @@ htmlFiles.each { entry ->
 
     try {
         asciidoctor.convertFile(sourceFile, options)
-        def outputFile = new File(htmlOutputDir, sourceFile.name.replaceAll(/\.adoc$/, '.html'))
+        def outputFile = new File(htmlOutputDir, sourceFile.name.replaceAll(/\.(adoc|ad|asciidoc)$/, '.html'))
         println "  -> ${outputFile.absolutePath} (${String.format('%.1f', outputFile.length() / 1024.0)} KB)"
     } catch (Exception e) {
         System.err.println "Failed: ${entry.file} — ${e.message}"

@@ -54,6 +54,45 @@ if (internalTheme.exists()) {
     copyDir(internalTheme, siteDir)
 }
 
+// Download/copy external site theme from DTC_SITETHEME env var
+def siteThemeUrl = System.getenv('DTC_SITETHEME') ?: ''
+if (siteThemeUrl) {
+    def isHeadless = System.getProperty('DTC_HEADLESS', System.getenv('DTC_HEADLESS') ?: 'false') == 'true'
+    def themeCacheDir = new File(new File(docDir).parentFile, "themes/${siteThemeUrl.md5()}")
+    if (!themeCacheDir.exists()) {
+        if (!isHeadless) {
+            print "${color('green', "Theme '${siteThemeUrl}' is not cached. Download? [y/n]: ")}"
+            def reader = System.console() ?: new BufferedReader(new InputStreamReader(System.in))
+            def answer = (reader instanceof Console ? reader.readLine() : reader.readLine())?.trim()
+            if (answer?.toLowerCase() != 'y') {
+                println "Continuing without external theme."
+                siteThemeUrl = ''
+            }
+        }
+        if (siteThemeUrl) {
+            println "Downloading site theme from ${siteThemeUrl}"
+            themeCacheDir.mkdirs()
+            def themeZip = new File(themeCacheDir, 'siteTheme.zip')
+            themeZip.bytes = new URL(siteThemeUrl).bytes
+            new java.util.zip.ZipInputStream(new FileInputStream(themeZip)).withCloseable { zis ->
+                def entry
+                while ((entry = zis.nextEntry) != null) {
+                    def target = new File(themeCacheDir, entry.name)
+                    if (!target.canonicalPath.startsWith(themeCacheDir.canonicalPath + File.separator)) {
+                        throw new SecurityException("Zip entry '${entry.name}' would escape target directory")
+                    }
+                    if (entry.isDirectory()) { target.mkdirs() } else { target.parentFile.mkdirs(); target.bytes = zis.readAllBytes() }
+                }
+            }
+            themeZip.delete()
+        }
+    }
+    if (siteThemeUrl && themeCacheDir.exists()) {
+        println "Applying external site theme"
+        copyDir(themeCacheDir, siteDir)
+    }
+}
+
 // Copy project theme if configured
 if (config.microsite?.siteFolder) {
     def projectTheme = new File(new File(docDir, inputPath), config.microsite.siteFolder)
@@ -69,6 +108,34 @@ def docSrcDir = new File(docDir, inputPath)
 def docDestDir = new File(siteDir, "doc")
 println "Copying docs from ${docSrcDir.absolutePath}"
 copyDir(docSrcDir, docDestDir)
+
+// --- 2b. Run additional format converters (e.g. RST/MD pre-processing) ---
+if (config.microsite?.additionalConverters) {
+    println "Running additional converters..."
+    docDestDir.traverse(type: FileType.FILES) { file ->
+        def extension = '.' + file.name.split("[.]")[-1]
+        def converter = config.microsite.additionalConverters[extension]
+        if (converter) {
+            def command = converter.command
+            def type = converter.type
+            def binding = new Binding([file: file, config: config])
+            def shell = new GroovyShell(getClass().getClassLoader(), binding)
+            switch (type) {
+                case 'groovy':
+                    shell.evaluate(command); break
+                case 'groovyFile':
+                    shell.evaluate(new File(docDir, command).text); break
+                case 'bash':
+                    def proc = ['bash', '-c', command + ' "' + file + '"'].execute([], new File(docDir))
+                    proc.waitFor()
+                    if (proc.exitValue()) {
+                        throw new Exception("Converter failed for ${file.name}: ${proc.err.text}")
+                    }
+                    break
+            }
+        }
+    }
+}
 
 // --- 3. Fix metadata headers (ported from v3 generateSite.gradle) ---
 
@@ -155,7 +222,7 @@ docDestDir.traverse(type: FileType.FILES) { file ->
         }
 
         def name = file.canonicalPath - (docDestDir.canonicalPath + File.separator)
-        name = name.split("/")
+        name = name.split("[/\\\\]")
 
         if (name.size() > 1) {
             if (!jbake.menu) {
@@ -214,6 +281,16 @@ docDestDir.traverse(type: FileType.FILES) { file ->
             if (!jbake.title) jbake.title = docname
             if (leveloffset == 1) {
                 text = text.replaceAll("(?ms)^(=+) ", '$1= ')
+            }
+
+            if (config.microsite?.customConvention) {
+                def binding = new Binding([
+                    file: file,
+                    sourceFolder: docDestDir,
+                    config: config,
+                    headers: jbake,
+                ])
+                new GroovyShell(getClass().getClassLoader(), binding).evaluate(config.microsite.customConvention)
             }
 
             def header = renderHeader(file.name, jbake)

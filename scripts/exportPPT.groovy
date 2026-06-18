@@ -64,62 +64,64 @@ pptFiles.each { File pptFile ->
     try {
         new FileInputStream(pptFile).withCloseable { inp ->
             def ppt = new XMLSlideShow(inp)
-            def pgSize = ppt.pageSize
-            def scale = 2.0
+            try {
+                def pgSize = ppt.pageSize
+                def scale = 2.0
 
-            ppt.slides.eachWithIndex { slide, idx ->
-                def slideNum = String.format('%03d', idx + 1)
-                println "  slide ${slideNum}: ${slide.title ?: '(no title)'}"
+                ppt.slides.eachWithIndex { slide, idx ->
+                    def slideNum = String.format('%03d', idx + 1)
+                    println "  slide ${slideNum}: ${slide.title ?: '(no title)'}"
 
-                // Render slide as PNG
-                def width = (int) (pgSize.width * scale)
-                def height = (int) (pgSize.height * scale)
-                def img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
-                def g2d = img.createGraphics()
-                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
-                g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY)
-                g2d.setPaint(java.awt.Color.WHITE)
-                g2d.fill(new Rectangle2D.Float(0, 0, width, height))
-                g2d.scale(scale, scale)
+                    // Render slide as PNG
+                    def width = (int) (pgSize.width * scale)
+                    def height = (int) (pgSize.height * scale)
+                    def img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
+                    def g2d = img.createGraphics()
+                    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
+                    g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY)
+                    g2d.setPaint(java.awt.Color.WHITE)
+                    g2d.fill(new Rectangle2D.Float(0, 0, width, height))
+                    g2d.scale(scale, scale)
 
-                try {
-                    slide.draw(g2d)
-                } catch (Exception e) {
-                    System.err.println "  Warning: Could not fully render slide ${slideNum} — ${e.message}"
-                }
-                g2d.dispose()
+                    try {
+                        slide.draw(g2d)
+                    } catch (Exception e) {
+                        System.err.println "  Warning: Could not fully render slide ${slideNum} — ${e.message}"
+                    }
+                    g2d.dispose()
 
-                def imgFile = new File(slideImagesDir, "slide_${slideNum}.png")
-                ImageIO.write(img, 'png', imgFile)
+                    def imgFile = new File(slideImagesDir, "slide_${slideNum}.png")
+                    ImageIO.write(img, 'png', imgFile)
 
-                // Extract notes
-                def notes = slide.notes
-                if (notes) {
-                    def noteText = notes.textParagraphs?.flatten()?.collect { it.text }?.join('\n')?.trim()
-                    if (noteText) {
-                        new File(slideNotesDir, "slide_${slideNum}_notes.adoc").write(noteText, 'utf-8')
+                    // Extract notes
+                    def notes = slide.notes
+                    if (notes) {
+                        def noteText = notes.textParagraphs?.flatten()?.collect { it.text }?.join('\n')?.trim()
+                        if (noteText) {
+                            new File(slideNotesDir, "slide_${slideNum}_notes.adoc").write(noteText, 'utf-8')
+                        }
                     }
                 }
-            }
 
-            // Generate AsciiDoc include file
-            def includeFile = new File(slideNotesDir, "${baseName}.adoc")
-            def includeText = new StringBuilder()
-            includeText.append("// Generated from ${pptFile.name}\n\n")
-            ppt.slides.eachWithIndex { slide, idx ->
-                def slideNum = String.format('%03d', idx + 1)
-                def title = slide.title ?: "Slide ${idx + 1}"
-                includeText.append("=== ${title}\n\n")
-                includeText.append("image::ppt/${baseName}/slide_${slideNum}.png[${title}]\n\n")
-                def notesFile = new File(slideNotesDir, "slide_${slideNum}_notes.adoc")
-                if (notesFile.exists()) {
-                    includeText.append("include::ppt/${baseName}/slide_${slideNum}_notes.adoc[]\n\n")
+                // Generate AsciiDoc include file
+                def includeFile = new File(slideNotesDir, "${baseName}.adoc")
+                def includeText = new StringBuilder()
+                includeText.append("// Generated from ${pptFile.name}\n\n")
+                ppt.slides.eachWithIndex { slide, idx ->
+                    def slideNum = String.format('%03d', idx + 1)
+                    def title = slide.title ?: "Slide ${idx + 1}"
+                    includeText.append("=== ${title}\n\n")
+                    includeText.append("image::ppt/${baseName}/slide_${slideNum}.png[${title}]\n\n")
+                    def notesFile = new File(slideNotesDir, "slide_${slideNum}_notes.adoc")
+                    if (notesFile.exists()) {
+                        includeText.append("include::ppt/${baseName}/slide_${slideNum}_notes.adoc[]\n\n")
+                    }
                 }
+                includeFile.write(includeText.toString(), 'utf-8')
+                println "  -> ${ppt.slides.size()} slides exported"
+            } finally {
+                ppt.close()
             }
-            includeFile.write(includeText.toString(), 'utf-8')
-            println "  -> ${ppt.slides.size()} slides exported"
-
-            ppt.close()
         }
     } catch (Exception e) {
         System.err.println "Failed to process ${pptFile.name}: ${e.message}"
