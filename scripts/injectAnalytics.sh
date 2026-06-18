@@ -41,10 +41,14 @@ if [ ! -f "${SNIPPET_TEMPLATE}" ]; then
     exit 1
 fi
 
-# Substitute the placeholder with the real endpoint (bash replace handles the
-# slashes in the URL safely, unlike a sed expression).
+# HTML-escape & in the endpoint so entities like &quot; cannot break out of
+# the double-quoted attribute context after browser entity expansion.
+safe_endpoint="${GOATCOUNTER_ENDPOINT//&/&amp;}"
+
+# Substitute the placeholder with the escaped endpoint (bash replace handles
+# the slashes in the URL safely, unlike a sed expression).
 template="$(cat "${SNIPPET_TEMPLATE}")"
-snippet="${template//__GOATCOUNTER_ENDPOINT__/${GOATCOUNTER_ENDPOINT}}"
+snippet="${template//__GOATCOUNTER_ENDPOINT__/${safe_endpoint}}"
 
 # Hand the resolved snippet to awk via a temp file so multi-line content and
 # any special characters survive untouched.
