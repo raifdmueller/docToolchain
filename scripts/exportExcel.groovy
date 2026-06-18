@@ -80,10 +80,10 @@ def exportSheet = { sheet, evaluator, targetFileName ->
                     def skipCell = false
                     if (region) {
                         if (region.firstRow == cell.rowIndex && region.firstColumn == cell.columnIndex) {
-                            def colspan = 1 + region.lastRow - region.firstRow
-                            def rowspan = 1 + region.lastColumn - region.firstColumn
-                            if (rowspan > 1) cellStyle += "${rowspan}"
-                            if (colspan > 1) cellStyle += ".${colspan}"
+                            def rowspan = 1 + region.lastRow - region.firstRow
+                            def colspan = 1 + region.lastColumn - region.firstColumn
+                            if (colspan > 1) cellStyle += "${colspan}"
+                            if (rowspan > 1) cellStyle += ".${rowspan}"
                             cellStyle += "+"
                         } else {
                             skipCell = true
@@ -169,11 +169,15 @@ tree.each { File excel ->
     excelDir.mkdirs()
     new FileInputStream(excel).withCloseable { inp ->
         def wb = WorkbookFactory.create(inp)
-        def evaluator = wb.creationHelper.createFormulaEvaluator()
-        for (int wbi = 0; wbi < wb.numberOfSheets; wbi++) {
-            def sheetName = wb.getSheetAt(wbi).sheetName
-            println " -- sheet: ${sheetName}"
-            exportSheet(wb.getSheetAt(wbi), evaluator, new File(excelDir, sheetName).absolutePath)
+        try {
+            def evaluator = wb.creationHelper.createFormulaEvaluator()
+            for (int wbi = 0; wbi < wb.numberOfSheets; wbi++) {
+                def sheetName = wb.getSheetAt(wbi).sheetName
+                println " -- sheet: ${sheetName}"
+                exportSheet(wb.getSheetAt(wbi), evaluator, new File(excelDir, sheetName).absolutePath)
+            }
+        } finally {
+            wb.close()
         }
     }
 }

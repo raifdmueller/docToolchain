@@ -44,7 +44,8 @@ if (!htmlFiles) {
 
 def imageDirs = config.imageDirs ?: ['images']
 def asciidoctor = Asciidoctor.Factory.create()
-println "AsciidoctorJ ${Asciidoctor.class.package.implementationVersion ?: '2.5.x'} ready"
+asciidoctor.requireLibrary('asciidoctor-diagram')
+println "AsciidoctorJ ${Asciidoctor.class.package.implementationVersion ?: '2.5.x'} ready (with diagram support)"
 
 def failed = false
 

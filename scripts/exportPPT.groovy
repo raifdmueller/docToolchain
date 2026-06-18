@@ -42,11 +42,14 @@ new File(notesDir, 'readme.ad').write(readme)
 
 def pptFiles = []
 srcDir.eachFileRecurse { f ->
-    if ((f.name.endsWith('.pptx') || f.name.endsWith('.ppt')) && !f.name.startsWith('~')) pptFiles << f
+    if (f.name.endsWith('.pptx') && !f.name.startsWith('~')) pptFiles << f
+    else if (f.name.endsWith('.ppt') && !f.name.startsWith('~')) {
+        System.err.println "Skipping legacy .ppt file (only .pptx supported): ${f.name}"
+    }
 }
 
 if (!pptFiles) {
-    println "No .pptx/.ppt files found in ${srcDir.absolutePath}"
+    println "No .pptx files found in ${srcDir.absolutePath}"
     System.exit(0)
 }
 

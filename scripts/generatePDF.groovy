@@ -47,7 +47,8 @@ def asciidoctor = Asciidoctor.Factory.create()
 
 // Register PDF converter by requiring the gem
 asciidoctor.requireLibrary('asciidoctor-pdf')
-println "AsciidoctorJ PDF ready"
+asciidoctor.requireLibrary('asciidoctor-diagram')
+println "AsciidoctorJ PDF ready (with diagram support)"
 
 def failed = false
 
