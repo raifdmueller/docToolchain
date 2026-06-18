@@ -173,8 +173,9 @@ tree.each { File excel ->
             def evaluator = wb.creationHelper.createFormulaEvaluator()
             for (int wbi = 0; wbi < wb.numberOfSheets; wbi++) {
                 def sheetName = wb.getSheetAt(wbi).sheetName
+                def safeSheetName = sheetName.replaceAll(/[\\/:*?"<>|]/, '_')
                 println " -- sheet: ${sheetName}"
-                exportSheet(wb.getSheetAt(wbi), evaluator, new File(excelDir, sheetName).absolutePath)
+                exportSheet(wb.getSheetAt(wbi), evaluator, new File(excelDir, safeSheetName).absolutePath)
             }
         } finally {
             wb.close()

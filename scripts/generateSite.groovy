@@ -88,8 +88,10 @@ if (siteThemeUrl) {
         }
     }
     if (siteThemeUrl && themeCacheDir.exists()) {
+        // v3 convention: theme zip contains a site/ directory, extracted into tmp/
+        // so site/ contents land at tmp/site/ — copy into siteDir's parent
         println "Applying external site theme"
-        copyDir(themeCacheDir, siteDir)
+        copyDir(themeCacheDir, siteDir.parentFile)
     }
 }
 
@@ -126,6 +128,9 @@ if (config.microsite?.additionalConverters) {
                 case 'groovyFile':
                     shell.evaluate(new File(docDir, command).text); break
                 case 'bash':
+                    if (command == 'dtcw:rstToHtml.py') {
+                        command = new File(dtcHome, 'scripts/rstToHtml.py').canonicalPath
+                    }
                     def proc = ['bash', '-c', command + ' "' + file + '"'].execute([], new File(docDir))
                     proc.waitFor()
                     if (proc.exitValue()) {

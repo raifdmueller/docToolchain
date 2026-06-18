@@ -53,6 +53,8 @@ if (!pptFiles) {
     System.exit(0)
 }
 
+def failed = false
+
 pptFiles.each { File pptFile ->
     println "file: ${pptFile.name}"
     def baseName = pptFile.name.replaceAll(/\.(pptx?|PPTX?)$/, '')
@@ -125,8 +127,14 @@ pptFiles.each { File pptFile ->
         }
     } catch (Exception e) {
         System.err.println "Failed to process ${pptFile.name}: ${e.message}"
+        failed = true
     }
 }
 
 println ""
-println "PowerPoint export completed."
+if (failed) {
+    System.err.println "PowerPoint export completed with errors."
+    System.exit(1)
+} else {
+    println "PowerPoint export completed."
+}
