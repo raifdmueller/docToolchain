@@ -227,11 +227,15 @@ configurations {
 }
 dependencies {
     v4Runtime(libs.groovy.all)
+    v4Runtime(libs.asciidoctorj)
+    v4Runtime(libs.asciidoctorj.pdf)
+    v4Runtime(libs.asciidoctorj.diagram)
     v4Runtime(libs.http.client)
     v4Runtime(libs.jsoup)
     v4Runtime(libs.poi.ooxml)
     v4Runtime(libs.guava)
     v4Runtime(libs.markdown.to.asciidoc)
+    v4Runtime(libs.jbake.core)
     v4Runtime(libs.pebble)
 }
 task packageLibs(type: Copy) {
