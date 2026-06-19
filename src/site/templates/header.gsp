@@ -38,6 +38,7 @@
         rel="stylesheet">
     <link href="${content.rootpath}css/asciidoctor.css" rel="stylesheet">
     <link href="${content.rootpath}css/prettify.css" rel="stylesheet">
+    <link href="${content.rootpath}css/theme-v4.css" rel="stylesheet">
 
     <!-- favicon generated with https://www.favicon-generator.org/ -->
     <link rel="shortcut icon" href="${content.rootpath}favicon.ico">
