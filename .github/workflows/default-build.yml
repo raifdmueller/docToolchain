@@ -5,6 +5,7 @@ on:
     branches:
       - '!gh-pages'
       - 'ng'
+      - 'main-4.x'
     path:
       - 'core/**'
       - 'scripts/**'
@@ -13,7 +14,7 @@ on:
       - '!dtcw'
       - '!test/**'
   pull_request:
-    branches: [ master, ng ]
+    branches: [ master, ng, main-4.x ]
     # Ignore changes for dtcw
     path:
       - 'core/**'
