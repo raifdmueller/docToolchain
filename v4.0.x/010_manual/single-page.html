@@ -1,0 +1,2647 @@
+<!doctype html>
+<html lang="de">
+<head>
+    
+    <!-- sourceuri: 010_manual/single-page.html -->
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <meta content="jbake" name="generator">
+    <meta content="INDEX, FOLLOW" name="ROBOTS">
+
+    <title>docToolchain Manual</title>
+    <meta content="docToolchain" property="og:title">
+    <meta content="build your dev docs the easy way..." property="og:description">
+    <meta content="website" property="og:type">
+    <meta content="docToolchain" property="og:site_name">
+    <meta content="docToolchain" itemprop="name">
+    <meta content="build your dev docs the easy way..." itemprop="description">
+    <meta content="summary" name="twitter:card">
+    <meta content="docToolchain" name="twitter:title">
+    <meta content="build your dev docs the easy way..." name="twitter:description">
+
+    <link as="style"
+        href="../css/main.min.881fe5f7b53609f55ebfb496c7097c3b30b2e8ceb20a54bc6a48350ded67224f.css"
+        rel="preload">
+    <link href="../css/main.min.881fe5f7b53609f55ebfb496c7097c3b30b2e8ceb20a54bc6a48350ded67224f.css"
+        integrity=""
+        rel="stylesheet">
+    <link href="../css/asciidoctor.css" rel="stylesheet">
+    <link href="../css/prettify.css" rel="stylesheet">
+    <link href="../css/theme-v4.css" rel="stylesheet">
+
+    <!-- favicon generated with https://www.favicon-generator.org/ -->
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="apple-touch-icon" sizes="57x57" href="../apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="../apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="../apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="../apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="../apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="../apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="../apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="../apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="../ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <script src="../js/jquery-3.5.1.min.js"></script>
+    <style>
+    div.bg-light {
+        background-color: rgba(127, 180, 224, 0.3) !important;
+    }
+
+    /* for blog posts */
+    span.blogtag {
+        border-radius: 10px;
+        background-color: #30638E;
+        color: white;
+        padding: 5px 10px;
+    }
+
+    span.blogblogtag a {
+        color: white;
+        padding: 0
+    }
+
+    span.blogtag span {
+        margin-left: 10px;
+        border-radius: 10px;
+        background-color: white;
+        color: #30638E;
+    }
+
+    div.td-toc {
+        height: calc(100vh - 5rem) !important;
+    }
+
+    div#toctitle {
+        display: none
+    }
+
+    #td-section-nav {
+        max-height: calc(100vh - 4rem);
+        font-size: smaller;
+        line-height: 1.1;
+    }
+
+    .td-page-meta {
+        font-size: smaller;
+        line-height: 1.1;
+    }
+
+    #td-section-nav ul.td-sidebar-nav__section {
+        padding-left: 0;
+    }
+
+    span.navbar-logo {
+        padding-right: 1.5em;
+    }
+
+    .match {
+        font-size: smaller;
+    }
+
+    .admonitionblock td.icon .fa:before {
+        font-size: xxx-large;
+    }
+    </style>
+
+    <style>
+    div.openblock.primary div.content, div.openblock.secondary div.content {
+        border: 1px solid #7a2518;
+        padding: 5px;
+    }
+
+    div.openblock.primary div.content div.content, div.openblock.secondary div.content div.content {
+        border: 0 solid #7a2518;
+        padding: 0;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .switch {
+        border-width: 1px 1px 0 1px;
+        border-style: solid;
+        border-color: #7a2518;
+        display: inline-block;
+    }
+
+    .switch--item {
+        padding: 2px 10px;
+        background-color: #ffffff;
+        color: #7a2518;
+        display: inline-block;
+        cursor: pointer;
+    }
+
+    .switch--item:not(:first-child) {
+        border-width: 0 0 0 1px;
+        border-style: solid;
+        border-color: #7a2518;
+    }
+
+    .switch--item.selected {
+        background-color: #7a2519;
+        color: #ffffff;
+    }
+    </style>
+
+    <!-- copy-n-paste.js -->
+    <style>
+        div.listingblock {
+            position: relative;
+        }
+        div.listingblock > span.icon {
+            position: absolute;
+            top: 2px;
+            right: 6px;
+            visibility: hidden;
+            z-index: 2;
+            cursor: pointer;
+        }
+        div.listingblock:hover > span.icon {
+            visibility: visible;
+        }
+        div.listingblock div.content pre {
+            margin: 0;
+        }
+    </style>
+    <style>
+        .td-sidebar-nav__section {
+            padding-left: 9px;
+        }
+        details {
+            margin-left: 10px;
+        }
+        summary {
+            cursor: pointer;
+            padding-left: 10px; /* Erhöhter linker Padding für den Pfeil */
+            list-style: none;
+            position: relative; /* Für absolute Positionierung des Pfeils */
+        }
+        summary::before {
+            content: '>';
+            position: absolute;
+            left: 10px; /* Position des Pfeils */
+            top: 50%;
+            transform: translateY(-50%) translateX(-120%);
+            transition: transform 0.3s;
+        }
+        details[open] > summary::before {
+            transform: translateY(-50%) translateX(-120%) rotate(90deg);
+        }
+    </style>
+
+    <!-- docToolchain v4 theme overlay -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="../css/doctoolchain-v4.css" rel="stylesheet">
+    <script>
+        // apply persisted colour scheme before first paint (no flash)
+        (function () {
+            try {
+                var t = localStorage.getItem('dtc-theme');
+                if (!t) {
+                    t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                }
+                document.documentElement.setAttribute('data-theme', t);
+            } catch (e) {}
+        })();
+    </script>
+</head>
+
+<body onload="prettyPrint()" class="td-section">
+<header>
+	
+<nav class="js-navbar-scroll navbar navbar-expand navbar-dark flex-column flex-md-row td-navbar">
+    <a class="navbar-brand" href="../index.html">
+        <span class="navbar-logo"><img src="../images/doctoolchain-logo-blue.png" alt="docToolchain" width="32px" /></span><span
+            class="font-weight-bold">docToolchain</span>
+    </a>
+    <div class="td-navbar-nav-scroll ml-md-auto" id="main_navbar">
+        <ul class="navbar-nav mt-2 mt-lg-0">
+    <li class="nav-item mr-4 mb-2 mb-lg-0"><!--img src="../images/status.png" alt="status" width="16" height="16" onerror="this.style.display='none'"--></li>
+
+            <li class="nav-item mr-4 mb-2 mb-lg-0">
+                <a class="nav-link " href="../10_about/10_about-the-project.html"><span>About</span></a>
+            </li>
+
+            <li class="nav-item mr-4 mb-2 mb-lg-0">
+                <a class="nav-link active" href="../010_manual/20_install.html"><span>User Docs</span></a>
+            </li>
+
+            <li class="nav-item mr-4 mb-2 mb-lg-0">
+                <a class="nav-link " href="../015_tasks/03_tasks.html"><span>Tasks</span></a>
+            </li>
+
+            <li class="nav-item mr-4 mb-2 mb-lg-0">
+                <a class="nav-link " href="../020_tutorial/010_Install.html"><span>Tutorial</span></a>
+            </li>
+
+            <li class="nav-item mr-4 mb-2 mb-lg-0">
+                <a class="nav-link " href="../025_development/005_contributing_to_docs.html"><span>For Devs</span></a>
+            </li>
+
+            <li class="nav-item mr-4 mb-2 mb-lg-0">
+                <a class="nav-link " href="../030_news/index.html"><span>News</span></a>
+            </li>
+
+            <li class="nav-item mr-4 mb-2 mb-lg-0">
+                <a class="nav-link " href="../arc42/open_questions.html"><span>arc42</span></a>
+            </li>
+
+        </ul>
+    </div>
+    <div class="navbar-nav d-none d-lg-block" >
+    <form id="searchForm" action="https://perplexity.ai" target="perplexity">
+        <input id="searchInput" aria-label="Search this site…" autocomplete="off" class="form-control td-search-input"
+               placeholder=" Search with perplexity" type="search" name="q">
+        </form>
+        <script>
+        document.getElementById('searchForm').addEventListener('submit',function(e) {
+            e.preventDefault();
+            var input = document.getElementById('searchInput');
+            var searchTerm = input.value.trim();
+            if (searchTerm !== '') {
+                input.value = searchTerm + ' site:doctoolchain.org ';
+            }
+            this.submit();
+            input.value="";
+        });
+    </script>
+    </div>
+    <button type="button" class="dtc-theme-toggle" aria-label="Toggle colour scheme" onclick="dtcToggleTheme()">🌙</button>
+</nav>
+
+</header>
+<div class="container-fluid td-outer">
+	<div class="td-main">
+		<div class="row flex-xl-nowrap">
+			<div class="col-12 col-md-3 col-xl-2 td-sidebar d-print-none">
+				<div class="td-sidebar__inner" id="td-sidebar-menu" >
+					
+        <form class="td-sidebar__search d-flex align-items-center d-lg-none" action="../search.html">
+
+            <input aria-label="Search this site…" name="q" autocomplete="off" class="form-control td-search-input"
+                   placeholder=" Search this site…" type="search">
+
+
+            <button aria-controls="td-docs-nav" aria-expanded="false"
+                    aria-label="Toggle section navigation" class="btn btn-link td-sidebar__toggle d-md-none p-0 ml-3 fas fa-bars" data-target="#td-section-nav"
+                    data-toggle="collapse" type="button">
+            </button>
+        </form>
+
+        <nav class="collapse td-sidebar-nav" id="td-section-nav" >
+
+            <ul class="td-sidebar-nav__section pr-md-3">
+                <ul>
+                    <li class="collapse show" id="docs">
+                        <ul class="td-sidebar-nav__section pr-md-3">
+                <div id="toc" class="toc">
+<div id="toctitle">toc-title</div>
+<ul class="sectlevel1">
+<li><a href="#_doctoolchain_manual">docToolchain Manual</a></li>
+<li><a href="#_what_is_doctoolchain">1. What Is docToolchain?</a>
+<ul class="sectlevel2">
+<li><a href="#_introduction">1.1. Introduction</a></li>
+<li><a href="#_docs_as_code">1.2. Docs as Code</a></li>
+<li><a href="#_arc42">1.3. arc42</a></li>
+<li><a href="#_how_doctoolchain_brings_everything_together">1.4. How docToolchain Brings Everything Together</a></li>
+<li><a href="#_what_you_get_with_doctoolchain">1.5. What You Get with docToolchain</a>
+<ul class="sectlevel3">
+<li><a href="#_a_ready_made_document_management_system">1.5.1. A Ready-Made Document Management System</a></li>
+<li><a href="#_built_in_collaboration_and_review">1.5.2. Built-In Collaboration and Review</a></li>
+<li><a href="#_image_references_and_code_snippets">1.5.3. Image References and Code Snippets</a></li>
+<li><a href="#_compound_and_stakeholder_tailored_docs">1.5.4. Compound and Stakeholder-Tailored Docs</a></li>
+<li><a href="#_and_so_much_more">1.5.5. And So Much More&#8230;&#8203;</a></li>
+</ul>
+</li>
+<li><a href="#_install_doctoolchain">1.6. Install docToolchain</a>
+<ul class="sectlevel3">
+<li><a href="#_prerequisites">1.6.1. Prerequisites</a></li>
+<li><a href="#_quick_start">1.6.2. Quick Start</a></li>
+<li><a href="#_how_it_works">1.6.3. How It Works</a></li>
+<li><a href="#_running_in_docker">1.6.4. Running in Docker</a></li>
+<li><a href="#_updating">1.6.5. Updating</a></li>
+<li><a href="#_environment_variables">1.6.6. Environment Variables</a></li>
+</ul>
+</li>
+<li><a href="#_features">1.7. Features</a>
+<ul class="sectlevel3">
+<li><a href="#_fast_startup">1.7.1. Fast Startup</a></li>
+<li><a href="#_no_ruby_required">1.7.2. No Ruby Required</a></li>
+<li><a href="#_multiple_output_formats">1.7.3. Multiple Output Formats</a></li>
+<li><a href="#_diagram_support">1.7.4. Diagram Support</a></li>
+<li><a href="#_confluence_publishing">1.7.5. Confluence Publishing</a></li>
+<li><a href="#_cross_platform">1.7.6. Cross-Platform</a></li>
+<li><a href="#_template_support">1.7.7. Template Support</a></li>
+<li><a href="#_cicd_ready">1.7.8. CI/CD Ready</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_doctoolchain_tasks">2. docToolchain Tasks</a></li>
+<li><a href="#_generatehtml">3. generateHTML</a>
+<ul class="sectlevel2">
+<li><a href="#_about_this_task">3.1. About This Task</a></li>
+<li><a href="#_configuration">3.2. Configuration</a></li>
+<li><a href="#_single_file_html">3.3. Single-File HTML</a></li>
+<li><a href="#_text_based_diagrams">3.4. Text-Based Diagrams</a></li>
+<li><a href="#_controlling_diagram_size">3.5. Controlling Diagram Size</a></li>
+<li><a href="#_further_reading">3.6. Further Reading</a></li>
+</ul>
+</li>
+<li><a href="#_generatepdf">4. generatePDF</a>
+<ul class="sectlevel2">
+<li><a href="#_about_this_task_2">4.1. About This Task</a></li>
+<li><a href="#_configuration_2">4.2. Configuration</a></li>
+<li><a href="#_custom_pdf_theme">4.3. Custom PDF Theme</a></li>
+<li><a href="#_further_reading_2">4.4. Further Reading</a></li>
+</ul>
+</li>
+<li><a href="#task_generatesite">5. generateSite</a>
+<ul class="sectlevel2">
+<li><a href="#_about_this_task_3">5.1. About This Task</a></li>
+<li><a href="#_pages">5.2. Pages</a></li>
+<li><a href="#config">5.3. Configuration</a>
+<ul class="sectlevel3">
+<li><a href="#_menu">5.3.1. Menu</a></li>
+<li><a href="#_links">5.3.2. Links</a></li>
+</ul>
+</li>
+<li><a href="#_templates_and_style">5.4. Templates and Style</a></li>
+<li><a href="#_landing_page">5.5. Landing Page</a></li>
+<li><a href="#_blog">5.6. Blog</a></li>
+<li><a href="#_search">5.7. Search</a></li>
+<li><a href="#_cicd">5.8. CI/CD</a></li>
+</ul>
+</li>
+<li><a href="#_publishtoconfluence">6. publishToConfluence</a>
+<ul class="sectlevel2">
+<li><a href="#_about_this_task_4">6.1. About This Task</a></li>
+<li><a href="#_special_features">6.2. Special Features</a>
+<ul class="sectlevel3">
+<li><a href="#_easy_code_block_conversion">6.2.1. Easy Code Block Conversion</a></li>
+<li><a href="#_minimal_impact_on_non_techie_confluence_users">6.2.2. Minimal Impact on Non-Techie Confluence Users</a></li>
+<li><a href="#_keywords_automatically_attached_as_labels">6.2.3. Keywords Automatically Attached as Labels</a></li>
+</ul>
+</li>
+<li><a href="#_configuration_3">6.3. Configuration</a></li>
+<li><a href="#_attributes">6.4. Attributes</a></li>
+<li><a href="#_css_styling">6.5. CSS Styling</a></li>
+</ul>
+</li>
+<li><a href="#_exportppt">7. exportPPT</a>
+<ul class="sectlevel2">
+<li><a href="#_about_this_task_5">7.1. About This Task</a></li>
+<li><a href="#_further_reading_3">7.2. Further Reading</a></li>
+</ul>
+</li>
+<li><a href="#_exportexcel">8. exportExcel</a>
+<ul class="sectlevel2">
+<li><a href="#_about_this_task_6">8.1. About This Task</a></li>
+<li><a href="#_including_exported_data">8.2. Including Exported Data</a></li>
+<li><a href="#_further_reading_4">8.3. Further Reading</a></li>
+</ul>
+</li>
+<li><a href="#task_downloadTemplate">9. downloadTemplate</a>
+<ul class="sectlevel2">
+<li><a href="#_about_this_task_7">9.1. About This Task</a></li>
+<li><a href="#_setup_and_configuration">9.2. Setup and Configuration</a></li>
+<li><a href="#_headless_mode">9.3. Headless Mode</a>
+<ul class="sectlevel3">
+<li><a href="#_using_the_dtc_headless_environment_variable">9.3.1. Using the DTC_HEADLESS Environment Variable</a></li>
+</ul>
+</li>
+<li><a href="#_further_reading_and_resources">9.4. Further Reading and Resources</a></li>
+<li><a href="#_solutions_to_common_problems">9.5. Solutions to Common Problems</a>
+<ul class="sectlevel3">
+<li><a href="#_references">9.5.1. References</a></li>
+<li><a href="#_images">9.5.2. Images</a></li>
+<li><a href="#_runtime">9.5.3. Runtime</a></li>
+</ul>
+</li>
+<li><a href="#_useful_resources">9.6. Useful Resources</a>
+<ul class="sectlevel3">
+<li><a href="#_underlying_technologies">9.6.1. Underlying Technologies</a></li>
+<li><a href="#_books">9.6.2. Books</a></li>
+</ul>
+</li>
+<li><a href="#_configuration_4">9.7. Configuration</a>
+<ul class="sectlevel3">
+<li><a href="#_configuration_file">9.7.1. Configuration File</a></li>
+<li><a href="#_core_settings">9.7.2. Core Settings</a></li>
+<li><a href="#_microsite_settings">9.7.3. Microsite Settings</a></li>
+<li><a href="#_confluence_settings">9.7.4. Confluence Settings</a></li>
+<li><a href="#_dynamic_configuration">9.7.5. Dynamic Configuration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+                        </ul>
+                    </li>
+                </ul>
+        </nav>
+
+				</div>
+			</div>
+			<div class="d-none d-xl-block col-xl-2 td-toc d-print-none">
+				<div class="td-page-meta ml-2 pb-1 pt-2 mb-0">
+					
+        <a href="https://github.com/doctoolchain/doctoolchain/edit/main-4.x/src/docs/010_manual/single-page.adoc"
+           target="_blank"><i class="fa fa-edit fa-fw"></i> Improve this doc</a>
+        <!--a href="https://github.com/google/docsy-example/new/master/content/en/docs/_index.md?filename=change-me.md&amp;value=---%0Atitle%3A+%22Long+Page+Title%22%0AlinkTitle%3A+%22Short+Nav+Title%22%0Aweight%3A+100%0Adescription%3A+%3E-%0A+++++Page+description+for+heading+and+indexes.%0A---%0A%0A%23%23+Heading%0A%0AEdit+this+template+to+create+your+new+page.%0A%0A%2A+Give+it+a+good+name%2C+ending+in+%60.md%60+-+e.g.+%60getting-started.md%60%0A%2A+Edit+the+%22front+matter%22+section+at+the+top+of+the+page+%28weight+controls+how+its+ordered+amongst+other+pages+in+the+same+directory%3B+lowest+number+first%29.%0A%2A+Add+a+good+commit+message+at+the+bottom+of+the+page+%28%3C80+characters%3B+use+the+extended+description+field+for+more+detail%29.%0A%2A+Create+a+new+branch+so+you+can+preview+your+new+file+and+request+a+review+via+Pull+Request.%0A"
+           target="_blank"><i class="fa fa-edit fa-fw"></i> Create child page</a-->
+        <a href="https://github.com/docToolchain/docToolchain/issues/new?title=Docs%3A+Feedback+for+%27docToolchain+Manual%27&body=%0A%0A%5BEnter%20feedback%20here%5D%0A%0A%0A---%0A%23page:010_manual/single-page.adoc" target="_blank"><i
+                class="fab fa-github fa-fw"></i> Create an issue</a>
+        <!--a href="https://github.com/google/docsy/issues/new" target="_blank"><i
+                class="fas fa-tasks fa-fw"></i> Create project issue</a-->
+        <!--a href="https://example.docsy.dev/docs/_print/" id="print"><i class="fa fa-print fa-fw"></i> Print
+        entire section</a-->
+        
+
+				</div>
+			</div>
+			<main class="col-12 col-md-9 col-xl-8 pl-md-5" role="main">
+				    <nav aria-label="breadcrumb" class="d-none d-md-block d-print-none">
+        <ol class="breadcrumb spb-1">
+            <!--li aria-current="page" class="breadcrumb-item active">
+                <a href="https://example.docsy.dev/docs/">Documentation</a>
+            </li-->
+
+        </ol>
+    </nav>
+
+
+    <div class="td-content">
+        <p>
+            
+<style>
+.gravatar img {
+    margin-left: 3px;
+    border-radius: 4px;
+}
+</style>
+<div class="sect1">
+<h2 id="_doctoolchain_manual">docToolchain Manual</h2>
+<div class="sectionbody">
+<style>
+.gravatar img {
+    margin-left: 3px;
+    border-radius: 4px;
+}
+</style>
+<div style="page-break-after: always;"></div>
+<style>
+.gravatar img {
+    margin-left: 3px;
+    border-radius: 4px;
+}
+</style>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_is_doctoolchain">1. What Is docToolchain?</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_introduction">1.1. Introduction</h3>
+<div class="paragraph">
+<p><a href="https://github.com/docToolchain/docToolchain">docToolchain</a> is a documentation generation tool that uses the <a href="https://www.writethedocs.org/guide/docs-as-code/">Docs as Code</a> approach as a basis for its architecture, plus some additional automation provided by the <a href="https://arc42.org">arc42 template</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_docs_as_code">1.2. Docs as Code</h3>
+<div class="paragraph">
+<p>‘Docs as code’ refers to a philosophy that you should write documentation using the same tools as you use to write code. If you need to write technical docs for your software project, why not use the same tools and processes as you use for your source code? There are so many benefits:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>You don’t have to learn a complicated docs management system.</p>
+</li>
+<li>
+<p>Developers feel more at home in the docs because they look and feel like code.</p>
+</li>
+<li>
+<p>You can manage docs using standard version control like GitHub.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_arc42">1.3. arc42</h3>
+<div class="paragraph">
+<p>arc42 has been a part of docToolchain since the earliest version. But what is arc42?</p>
+</div>
+<div class="paragraph">
+<p>Dr. Gernot Starke and Peter Hruschka created the arc42 template as a standard for software architecture documentation. They used their experience of software architectures both in the template structure and the explanations that appear in each chapter to guide you when you’re writing your documentation.</p>
+</div>
+<div class="paragraph">
+<p>arc42 is available in well-known formats including MS Word, textile, and Confluence. All of these formats are automatically generated from a single golden master which is formatted in <a href="https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/">AsciiDoc</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_doctoolchain_brings_everything_together">1.4. How docToolchain Brings Everything Together</h3>
+<div class="paragraph">
+<p>To follow a docs as code approach, you need a build script that automates steps like exporting diagrams and rendering Markdown (or AsciiDoc in the case of docToolchain) to the target format.</p>
+</div>
+<div class="paragraph">
+<p>Creating this type of build script is not easy (and even harder to maintain). There are also lots of questions to answer: “How do I create .docx?” and “Why doesn’t lib x work with lib y?”</p>
+</div>
+<div class="paragraph">
+<p>docToolchain is the result of <a href="https://rdmueller.github.io">one developer’s journey</a> through the docs as code universe. The goal of docToolchain is to automate the creation of technical docs through an easy-to-use build script that only needs to be configured not modified, and that is nurtured and cared for by a <a href="https://doctoolchain.org/docToolchain/v2.0.x/10_about/30_community.html">diverse open source community</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_what_you_get_with_doctoolchain">1.5. What You Get with docToolchain</h3>
+<div class="sect3">
+<h4 id="_a_ready_made_document_management_system">1.5.1. A Ready-Made Document Management System</h4>
+<div class="paragraph">
+<p>By using a version control system like <a href="https://git-scm.com/">Git</a>, you get a perfect document management system for free. Git allows you to version your docs, branch them, and also leaves an audit trail. You can even check who wrote which part of the docs. Isn’t that great?</p>
+</div>
+<div class="paragraph">
+<p>And because your docs are simple plain text, it’s easy to do a diff and see exactly what has changed. Bonus: storing your docs in the same repo as your code means they’re always in sync!</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_built_in_collaboration_and_review">1.5.2. Built-In Collaboration and Review</h4>
+<div class="paragraph">
+<p>As a distributed version control system, Git comes with doc collaboration and review processes built in. People can fork the docs and send pull requests for the changes they make. You review the changes. Done!</p>
+</div>
+<div class="paragraph">
+<p>Most Git frontends like <a href="https://www.bitbucket.org">Bitbucket</a>, <a href="https://gitlab.com">GitLab</a> and <a href="https://github.com">GitHub</a> also allow you to reject pull requests with comments.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_image_references_and_code_snippets">1.5.3. Image References and Code Snippets</h4>
+<div class="paragraph">
+<p>Instead of pasting images into a binary document format, docToolchain lets you reference images. This ensures that your imagery is always up-to-date every time you rebuild your documents.</p>
+</div>
+<div class="paragraph">
+<p>You can also reference code snippets directly from your source code. You&#8217;ll save so much time because your docs and code will always be in sync and completely up to date!</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_compound_and_stakeholder_tailored_docs">1.5.4. Compound and Stakeholder-Tailored Docs</h4>
+<div class="paragraph">
+<p>As if image refs and code snippets weren&#8217;t enough, docToolchain also lets you split docs into several sub-documents plus a master for greater cohesion. And you&#8217;re not restricted to one master. You can create master docs for different stakeholders that only contain the chapters they need.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_and_so_much_more">1.5.5. And So Much More&#8230;&#8203;</h4>
+<div class="paragraph">
+<p>If you can dream it, you can script it! Want to include a list of open issues from Jira? You can! Want to include a changelog from Git? Go for it! Want to use inline text-based diagrams? Knock yourself out!</p>
+</div>
+<hr>
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_install_doctoolchain">1.6. Install docToolchain</h3>
+<div class="sect3">
+<h4 id="_prerequisites">1.6.1. Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Java 17</strong> (exactly) — check with <code>java -version</code></p>
+</li>
+<li>
+<p><strong>git</strong> — needed to clone docToolchain during installation</p>
+</li>
+<li>
+<p><strong>Bash</strong> — <code>dtcw4</code> is a Bash script (on Windows, use WSL2)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_quick_start">1.6.2. Quick Start</h4>
+<div class="sect4">
+<h5 id="_1_get_the_wrapper_script">1. Get the Wrapper Script</h5>
+<div class="paragraph">
+<p>Download <code>dtcw4</code> into your project directory:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">cd &lt;your project&gt;
+curl -Lo dtcw4 https://doctoolchain.org/dtcw4
+chmod +x dtcw4</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+On Windows, use WSL2. <code>dtcw4</code> is a Bash script.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_2_install_doctoolchain">2. Install docToolchain</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash"># Install Java if needed
+./dtcw4 local install java
+
+# Install docToolchain v4
+./dtcw4 local install doctoolchain</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This clones the <code>main-4.x</code> branch and builds the runtime JARs once (~2 min).
+After that, no build tool is involved at runtime.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_3_download_a_template_optional">3. Download a Template (optional)</h5>
+<div class="paragraph">
+<p>First, create a config file if you don&#8217;t have one yet:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">touch docToolchainConfig.groovy
+./dtcw4 local downloadTemplate</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This interactively installs the <a href="https://arc42.org">arc42</a> architecture template and updates your config file.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_4_generate_output">4. Generate Output</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">./dtcw4 local generateHTML
+./dtcw4 local generatePDF
+./dtcw4 local generateSite</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Output is written to the <code>build/</code> directory:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code>build/
+├── html5/          # generateHTML output
+├── pdf/            # generatePDF output
+└── microsite/
+    └── output/     # generateSite output</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_5_list_all_tasks">5. List All Tasks</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">./dtcw4 tasks</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_how_it_works">1.6.3. How It Works</h4>
+<div class="paragraph">
+<p>Only <code>dtcw4</code> lives in your project directory. It handles:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Installation</strong>: Clones docToolchain from GitHub and builds the runtime JARs once.</p>
+</li>
+<li>
+<p><strong>Task execution</strong>: Delegates to the installed <code>dtcw</code> in <code>~/.doctoolchain/docToolchain-4.0.0/</code>, which runs tasks directly via the JVM — no Gradle, no daemon.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Runtime JARs are stored in <code>~/.doctoolchain/docToolchain-4.0.0/lib/</code>.
+Task execution uses direct JVM invocation (~2-3s startup).</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_running_in_docker">1.6.4. Running in Docker</h4>
+<div class="paragraph">
+<p>docToolchain provides a container image from <a href="https://hub.docker.com/r/doctoolchain/doctoolchain">Docker Hub</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">./dtcw4 docker generateHTML</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The wrapper script detects the container engine and pulls the image automatically.</p>
+</div>
+<div class="sect4">
+<h5 id="_custom_docker_image">Custom Docker Image</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">./dtcw4 docker image &lt;image_name&gt; generateHTML</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_environment_variables_for_docker">Environment Variables for Docker</h5>
+<div class="paragraph">
+<p>Create a file <code>dtcw_docker.env</code> in your project directory:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code>PROJECT=MY_PROJECT
+TEAM=MY_TEAM</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_updating">1.6.5. Updating</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">./dtcw4 local install doctoolchain --update</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This pulls the latest <code>main-4.x</code> and rebuilds the runtime JARs.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_environment_variables">1.6.6. Environment Variables</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Variable</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DTC_VERSION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>4.0.0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">docToolchain version to use</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DTC_V4_BRANCH</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>main-4.x</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Git branch to install from</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DTC_HEADLESS</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">auto-detected</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set to <code>true</code> for non-interactive mode (CI/CD)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DTC_CONFIG_FILE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>docToolchainConfig.groovy</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path to configuration file</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DTC_SITETHEME</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(none)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">URL to an external microsite theme zip</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_features">1.7. Features</h3>
+<div class="paragraph">
+<p>docToolchain v4 is a docs-as-code tool that generates professional documentation from AsciiDoc sources.</p>
+</div>
+<div class="sect3">
+<h4 id="_fast_startup">1.7.1. Fast Startup</h4>
+<div class="paragraph">
+<p>Tasks run via direct JVM invocation — no Gradle daemon, no build system overhead.
+Typical startup time is 2-3 seconds.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_no_ruby_required">1.7.2. No Ruby Required</h4>
+<div class="paragraph">
+<p>v4 uses AsciidoctorJ (the Java port of AsciiDoctor) exclusively.
+No Ruby gems, no external <code>asciidoctor</code> CLI needed.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_multiple_output_formats">1.7.3. Multiple Output Formats</h4>
+<div class="paragraph">
+<p>Generate HTML, PDF, or a full microsite from the same AsciiDoc sources.
+See the <a href="../015_tasks/03_tasks.html">Tasks</a> section for all available output formats.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_diagram_support">1.7.4. Diagram Support</h4>
+<div class="paragraph">
+<p>Built-in support for text-based diagrams via <a href="https://asciidoctor.org/docs/asciidoctor-diagram/">asciidoctor-diagram</a>:
+PlantUML, ditaa, Mermaid, and more.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_confluence_publishing">1.7.5. Confluence Publishing</h4>
+<div class="paragraph">
+<p>Publish your documentation directly to Confluence, keeping docs-as-code and Confluence in sync.
+Only changed pages are updated — no spam for page watchers.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_cross_platform">1.7.6. Cross-Platform</h4>
+<div class="paragraph">
+<p>All tasks work on Linux, macOS, and Windows.
+The <code>exportPPT</code> task uses Apache POI — no Windows-only dependencies.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_template_support">1.7.7. Template Support</h4>
+<div class="paragraph">
+<p>Bootstrap your project with architecture templates like <a href="https://arc42.org">arc42</a> or <a href="https://req42.de">req42</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_cicd_ready">1.7.8. CI/CD Ready</h4>
+<div class="paragraph">
+<p>Set <code>DTC_HEADLESS=true</code> for non-interactive mode.
+Works with GitHub Actions, GitLab CI, Jenkins, and any CI system with Java 17.</p>
+</div>
+<hr>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_doctoolchain_tasks">2. docToolchain Tasks</h2>
+<div class="sectionbody">
+<div style="page-break-after: always;"></div>
+<style>
+.gravatar img {
+    margin-left: 3px;
+    border-radius: 4px;
+}
+</style>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_generatehtml">3. generateHTML</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_about_this_task">3.1. About This Task</h3>
+<div class="paragraph">
+<p>Generates HTML5 from your AsciiDoc sources using AsciidoctorJ.
+Output is written to <code>build/html5/</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">./dtcw4 local generateHTML</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuration">3.2. Configuration</h3>
+<div class="paragraph">
+<p>Specify which files to render in your <code>docToolchainConfig.groovy</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="groovy">inputFiles = [
+    [file: 'manual.adoc', formats: ['html','pdf']],
+]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_single_file_html">3.3. Single-File HTML</h3>
+<div class="paragraph">
+<p>To produce a single self-contained HTML file, set <code>:data-uri:</code> in your AsciiDoc source.
+Be aware that the file can become very large.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_text_based_diagrams">3.4. Text-Based Diagrams</h3>
+<div class="paragraph">
+<p>docToolchain includes the <a href="https://asciidoctor.org/docs/asciidoctor-diagram/">asciidoctor-diagram</a> extension for PlantUML, ditaa, and other diagram types.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>.example diagram
+[plantuml, "{plantUMLDir}demoPlantUML", png]
+----
+class BlockProcessor
+class DiagramBlock
+
+BlockProcessor &lt;|-- DiagramBlock
+----</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Use <code>{plantUMLDir}</code> in the image name to ensure diagrams work for both HTML and PDF output.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Use a unique image name for each diagram to avoid overwriting.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_controlling_diagram_size">3.5. Controlling Diagram Size</h3>
+<div class="paragraph">
+<p>Use the <code>width</code> attribute (pixels) or <code>scale</code> attribute (ratio):</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>[plantuml, target="{plantUMLDir}myDiagram", format=png, width=250]
+[plantuml, target="{plantUMLDir}myDiagram", format=png, scale=0.75]</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If Graphviz is not installed, add <code>!pragma layout smetana</code> as the first line of your PlantUML diagram to use the built-in Java layout engine.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_further_reading">3.6. Further Reading</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://rdmueller.github.io/single-file-html/">Single-file HTML</a></p>
+</li>
+<li>
+<p><a href="https://rdmueller.github.io/plantuml-without-graphviz/">PlantUML without Graphviz</a></p>
+</li>
+</ul>
+</div>
+<hr>
+<div style="page-break-after: always;"></div>
+<style>
+.gravatar img {
+    margin-left: 3px;
+    border-radius: 4px;
+}
+</style>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_generatepdf">4. generatePDF</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_about_this_task_2">4.1. About This Task</h3>
+<div class="paragraph">
+<p>Generates PDF from your AsciiDoc sources using <a href="https://docs.asciidoctor.org/pdf-converter/latest/">AsciidoctorJ PDF</a>.
+Output is written to <code>build/pdf/</code>.
+The result looks like a typeset book, not a print-to-PDF web page.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">./dtcw4 local generatePDF</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuration_2">4.2. Configuration</h3>
+<div class="paragraph">
+<p>Specify which files to render in your <code>docToolchainConfig.groovy</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="groovy">inputFiles = [
+    [file: 'manual.adoc', formats: ['html','pdf']],
+]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Add the files you want rendered with the <code>pdf</code> format.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_custom_pdf_theme">4.3. Custom PDF Theme</h3>
+<div class="paragraph">
+<p>To customize colors, fonts, headers, and footers, create a <code>custom-theme.yml</code> file.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Copy the example theme from <code>src/docs/pdfTheme/custom-theme.yml</code> to your project.</p>
+</li>
+<li>
+<p>Reference it from your AsciiDoc file:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="asciidoc">:pdf-themesdir: {docdir}/../pdfTheme
+:pdf-theme: custom</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_further_reading_2">4.4. Further Reading</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.asciidoctor.org/pdf-converter/latest/theme/">AsciidoctorJ PDF Theming Guide</a></p>
+</li>
+<li>
+<p><a href="https://rdmueller.github.io/pdf-output/">Beyond HTML — PDF Output</a></p>
+</li>
+</ul>
+</div>
+<hr>
+<div style="page-break-after: always;"></div>
+<style>
+.gravatar img {
+    margin-left: 3px;
+    border-radius: 4px;
+}
+</style>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="task_generatesite">5. generateSite</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_about_this_task_3">5.1. About This Task</h3>
+<div class="paragraph">
+<p>When your documentation grows beyond a single document, a microsite bundles everything into a navigable website with landing page, blog, and search.
+The <code>generateSite</code> task uses <a href="https://jbake.org">jBake</a> to create a static site from your AsciiDoc sources.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">./dtcw4 local generateSite</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Output is written to <code>build/microsite/output/</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_pages">5.2. Pages</h3>
+<div class="paragraph">
+<p>The microsite is page-oriented: each AsciiDoc file becomes a page.
+Add jBake metadata to include a page in the site:</p>
+</div>
+<div class="listingblock">
+<div class="title">page metadata</div>
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="asciidoc">:jbake-menu: arc42
+:jbake-title: Solution Strategy
+:jbake-order: 4
+:jbake-type: page_toc
+:jbake-status: published
+
+:toc:
+
+== Solution Strategy</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><strong>jbake-menu</strong></dt>
+<dd>
+<p>The top-level menu code. Defaults to the top-level folder name (without order prefix).</p>
+</dd>
+<dt class="hdlist1"><strong>jbake-title</strong></dt>
+<dd>
+<p>Title shown in the navigation. Defaults to the first headline.</p>
+</dd>
+<dt class="hdlist1"><strong>jbake-order</strong></dt>
+<dd>
+<p>Sort order in the sidebar. Defaults to the numeric prefix of the filename or folder.</p>
+</dd>
+<dt class="hdlist1"><strong>jbake-type</strong></dt>
+<dd>
+<p>Controls the template. Use <code>page_toc</code> for a page with sidebar table of contents, or <code>page</code> for full-width.</p>
+</dd>
+<dt class="hdlist1"><strong>jbake-status</strong></dt>
+<dd>
+<p>Either <code>draft</code> or <code>published</code>. Files prefixed with <code>_</code> default to <code>draft</code>.</p>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Start pages with a <code>==</code> level headline.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="config">5.3. Configuration</h3>
+<div class="paragraph">
+<p>Configuration follows a convention-over-configuration approach.
+Defaults work out of the box — configure only what you want to change.</p>
+</div>
+<div class="sect3">
+<h4 id="_menu">5.3.1. Menu</h4>
+<div class="sect4">
+<h5 id="_navigation_structure">Navigation Structure</h5>
+<div class="ulist">
+<ul>
+<li>
+<p>A <strong>top-level menu</strong> with entries across the top of the page.</p>
+</li>
+<li>
+<p>A <strong>section sidebar</strong> for each top-level menu entry.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The structure is derived from your folder layout:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code>src/docs/
+├── 10_foo
+│   ├── 10_first.adoc
+│   └── 20_second.adoc
+└── 20_bar
+    ├── 10_lorem.adoc
+    └── 20_ipsum
+        ├── 10_topic-A.adoc
+        └── 20_topic-B.adoc</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Top-level folders determine menu codes (<code>foo</code>, <code>bar</code>).
+Sub-folders create navigation tree nodes.
+Numeric prefixes control sort order.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="top-menu-config">Configuring the Top-Level Menu</h5>
+<div class="paragraph">
+<p>Map menu codes to display titles in your <code>docToolchainConfig.groovy</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="groovy">menu = [code1: 'Some Title 1', code2: 'Other Title 2', code3: '-']</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Use <code>'-'</code> to hide a menu entry.
+When no mapping is defined, the code itself is used as the title.
+The order in the map determines the display order.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_links">5.3.2. Links</h4>
+<div class="paragraph">
+<p>In the right column, links are controlled by values in <code>docToolchainConfig.groovy</code>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>"Improve this doc": shown when <code>gitRepoUrl</code> is set.</p>
+</li>
+<li>
+<p>"Create an issue": shown when <code>issueUrl</code> is set.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_templates_and_style">5.4. Templates and Style</h3>
+<div class="paragraph">
+<p>The jBake templates use <a href="https://getbootstrap.com/">Bootstrap 5</a> as their CSS framework.
+Templates and styles are bundled with docToolchain.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_landing_page">5.5. Landing Page</h3>
+<div class="paragraph">
+<p>Place an <code>index.gsp</code> in <code>src/site/templates</code> as your landing page.
+It is plain HTML5 styled with Bootstrap — the header and footer are added automatically.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_blog">5.6. Blog</h3>
+<div class="paragraph">
+<p>The microsite includes a blog.
+Create posts in <code>src/docs/blog/&lt;year&gt;/&lt;post-name&gt;.adoc</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">blog post template</div>
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="asciidoc">:jbake-title: My Post Title
+:jbake-date: 2025-01-15
+:jbake-type: post
+:jbake-tags: blog, asciidoc
+:jbake-status: published
+
+= {jbake-title}
+{jbake-date}
+
+Your content here.</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_search">5.7. Search</h3>
+<div class="paragraph">
+<p>The microsite includes a search input field that can be linked to an external search engine.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_cicd">5.8. CI/CD</h3>
+<div class="paragraph">
+<p>Set <code>DTC_HEADLESS=true</code> in automated builds to skip interactive prompts (e.g., theme installation).</p>
+</div>
+<hr>
+<div style="page-break-after: always;"></div>
+<style>
+.gravatar img {
+    margin-left: 3px;
+    border-radius: 4px;
+}
+</style>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_publishtoconfluence">6. publishToConfluence</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_about_this_task_4">6.1. About This Task</h3>
+<div class="paragraph">
+<p>This task takes a generated HTML file, splits it by headline, and pushes it to your instance of <a href="https://www.atlassian.com/software/confluence">Confluence</a>.
+This lets you use the <a href="https://www.writethedocs.org/guide/docs-as-code/">docs-as-code approach</a> even if your organisation insists on using Confluence as its main document repository.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>From the 01.01.2024 on, Atlassian turns off API V1 for Confluence Cloud, if there is a V2 equivalent. docToolchain versions from 3.1 on support API V2. If you are using an older version of docToolchain, you&#8217;ll need to upgrade to a newer version.
+To <strong>enable API V2</strong>, set <code>useV1Api</code> to <code>false</code> in the Confluence section of the docToolchain configuration file.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Currently, docToolchain only has full support for the old Confluence editor. The new editor is not fully supported yet. You can use the new editor, but you may experience some unexpected layout issues/ changes. To make use of the new editor you need to set <code>enforceNewEditor</code> to <code>true</code> in the Confluence section of the docToolchain configuration file.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_special_features">6.2. Special Features</h3>
+<div class="sect3">
+<h4 id="_easy_code_block_conversion">6.2.1. Easy Code Block Conversion</h4>
+<div class="paragraph">
+<p><code>[source]</code>-blocks are converted to code-macro blocks in Confluence.</p>
+</div>
+<div class="paragraph">
+<p>Confluence supports a very limited list of languages supported for code block syntax highlighting.
+When specifying an unknown language, it would even display an error.
+Therefore, some transformation is applied.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If no language is given in the source block, it is explicitly set to plain text (because the default would be Java that might not always apply).</p>
+</li>
+<li>
+<p>Some known and common AsciiDoc source languages are mapped to Confluence code block languages.</p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">source</th>
+<th class="tableblock halign-left valign-top">target</th>
+<th class="tableblock halign-left valign-top">note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">json</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yml</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">produces an acceptable highlighting</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">shell</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bash</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">only a specific shell is supported</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yaml</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yml</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">different name of language</p></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>If the language of the source block is not supported by Confluence, it is set to plain text as fallback to avoid the error.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Get a list of valid languages (and learn how to add others) <a href="https://confluence.atlassian.com/doc/code-block-macro-139390.html">here</a>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_minimal_impact_on_non_techie_confluence_users">6.2.2. Minimal Impact on Non-Techie Confluence Users</h4>
+<div class="paragraph">
+<p>Only pages and images that changed between task runs are published, and only those changes are notified to page watchers, cutting down on 'spam'.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_keywords_automatically_attached_as_labels">6.2.3. Keywords Automatically Attached as Labels</h4>
+<div class="paragraph">
+<p><code>:keywords:</code> are attached as labels to every Confluence page generated using the <code>publishToConfluence</code> task.
+See <a href="https://confluence.atlassian.com/doc/add-remove-and-search-for-labels-136419.html">Atlassian&#8217;s own guidelines on labels</a>.
+Several keywords are allowed, and they must be separated by commas. For example: <code>:keywords: label_1, label-2, label3, &#8230;&#8203;</code>.
+Labels (keywords) must not contain a space character. Use either '_' or '-'.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuration_3">6.3. Configuration</h3>
+<div class="paragraph">
+<p>You configure the publishToConfluence task in the file docToolchainConfig.groovy. It is located in the root of your project folder. We try to make the configuration self-explanatory, but below is some more information about each config option.</p>
+</div>
+<div class="paragraph">
+<p><strong>input</strong></p>
+</div>
+<div class="paragraph">
+<p>is an array of files to upload to Confluence with the ability
+to configure a different parent page for each file.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_attributes">6.4. Attributes</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><code>file</code>: absolute or relative path to the asciidoc generated html file to be exported</p>
+</li>
+<li>
+<p><code>url</code>: absolute URL to an asciidoc generated html file to be exported</p>
+</li>
+<li>
+<p><code>ancestorName</code> (optional): the name of the parent page in Confluence as string;
+this attribute has priority over ancestorId, but if page with given name doesn&#8217;t exist,
+ancestorId will be used as a fallback</p>
+</li>
+<li>
+<p><code>ancestorId</code> (optional): the id of the parent page in Confluence as string; leave this empty
+if a new parent shall be created in the space</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The following four keys can also be used in the global section below</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>spaceKey</code>: page specific variable for the key of the confluence space to write to
+case sensitive! If the case is not correct, it can be that new page will be
+created but can&#8217;t be updated in the next run.</p>
+</li>
+<li>
+<p><code>subpagesForSections</code> (optional): The number of nested sub-pages to create. Default is '1'.
+       '0' means creating all on one page.
+The following migration for removed configuration can be used.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>allInOnePage = true</code> is the same as <code>subpagesForSections = 0</code></p>
+</li>
+<li>
+<p><code>allInOnePage = false &amp;&amp; createSubpages = false</code> is the same as <code>subpagesForSections = 1</code></p>
+</li>
+<li>
+<p><code>allInOnePage = false &amp;&amp; createSubpages = true</code> is the same as <code>subpagesForSections = 2</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>pagePrefix</code> (optional): page specific variable, the pagePrefix will be a prefix for the page title and it&#8217;s sub-pages
+use this if you only have access to one confluence space but need to store several
+pages with the same title - a different pagePrefix will make them unique</p>
+</li>
+<li>
+<p><code>pageSuffix</code> (optional): same usage as prefix but appended to the title and it&#8217;s subpages</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>only 'file' or 'url' is allowed. If both are given, 'url' is ignored</p>
+</div>
+<div class="paragraph">
+<p><strong>ancestorId</strong></p>
+</div>
+<div class="paragraph">
+<p>The page ID of the parent page where you want your docs to be published.
+Go to this page, click <strong>Edit</strong> and the required ID will show up in the URL.
+Specify the ID as a string within the config file.</p>
+</div>
+<div class="paragraph">
+<p><strong>api</strong></p>
+</div>
+<div class="paragraph">
+<p>Endpoint of the confluenceAPI (REST) to be used and looks like <code>https://[yourServer]/[context]</code>, while <code>[context]</code> is optional.
+If you use Confluence Cloud, you can omit the context.
+If you use Confluence Server, you may need to set a context, depending on your Confluence configuration.</p>
+</div>
+<div class="paragraph">
+<p><strong>rateLimit</strong> (since 3.2.0), The rate limit for Confluence requests. Default is 10 requests per second.</p>
+</div>
+<div class="paragraph">
+<p><strong>useV1Api</strong></p>
+</div>
+<div class="paragraph">
+<p><strong><em>This feature is available for docToolchain &gt;= 3.1 only</em></strong></p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you set this to <code>false</code>, ensure the <code>api</code> config is set to <code>https://[yourCloudDomain]</code>. (Mind no <em>context</em> given here)
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>If you are using Confluence Cloud, you can set this to <code>false</code> to use the new API V2. If you are using Confluence Server, you can set this to <code>true</code> to use the old API V1. If you are using Confluence Cloud and set this to <code>false</code>, you will get an error message, once Atlassian turns off API V1 (starting 01.01.2024).</p>
+</div>
+<div class="paragraph">
+<p><strong>enforceNewEditor</strong></p>
+</div>
+<div class="paragraph">
+<p>Atlassian is currently rolling out a new editor for Confluence. If you want to use the new editor, you can set this to <code>true</code>. If you are using the old editor, you can set this to <code>false</code>. If you are using the new editor, you may experience some unexpected layout issues/ changes, since the new editor has yet no feature parity and therefore may be incompatible.</p>
+</div>
+<div class="paragraph">
+<p><strong>disableToC</strong></p>
+</div>
+<div class="paragraph">
+<p>This boolean configuration determines whether the table of contents (ToC) is disabled on the page once uploaded to Confluence. <code>false</code> by default, so the ToC is active.</p>
+</div>
+<div class="paragraph">
+<p><strong>pagePrefix/pageSuffix</strong></p>
+</div>
+<div class="paragraph">
+<p>Confluence can&#8217;t handle two pages with the same name - even with different casing (lowercase, UPPERCASE, a mix).
+This script matches pages regardless of case and refuses to replace a page whose name differs from an existing page only by casing.
+Ideally, you should create a new Confluence space for each piece of larger documentation.
+If you are restricted and can&#8217;t create new spaces, you can use <code>pagePrefix</code>/<code>pageSuffix</code> to define a prefix/suffix for the doc so that it doesn&#8217;t conflict with other page names.</p>
+</div>
+<div class="paragraph">
+<p><strong>pageVersionComment</strong></p>
+</div>
+<div class="paragraph">
+<p>Set an optional comment for the new page version in Confluence.</p>
+</div>
+<div class="paragraph">
+<p><strong>credentials</strong></p>
+</div>
+<div class="paragraph">
+<p>For security reasons it is highly recommended to store your credentials in a separate file outside the Git repository, such as in your Home folder.</p>
+</div>
+<div class="paragraph">
+<p>To authenticate with username and API token, use:
+    credentials = "user:${new File("/users/me/apitoken").text}" or
+    credentials = "user:${new File("/users/me/apitoken").text}"`.bytes.encodeBase64().toString()` to &#8230;&#8203;&#8230;&#8203;..
+You can create an API-token in <a href="https://confluence.atlassian.com/cloud/api-tokens-938839638.html">your profile</a>.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Atlassian is deprecating unscoped (classic) API tokens.
+If you receive a <code>403 - Forbidden</code> error with an existing token, create a new <strong>scoped API token</strong> and select the following scopes:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Scope</th>
+<th class="tableblock halign-left valign-top">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>read:me</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify API credentials (read current user info)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>read:confluence-content.all</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Read pages, attachments, and labels</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>write:confluence-content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Create, update, and delete pages, attachments, and labels</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>read:confluence-space.summary</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Read space information (required when using API V2)</p></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To authenticate with username and password, use:
+    credentials = &#8230;&#8203;&#8230;&#8203;</p>
+</div>
+<div class="paragraph">
+<p>You can also set your username, password of apitoken as an environment variable. You then do the following:
+1. Open the file that contains the environment variables:
+    a. On a Mac, go to your Home folder and open the file .zpfrofile.
+2. &#8230;&#8203;.</p>
+</div>
+<div class="paragraph">
+<p><strong>apikey</strong></p>
+</div>
+<div class="paragraph">
+<p>In situations where you have to use full user authorisation because of internal Confluence permission handling, you&#8217;ll need to add the API-token in addition to the credentials.
+The API-token cannot be added to the credentials because it&#8217;s used for user and password exchange.
+Therefore, the API-token can be added as parameter <code>apikey</code>, which makes the addition of the token a separate header field with key: <code>keyId</code> and value of <code>apikey</code>.
+An example (including storing of the real value outside this configuration) is: <code>apikey = "${new File("/home/me/apitoken").text}"</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>bearerToken</strong></p>
+</div>
+<div class="paragraph">
+<p>You can pass a <a href="https://confluence.atlassian.com/enterprise/using-personal-access-tokens-1026032365.html">Confluence
+Personal Access Token</a> as the <code>bearerToken</code>. It is an alternative to
+<code>credentials</code>. Do not confuse it with <code>apiKey</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>extraPageContent</strong></p>
+</div>
+<div class="paragraph">
+<p>If you need to prefix your pages with a warning stating that 'this is generated content', this is where you do it.</p>
+</div>
+<div class="paragraph">
+<p><strong>enableAttachments</strong></p>
+</div>
+<div class="paragraph">
+<p>If value is set to <code>true</code>, any links to local file references will be uploaded as attachments. The current implementation only supports a single folder, the name of which will be used as a prefix to validate whether your file should be uploaded.
+If you enable this feature, and use a folder which starts with 'attachment', an adaption of this prefix is required.</p>
+</div>
+<div class="paragraph">
+<p><strong>pageLimit</strong></p>
+</div>
+<div class="paragraph">
+<p>Limits the number of pages retrieved from the server to check if a page with this name already exists.</p>
+</div>
+<div class="paragraph">
+<p><strong>jiraServerId</strong>
+Only required if you are using Jira on-premise. If you are using Jira cloud you do not need to set this value.
+Stores the Jira server ID that your Confluence instance is connected to. If a value is set, all anchors pointing to a Jira ticket will be replaced by the Confluence Jira macro. How-To find your Jira server ID <a href="https://confluence.atlassian.com/adminjiraserver/finding-your-server-id-938847652.html">please check the Atlassian documentation</a>.</p>
+</div>
+<div class="paragraph">
+<p>All files to attach will need to be linked inside the document:
+<code>link:attachment/myfolder/myfile.json[My API definition]</code></p>
+</div>
+<div class="paragraph">
+<p><strong>attachmentPrefix</strong></p>
+</div>
+<div class="paragraph">
+<p>Stores the expected foldername of your output directory. Default is <code>attachment</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>proxy</strong></p>
+</div>
+<div class="paragraph">
+<p>If you need to provide proxy to access Confluence, you can set a map with the keys <code>host</code> (e.g. <code>'my.proxy.com'</code>), <code>port</code> (e.g. <code>'1234'</code>) and <code>schema</code> (e.g. <code>'http'</code>) of your proxy.</p>
+</div>
+<div class="paragraph">
+<p><strong>useOpenapiMacro</strong></p>
+</div>
+<div class="paragraph">
+<p>If this option is present and equal to <code>confluence-open-api</code> or <code>swagger-open-api</code> then any source block marked with <code>class openapi</code> will be wrapped in the Elitesoft Swagger Editor macro (see <a href="https://marketplace.atlassian.com/apps/1218914/open-api-swagger-editor-for-confluence">Elitesoft Swagger Editor</a>). The key depends on the version of the macro.</p>
+</div>
+<div class="paragraph">
+<p>For backward compatibility, if this option is present and equal to <code>true</code>, then again the Elitesoft Swagger Editor macro will be used.</p>
+</div>
+<div class="paragraph">
+<p>If this option is present and equal to "open-api" then any source block marked with class openapi will be wrapped in Open API Documentation for Confluence macro:  (see <a href="https://marketplace.atlassian.com/apps/1215176/open-api-documentation-for-confluence">Open API Documentation for Confluence</a>). A download source (yaml) button is shown by default.<br>
+Using the plugin can be handled on different ways.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>copy/paste the content of the YAML file to the plugin without linking to the origin source by using the url to the YAML file</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="asciidoc">    [source.openapi,yaml]
+    ----
+    \include::https://my-domain.com/path-to-yaml[]
+    ----</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>copy/paste the content of the YAML file to the plugin without linking to the origin source by using a YAML file in your project structure:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="asciidoc">    [source.openapi,yaml]
+    ----
+    \include::my-yaml-file.yaml[]
+    ----</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>create a link between the plugin and the YAML file without copying the content into the plugin. The advantage following this way is that even in case the API specification is changed without re-generating the documentation, the new version of the configuration is used in Confluence.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="asciidoc">    [source.openapi,yaml,role="url:https://my-domain.com/path-to-yaml"]
+    ----
+    \include::https://my-domain.com/path-to-yaml[]
+    ----</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_css_styling">6.5. CSS Styling</h3>
+<div class="paragraph">
+<p>Some AsciiDoctor features depend on specific CSS style definitions.
+Unless these styles are defined, some formatting that is present in the HTML version will not be represented when published to Confluence.
+To configure Confluence to include additional style definitions:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Log in to Confluence as a space admin.</p>
+</li>
+<li>
+<p>Go to the desired space.</p>
+</li>
+<li>
+<p>Select <strong>Space tools &gt; Look and Feel &gt; Stylesheet</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Edit</strong> then enter the desired style definitions.</p>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The default style definitions can be found in the AsciiDoc project as <a href="https://raw.githubusercontent.com/asciidoctor/asciidoctor/master/data/stylesheets/asciidoctor-default.css">asciidoctor-default.css</a>.
+You will most likely <strong>NOT</strong> want to include the entire thing, as some of the definitions are likely to disrupt Confluence&#8217;s layout.</p>
+</div>
+<div class="paragraph">
+<p>The following style definitions are Confluence-compatible, and will enable the use of the built-in roles (<code>big</code>/<code>small</code>, <code>underline</code>/<code>overline</code>/<code>line-through</code>, <code><em>COLOR</em></code>/<code><em>COLOR</em>-background</code> for the <a href="https://en.wikipedia.org/wiki/Web_colors#HTML_color_names">sixteen HTML color names</a>):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="css">.big{font-size:larger}
+.small{font-size:smaller}
+.underline{text-decoration:underline}
+.overline{text-decoration:overline}
+.line-through{text-decoration:line-through}
+.aqua{color:#00bfbf}
+.aqua-background{background-color:#00fafa}
+.black{color:#000}
+.black-background{background-color:#000}
+.blue{color:#0000bf}
+.blue-background{background-color:#0000fa}
+.fuchsia{color:#bf00bf}
+.fuchsia-background{background-color:#fa00fa}
+.gray{color:#606060}
+.gray-background{background-color:#7d7d7d}
+.green{color:#006000}
+.green-background{background-color:#007d00}
+.lime{color:#00bf00}
+.lime-background{background-color:#00fa00}
+.maroon{color:#600000}
+.maroon-background{background-color:#7d0000}
+.navy{color:#000060}
+.navy-background{background-color:#00007d}
+.olive{color:#606000}
+.olive-background{background-color:#7d7d00}
+.purple{color:#600060}
+.purple-background{background-color:#7d007d}
+.red{color:#bf0000}
+.red-background{background-color:#fa0000}
+.silver{color:#909090}
+.silver-background{background-color:#bcbcbc}
+.teal{color:#006060}
+.teal-background{background-color:#007d7d}
+.white{color:#bfbfbf}
+.white-background{background-color:#fafafa}
+.yellow{color:#bfbf00}
+.yellow-background{background-color:#fafa00}</code></pre>
+</div>
+</div>
+<hr>
+<div style="page-break-after: always;"></div>
+<style>
+.gravatar img {
+    margin-left: 3px;
+    border-radius: 4px;
+}
+</style>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_exportppt">7. exportPPT</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_about_this_task_5">7.1. About This Task</h3>
+<div class="paragraph">
+<p>Exports PowerPoint slides (<code>.pptx</code>) as PNG images and extracts speaker notes as AsciiDoc.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">./dtcw4 local exportPPT</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In v4, this task uses Apache POI for rendering and works on <strong>all platforms</strong> (Linux, macOS, Windows).
+The v3 version was Windows-only (VBScript).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Only <code>.pptx</code> files are supported. Legacy <code>.ppt</code> format is not supported.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The tag <code>{slide}</code> in speaker notes is replaced with the corresponding image reference.
+Use <a href="https://docs.asciidoctor.org/asciidoc/latest/directives/include-tagged-regions/">tagged regions</a> to include specific slides.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_further_reading_3">7.2. Further Reading</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://rdmueller.github.io/PPT-as-asciidoc-editor/">Do More with Slides</a></p>
+</li>
+</ul>
+</div>
+<hr>
+<div style="page-break-after: always;"></div>
+<style>
+.gravatar img {
+    margin-left: 3px;
+    border-radius: 4px;
+}
+</style>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_exportexcel">8. exportExcel</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_about_this_task_6">8.1. About This Task</h3>
+<div class="paragraph">
+<p>Exports Excel spreadsheets (<code>.xlsx</code>) to CSV and AsciiDoc tables using Apache POI.
+Each worksheet is exported as both <code>.csv</code> and <code>.adoc</code>.
+Formulas are evaluated and exported statically.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">./dtcw4 local exportExcel</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Output is written to <code>src/excel/[filename]/[worksheet].(adoc|csv)</code>.
+The <code>src</code> folder is used (not <code>build</code>) to preserve change history in version control.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_including_exported_data">8.2. Including Exported Data</h3>
+<div class="paragraph">
+<p>As AsciiDoc table (preserves alignment, col-span, row-span, colors):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>include::excel/Sample.xlsx/Numerical.adoc[]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As CSV:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>[options="header",format="csv"]
+|===
+include::excel/Sample.xlsx/Numerical.csv[]
+|===</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_further_reading_4">8.3. Further Reading</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/uniqueck/asciidoctorj-office-extension">asciidoctorj-office-extension</a> — an alternative approach</p>
+</li>
+</ul>
+</div>
+<hr>
+<div style="page-break-after: always;"></div>
+<style>
+.gravatar img {
+    margin-left: 3px;
+    border-radius: 4px;
+}
+</style>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="task_downloadTemplate">9. downloadTemplate</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_about_this_task_7">9.1. About This Task</h3>
+<div class="paragraph">
+<p>This task is primarily used to bootstrap a new project. You can choose to download an official template like <a href="https://github.com/arc42/arc42-template">arc42</a> or <a href="https://github.com/Hruschka/req42-framework">req42</a> (both available in multiple languages) or you can register and use your own custom template.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_setup_and_configuration">9.2. Setup and Configuration</h3>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<code>downloadTemplate</code> requires an existing <code>docToolchainConfig.groovy</code> in your project root (or the path set via <code>DTC_CONFIG_FILE</code>).
+If the file doesn&#8217;t exist yet, create an empty one: <code>touch docToolchainConfig.groovy</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_headless_mode">9.3. Headless Mode</h3>
+<div class="paragraph">
+<p>For unattended use (e.g., with CI/CD pipelines or LLM agents), the <code>downloadTemplate</code> task supports headless mode where no user input is required.</p>
+</div>
+<div class="sect3">
+<h4 id="_using_the_dtc_headless_environment_variable">9.3.1. Using the DTC_HEADLESS Environment Variable</h4>
+<div class="paragraph">
+<p>When <code>DTC_HEADLESS=true</code> is set, the task will use sensible defaults:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Template: <code>arc42</code></p>
+</li>
+<li>
+<p>Language: <code>EN</code></p>
+</li>
+<li>
+<p>Help variant: <code>plain</code> (without help text)</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">export DTC_HEADLESS=true
+./dtcw4 local downloadTemplate</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_further_reading_and_resources">9.4. Further Reading and Resources</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://arc42.org/">Arc42</a></p>
+</li>
+<li>
+<p><a href="https://req42.de/">Req42</a></p>
+</li>
+</ul>
+</div>
+<hr>
+<div style="page-break-after: always;"></div>
+</div>
+<div class="sect2">
+<h3 id="_solutions_to_common_problems">9.5. Solutions to Common Problems</h3>
+<div class="paragraph">
+<p>If you are stuck, also check <a href="https://stackoverflow.com/questions/tagged/doctoolchain">Stack Overflow</a> or raise an issue on <a href="https://github.com/docToolchain/docToolchain/issues">GitHub</a>.</p>
+</div>
+<div class="sect3">
+<h4 id="_references">9.5.1. References</h4>
+<div class="sect4">
+<h5 id="_q_how_can_i_reference_source_code_from_my_documentation">Q: How can I reference source code from my documentation?</h5>
+<details>
+<summary class="title">Answer</summary>
+<div class="content">
+<div class="paragraph">
+<p>Within your documents folder (default <code>src/docs</code>), use relative includes:</p>
+</div>
+<div class="paragraph">
+<p><code>include::filename.adoc[]</code></p>
+</div>
+<div class="paragraph">
+<p>For files outside the documents folder, use:</p>
+</div>
+<div class="paragraph">
+<p><code>include::/home/runner/work/docToolchain/docToolchainfilename.adoc[]</code></p>
+</div>
+<div class="paragraph">
+<p>To make this work in editor previews, add:</p>
+</div>
+<div class="paragraph">
+<p><code>ifndef::projectRootDir[:projectRootDir: ../../../]</code></p>
+</div>
+</div>
+</details>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_images">9.5.2. Images</h4>
+<div class="sect4">
+<h5 id="_q_why_are_images_not_shown_in_the_preview_of_my_editor">Q: Why are images not shown in the preview of my editor?</h5>
+<details>
+<summary class="title">Answer</summary>
+<div class="content">
+<div class="paragraph">
+<p>Your editor does not know the <code>imagesdir</code> attribute.
+Add this line to each file:</p>
+</div>
+<div class="paragraph">
+<p><code>ifndef::imagesdir[:imagesdir: ../images]</code></p>
+</div>
+</div>
+</details>
+</div>
+<div class="sect4">
+<h5 id="_q_which_image_format_should_i_use">Q: Which image format should I use?</h5>
+<details>
+<summary class="title">Answer</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong>PNG</strong> is the preferred format — all output formats support it well.</p>
+</div>
+<div class="paragraph">
+<p>Other formats:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">SVG</dt>
+<dd>
+<p>Great for high-resolution diagrams but may not render correctly in DOCX output.</p>
+</dd>
+<dt class="hdlist1">JPG</dt>
+<dd>
+<p>Good for photos, not for diagrams (compression artifacts).</p>
+</dd>
+<dt class="hdlist1">GIF</dt>
+<dd>
+<p>Not supported by the PDF renderer.</p>
+</dd>
+</dl>
+</div>
+</div>
+</details>
+</div>
+<div class="sect4">
+<h5 id="_q_why_are_my_images_rotated_in_the_output">Q: Why are my images rotated in the output?</h5>
+<details>
+<summary class="title">Answer</summary>
+<div class="content">
+<div class="paragraph">
+<p>Mobile devices store orientation in image metadata rather than rotating the image.
+Fix with ImageMagick: <code>convert -auto-orient photo.jpg photo.jpg</code>
+Or re-save the image in any editor.</p>
+</div>
+</div>
+</details>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_runtime">9.5.3. Runtime</h4>
+<div class="sect4">
+<h5 id="_q_i_get_could_not_initialize_class_java_awt_graphicsenvironment_in_wsl">Q: I get <code>Could not initialize class java.awt.GraphicsEnvironment</code> in WSL</h5>
+<details>
+<summary class="title">Answer</summary>
+<div class="content">
+<div class="paragraph">
+<p>This is a known WSL issue related to PlantUML and font rendering.</p>
+</div>
+<div class="paragraph">
+<p>Solutions (try in order):</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Shut down WSL: <code>wsl --shutdown</code> from PowerShell, then retry</p>
+</li>
+<li>
+<p>Reinstall your Java runtime</p>
+</li>
+<li>
+<p>Use PowerShell instead of WSL</p>
+</li>
+<li>
+<p>Use a <a href="https://kroki.io">Kroki</a> server for diagram rendering instead of PlantUML</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Make sure WSL is up-to-date: <code>wsl --update</code></p>
+</div>
+</div>
+</details>
+</div>
+<div class="sect4">
+<h5 id="_q_how_do_i_configure_a_proxy">Q: How do I configure a proxy?</h5>
+<details>
+<summary class="title">Answer</summary>
+<div class="content">
+<div class="paragraph">
+<p>Pass proxy settings as system properties:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">./dtcw4 local generateSite -Dhttp.proxyHost=proxy.example.com -Dhttp.proxyPort=3128</code></pre>
+</div>
+</div>
+</div>
+</details>
+<hr>
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_useful_resources">9.6. Useful Resources</h3>
+<div class="sect3">
+<h4 id="_underlying_technologies">9.6.1. Underlying Technologies</h4>
+<div class="sect4">
+<h5 id="_markup">Markup</h5>
+<details>
+<summary class="title">AsciiDoc</summary>
+<div class="content">
+<div class="paragraph">
+<p>Our preferred markup language for technical docs.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://asciidoctor.org/docs/user-manual/">Asciidoctor User-Manual</a></p>
+</li>
+<li>
+<p><a href="https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/">AsciiDoc Syntax Quick Reference</a></p>
+</li>
+<li>
+<p><a href="https://www.ahus1.de/post/asciidoctor-intro-and-deep-dive">"Asciidoctor Deep Dive Video"</a> by Alexander Schwartz</p>
+</li>
+</ul>
+</div>
+</div>
+</details>
+<details>
+<summary class="title">Markdown</summary>
+<div class="content">
+<div class="paragraph">
+<p>jBake also supports Markdown via <a href="https://github.com/vsch/flexmark-java">flexmark-java</a>.</p>
+</div>
+</div>
+</details>
+</div>
+<div class="sect4">
+<h5 id="_templates">Templates</h5>
+<details>
+<summary class="title">arc42</summary>
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://arc42.org/">arc42</a> — architecture documentation template</p>
+</li>
+<li>
+<p><a href="https://docs.arc42.org/home/">arc42 Tips &amp; Tricks</a></p>
+</li>
+<li>
+<p><a href="https://faq.arc42.org/home/">arc42 FAQ</a></p>
+</li>
+</ul>
+</div>
+</div>
+</details>
+</div>
+<div class="sect4">
+<h5 id="_docs_as_code_2">Docs as Code</h5>
+<details>
+<summary class="title">Docs as Code</summary>
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs-as-co.de/">Docs-as-Code</a></p>
+</li>
+<li>
+<p><a href="https://www.writethedocs.org/guide/docs-as-code/">Write the Docs: Docs-as-Code</a></p>
+</li>
+</ul>
+</div>
+</div>
+</details>
+</div>
+<div class="sect4">
+<h5 id="_static_site_generator">Static Site Generator</h5>
+<details>
+<summary class="title">jBake</summary>
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://jbake.org">jBake</a> — the static site generator behind <code>generateSite</code></p>
+</li>
+<li>
+<p><a href="https://www.docsy.dev/">Docsy</a> — our standard theme</p>
+</li>
+<li>
+<p><a href="https://getbootstrap.com/">Bootstrap 5</a> — CSS framework</p>
+</li>
+</ul>
+</div>
+</div>
+</details>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_books">9.6.2. Books</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Author</th>
+<th class="tableblock halign-left valign-top">Language</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.amazon.com/dp/1387081322">Docs Like Code</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Anne Gentle</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">English</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://leanpub.com/arc42byexample">arc42 by Example</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Gernot Starke, Stefan Zörner, Michael Simons, Ralf D. Müller</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">English</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://leanpub.com/arc42inpractice">Communicating Software Architectures with arc42</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Gernot Starke, Peter Hruschka</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">English</p></td>
+</tr>
+</tbody>
+</table>
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuration_4">9.7. Configuration</h3>
+<div class="paragraph">
+<p>docToolchain uses a single Groovy configuration file for all settings.</p>
+</div>
+<div class="sect3">
+<h4 id="_configuration_file">9.7.1. Configuration File</h4>
+<div class="paragraph">
+<p>By default, docToolchain looks for <code>docToolchainConfig.groovy</code> in your project root.</p>
+</div>
+<div class="sect4">
+<h5 id="_overriding_the_config_file">Overriding the Config File</h5>
+<div class="paragraph">
+<p>Use the <code>DTC_CONFIG_FILE</code> environment variable:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">export DTC_CONFIG_FILE=path/to/config.groovy</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The config file must exist before running any task.
+If it is missing, <code>DtcConfig.load()</code> will fail.
+Run <code>./dtcw4 local downloadTemplate</code> to create a default one, or create an empty <code>docToolchainConfig.groovy</code> manually.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_core_settings">9.7.2. Core Settings</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="groovy">outputPath = 'build'
+inputPath = 'src/docs'
+
+inputFiles = [
+    [file: 'manual.adoc', formats: ['html','pdf']],
+]
+
+imageDirs = ['images/.']</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>outputPath</code></dt>
+<dd>
+<p>Base directory for all generated output.</p>
+</dd>
+<dt class="hdlist1"><code>inputPath</code></dt>
+<dd>
+<p>Directory containing your AsciiDoc sources.</p>
+</dd>
+<dt class="hdlist1"><code>inputFiles</code></dt>
+<dd>
+<p>List of files to process, with desired output formats (<code>html</code>, <code>pdf</code>).</p>
+</dd>
+<dt class="hdlist1"><code>imageDirs</code></dt>
+<dd>
+<p>Directories to scan for images (relative to <code>inputPath</code>).</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_microsite_settings">9.7.3. Microsite Settings</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="groovy">microsite.with {
+    contextPath = '/'
+    title = 'My Documentation'
+    host = 'https://example.com'
+    landingPage = 'landingpage.gsp'
+    menu = [
+        about: 'About',
+        manual: 'User Docs',
+        tasks: 'Tasks',
+    ]
+}</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>menu</code></dt>
+<dd>
+<p>Maps menu codes (from folder names or <code>:jbake-menu:</code> attributes) to display titles.
+Use <code>'-'</code> to hide a menu entry.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_confluence_settings">9.7.4. Confluence Settings</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="groovy">confluence = [
+    api: 'https://your-wiki.atlassian.net/wiki',
+    spaceKey: 'MY_SPACE',
+    credentials: "user:${new File('/path/to/apitoken').text}",
+    input: [
+        [file: 'build/html5/manual.html', ancestorId: '123456'],
+    ],
+]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>See the <a href="#">publishToConfluence</a> task for all options.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_dynamic_configuration">9.7.5. Dynamic Configuration</h4>
+<div class="paragraph">
+<p>Since the config file is executable Groovy, you can use dynamic values:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="groovy">// From system property: ./dtcw4 local generateHTML -DmyProp=value
+example = System.properties.myProp
+
+// From environment variable
+example = System.getenv("MY_VAR")</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+        </p>
+
+        <style>
+.feedback--answer {
+    display: inline-block;
+}
+
+.feedback--answer-no {
+    margin-left: 1em;
+}
+
+.feedback--response {
+    display: none;
+    margin-top: 1em;
+}
+
+.feedback--response__visible {
+    display: block;
+}
+</style>
+
+<div class="d-print-none">
+    <h2 class="feedback--title">Feedback</h2>
+    <p class="feedback--question">Was this page helpful?</p>
+    <button class="feedback--answer feedback--answer-yes">Yes</button>
+    <button class="feedback--answer feedback--answer-no">No</button>
+    <p class="feedback--response feedback--response-yes">
+        Glad to hear it! Please <a href="https://github.com/docToolchain/docToolchain/issues/new?title=Docs%3A+Feedback+for+%27docToolchain+Manual%27%20%F0%9F%91%8D&body=%0A%0A%5BEnter%20feedback%20here%5D%0A%0A%0A---%0A%23page:010_manual/single-page.adoc">tell us
+    how we can improve</a>.
+    </p>
+    <p class="feedback--response feedback--response-no">
+        Sorry to hear that. Please <a href="https://github.com/docToolchain/docToolchain/issues/new?title=Docs%3A+Feedback+for+%27docToolchain+Manual%27%20%F0%9F%91%8E&body=%0A%0A%5BEnter%20feedback%20here%5D%0A%0A%0A---%0A%23page:010_manual/single-page.adoc">tell
+    us how we can improve</a>.
+    </p>
+</div>
+<script>
+    const yesButton = document.querySelector('.feedback--answer-yes');
+    const noButton = document.querySelector('.feedback--answer-no');
+    const yesResponse = document.querySelector('.feedback--response-yes');
+    const noResponse = document.querySelector('.feedback--response-no');
+    const disableButtons = () => {
+        yesButton.disabled = true;
+        noButton.disabled = true;
+    };
+    const sendFeedback = (value) => {
+        if (typeof ga !== 'function') return;
+        const args = {
+            command: 'send',
+            hitType: 'event',
+            category: 'Helpful',
+            action: 'click',
+            label: window.location.pathname,
+            value: value
+        };
+        ga(args.command, args.hitType, args.category, args.action, args.label, args.value);
+    };
+    yesButton.addEventListener('click', () => {
+        yesResponse.classList.add('feedback--response__visible');
+        disableButtons();
+        sendFeedback(1);
+    });
+    noButton.addEventListener('click', () => {
+        noResponse.classList.add('feedback--response__visible');
+        disableButtons();
+        sendFeedback(0);
+    });
+</script>
+
+
+        <br>
+
+        <!--div class="text-muted mt-5 pt-3 border-top">Last modified July 3, 2019: <a
+                href="https://github.com/google/docsy-example/commit/d6aa89c8b24089d7e6741030864eff209465e896">Added
+            links to user guide repo (d6aa89c)</a>
+        </div-->
+    </div>
+
+
+			</main>
+
+		</div>
+	</div>
+
+
+	
+    <!--footer class="footer mt-auto py-3 bg-light">
+        <div class="container">
+            <span class="text-muted">&copy; 2020 | based on <a href="https://arc42.org">arc42 7.0</a> | mixed with <a href="http://getbootstrap.com/">Bootstrap v5.0.0-beta</a> | Baked with <a href="http://jbake.org">JBake v2.6.7</a></span>
+        </div>
+    </footer-->
+
+    <footer class="bg-dark py-5 row d-print-none">
+        <div class="container-fluid mx-sm-5">
+            <div class="row">
+                <div class="col-6 col-sm-4 text-xs-center order-sm-2">
+
+
+                    <ul class="list-inline mb-0">
+                        
+                        <li aria-label="User mailing list" class="list-inline-item mx-2 h3" data-original-title="User mailing list" data-placement="top"
+                            data-toggle="tooltip" title="">
+                            <a class="text-white" href="mailto:info@docs-as-co.de" rel="noopener noreferrer"
+                               target="_blank">
+                                <i class="fa fa-envelope"></i>
+                            </a>
+                        </li>
+                        
+                        
+                        <li aria-label="Twitter" class="list-inline-item mx-2 h3" data-original-title="Twitter" data-placement="top"
+                            data-toggle="tooltip" title="">
+                            <a class="text-white" href="https://twitter.com/doctoolchain" rel="noopener noreferrer"
+                               target="_blank">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        </li>
+                        
+                        
+                        <li aria-label="Stack Overflow" class="list-inline-item mx-2 h3" data-original-title="Stack Overflow" data-placement="top"
+                            data-toggle="tooltip" title="">
+                            <a class="text-white" href="https://stackoverflow.com/questions/tagged/doctoolchain" rel="noopener noreferrer"
+                               target="_blank">
+                                <i class="fab fa-stack-overflow"></i>
+                            </a>
+                        </li>
+                        
+                    </ul>
+
+
+                </div>
+                <div class="col-6 col-sm-4 text-right text-xs-center order-sm-3">
+
+
+                    <ul class="list-inline mb-0">
+
+                        
+                        <li aria-label="GitHub" class="list-inline-item mx-2 h3" data-original-title="GitHub" data-placement="top"
+                            data-toggle="tooltip" title="">
+                            <a class="text-white" href="https://github.com/doctoolchain/doctoolchain" rel="noopener noreferrer"
+                               target="_blank">
+                                <i class="fab fa-github"></i>
+                            </a>
+                        </li>
+                        
+
+                        
+
+
+                    </ul>
+
+
+                </div>
+                <div class="col-12 col-sm-4 text-center py-2 order-sm-2">
+
+                        <small class="text-white">built with <a href="https://doctoolchain.org">docToolchain</a> and <a href="https://jbake.org">jBake</a> <br /> theme: <a href="https://www.docsy.dev/">docsy</a></small>
+
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/popper.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+
+
+    <script src="../js/main.min.b5fc1b29d2465835844254bd4d804738eaf24c0cec53009b4c6899989be55a47.js"></script>
+    <script src="../js/blocks.js" ></script>
+    <script src="../js/prettify.js"></script>
+    <script src="../js/copy-n-paste.js"></script>
+    <script src="../js/submenucollapse.js"></script>
+
+    <!-- docToolchain v4 — colour-scheme toggle -->
+    <script>
+        function dtcToggleTheme() {
+            var root = document.documentElement;
+            var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            root.setAttribute('data-theme', next);
+            try { localStorage.setItem('dtc-theme', next); } catch (e) {}
+            document.querySelectorAll('.dtc-theme-toggle').forEach(function (b) {
+                b.textContent = next === 'dark' ? '☀️' : '🌙';
+            });
+        }
+        // sync icon with the theme applied in <head>
+        document.addEventListener('DOMContentLoaded', function () {
+            var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+            document.querySelectorAll('.dtc-theme-toggle').forEach(function (b) {
+                b.textContent = dark ? '☀️' : '🌙';
+            });
+        });
+    </script>
+
+
+</body>
+</html>
