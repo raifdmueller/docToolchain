@@ -1,49 +1,61 @@
-<div class="row flex-xl-nowrap">
-    <main class="col-12 col-md-12 col-xl-12 pl-md-12" role="main">
-        <div class="bg-light p-5 rounded">
-            <h1>Solution Architecture Documentation</h1>
-            <p class="lead">
-                This Microsite contains the documentation for system X
-            </p>
-            <p>Insert an introduction here</p>
-            <p>This is the landing page of your project documentation.
-            It is plain HTML with twitter <a href="https://getbootstrap.com/">bootstrap</a> pre-installed to give you all the flexibility you need to create a nice and appealing landing page for your project.<br />
-                Use ist to describe to your customers the main benefits and features of your project to make them curious and read on.
-            </p>
-        </div>
+<div class="dtc-landing">
 
-        <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
-            <div class="col">
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-header">
-                        <h4 class="my-0 fw-normal">Feature One</h4>
-                    </div>
-                    <div class="card-body">
-                        Write a teaser for this feature here.
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-header">
-                        <h4 class="my-0 fw-normal">Feature Two</h4>
-                    </div>
-                    <div class="card-body">
-                        Write a teaser for this feature here.
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-header">
-                        <h4 class="my-0 fw-normal">Feature Three</h4>
-                    </div>
-                    <div class="card-body">
-                        Write a teaser for this feature here.
-                    </div>
-                </div>
-            </div>
+    <!-- ======================= Blueprint hero ======================= -->
+    <section class="dtc-hero">
+        <span class="dtc-bp-corner tl"></span><span class="dtc-bp-corner tr"></span>
+        <span class="dtc-bp-corner bl"></span><span class="dtc-bp-corner br"></span>
+        <span class="dtc-bp-dim">— SYSTEM&nbsp;X —</span>
+
+        <span class="dtc-tag">§ ARCHITECTURE / OVERVIEW</span>
+        <h1>Solution Architecture<br><span class="grad">Documentation.</span></h1>
+        <p class="lead">
+            This microsite contains the living documentation for <strong>System&nbsp;X</strong> —
+            written as docs-as-code, versioned in Git and built with docToolchain.
+            Replace this introduction with your own story to make readers curious and read on.
+        </p>
+        <div class="dtc-cta">
+            <a class="dtc-btn dtc-btn-primary" href="#get-started">📘 Read the docs</a>
+            <a class="dtc-btn dtc-btn-ghost" href="https://doctoolchain.org" target="_blank" rel="noopener">Learn more →</a>
         </div>
-    </main>
+    </section>
+
+    <div class="dtc-divider"><span class="seg"></span><span class="lk">⛓</span><span class="lk">⛓</span><span class="lk">⛓</span><span class="seg"></span></div>
+
+    <!-- ===================== The toolchain pipeline ===================== -->
+    <div class="dtc-sec-head" id="get-started">
+        <h2>One toolchain, from keystroke to publish</h2>
+        <p>docToolchain wires the best open-source tools into a single, reproducible documentation flow.</p>
+    </div>
+    <section class="dtc-pipeline">
+        <div class="dtc-link"><div class="node on">📝</div><b>Write</b><span>asciidoc</span></div>
+        <div class="dtc-link"><div class="node">🎨</div><b>Render</b><span>asciidoctor</span></div>
+        <div class="dtc-link"><div class="node">📐</div><b>Diagram</b><span>plantuml</span></div>
+        <div class="dtc-link"><div class="node">🚀</div><b>Publish</b><span>confluence</span></div>
+    </section>
+
+    <div class="dtc-divider"><span class="seg"></span><span class="lk">⛓</span><span class="lk">⛓</span><span class="lk">⛓</span><span class="seg"></span></div>
+
+    <!-- ========================= Feature grid ========================= -->
+    <div class="dtc-sec-head">
+        <h2>What you'll find here</h2>
+        <p>A few starting points — edit these cards to highlight the key parts of your documentation.</p>
+    </div>
+    <section class="dtc-features">
+        <div class="dtc-card">
+            <div class="ic">🧩</div>
+            <h3>Architecture</h3>
+            <p>Structured along arc42 — context, building blocks, runtime and deployment views of System&nbsp;X.</p>
+        </div>
+        <div class="dtc-card">
+            <div class="ic">📐</div>
+            <h3>Diagrams as code</h3>
+            <p>PlantUML and Structurizr diagrams that stay in sync with the system instead of drifting out of date.</p>
+        </div>
+        <div class="dtc-card">
+            <div class="ic">🚀</div>
+            <h3>Getting started</h3>
+            <p>How to build, run and contribute to this documentation locally with the <code>dtcw</code> wrapper.</p>
+        </div>
+    </section>
 
 </div>

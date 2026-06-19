@@ -1,84 +1,81 @@
 <div class="row flex-xl-nowrap">
     <main class="col-12 col-md-12 col-xl-12 pl-md-12" role="main">
-        <div class="bg-light p-5 rounded jumbotron">
-            <img src="images/doctoolchain-logo-blue.png" alt="docToolchain" style="float: left" />
+      <div class="dtc-landing">
+
+        <!-- ===================== Blueprint hero ===================== -->
+        <section class="dtc-hero">
+            <span class="dtc-bp-corner tl"></span><span class="dtc-bp-corner tr"></span>
+            <span class="dtc-bp-corner bl"></span><span class="dtc-bp-corner br"></span>
+            <span class="dtc-bp-dim">— docs-as-code —</span>
+            <img src="images/doctoolchain-logo-blue.png" alt="docToolchain" class="dtc-hero-logo" />
+            <span class="dtc-tag">§ OPEN-SOURCE / DOCS-AS-CODE</span>
             <h1>docToolchain</h1>
-            <p class="lead">
-                Create awesome docs the easy way!
-            </p>
-            <p>docToolchain is a collection of scripts that makes it easy to create and maintain powerful technical documentation. Built on best-of-breed open source technologies, we deliver the best docs toolchain so you don’t have to.
-            </p>
+            <p class="lead">Create awesome docs the <span class="grad">easy way!</span></p>
+            <p class="dtc-hero-intro">docToolchain is a collection of scripts that makes it easy to create and maintain powerful technical documentation. Built on best-of-breed open source technologies, we deliver the best docs toolchain so you don’t have to.</p>
+            <div class="dtc-cta">
+                <a class="dtc-btn dtc-btn-primary" href="#dtc-explore">🚀 Explore features</a>
+                <a class="dtc-btn dtc-btn-ghost" href="https://github.com/docToolchain/docToolchain" target="_blank" rel="noopener">★ Star on GitHub</a>
+            </div>
+        </section>
+
+        <div class="dtc-divider"><span class="seg"></span><span class="lk">⛓</span><span class="lk">⛓</span><span class="lk">⛓</span><span class="seg"></span></div>
+
+        <!-- =================== The toolchain pipeline =================== -->
+        <div class="dtc-sec-head">
+            <h2>One toolchain, from keystroke to publish</h2>
+            <p>We wire the best open-source tools into a single, reproducible documentation flow.</p>
         </div>
-        <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
-            <div class="col">
-                <div class="card mb-12 shadow-sm">
-                    <div class="card-header">
-                        <h4 class="my-0 fw-normal">docToolchain is fully open source</h4>
-                    </div>
-                    <div class="card-body">
-                        No vendor lock-in. No contracts. One of our core goals with the architecture is to allow you to modify docToolchain to meet your unique needs.
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-header">
-                        <h4 class="my-0 fw-normal">jBake works silently under the hood</h4>
-                    </div>
-                    <div class="card-body">
-                        We chose the excellent jBake as our static site generator so you can focus on your docs.
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-header">
-                        <h4 class="my-0 fw-normal">We love AsciiDoc</h4>
-                    </div>
-                    <div class="card-body">
-                        No wasting time choosing which Ascii flavour to use.
-                        AsciiDoc has everything you need ready to go.
-                    </div>
-                </div>
-            </div>
+        <section class="dtc-pipeline">
+            <div class="dtc-link"><div class="node on">📝</div><b>Write</b><span>asciidoc</span></div>
+            <div class="dtc-link"><div class="node">🎨</div><b>Render</b><span>asciidoctor</span></div>
+            <div class="dtc-link"><div class="node">📐</div><b>Diagram</b><span>plantuml</span></div>
+            <div class="dtc-link"><div class="node">🚀</div><b>Publish</b><span>confluence</span></div>
+        </section>
+
+        <div class="dtc-divider"><span class="seg"></span><span class="lk">⛓</span><span class="lk">⛓</span><span class="lk">⛓</span><span class="seg"></span></div>
+
+        <!-- ============ Feature grid (original copy preserved) ============ -->
+        <div class="dtc-sec-head" id="dtc-explore">
+            <h2>Why docToolchain?</h2>
+            <p>Best-of-breed open source, wired together so you don’t have to.</p>
         </div>
-        <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
-            <div class="col">
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-header">
-                        <h4 class="my-0 fw-normal">Multi-repository builds are in Git</h4>
-                    </div>
-                    <div class="card-body">
-                        Since all of your dev environments already contain a Git client, we didn't add another one. Just use Git to create your multi-repository builds.<br /><br />
-                        <a class="btn btn-primary" href="020_tutorial/050_multipleRepositories.html" role="button">learn more</a>
-                    </div>
-                </div>
+        <section class="dtc-features">
+            <div class="dtc-card">
+                <div class="ic">🔓</div>
+                <h3>Fully open source</h3>
+                <p>No vendor lock-in. No contracts. One of our core goals with the architecture is to allow you to modify docToolchain to meet your unique needs.</p>
             </div>
-            <div class="col">
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-header">
-                        <h4 class="my-0 fw-normal">Publish direct to Confluence</h4>
-                    </div>
-                    <div class="card-body">
-                        Want to do docs-as-code but your team wants docs in a wiki?
-                        No problem.
-                        docToolchain can publish direct to Confluence!<br /><br />
-                        <a class="btn btn-primary" href="015_tasks/03_task_publishToConfluence.html" role="button">learn more</a>
-                    </div>
-                </div>
+            <div class="dtc-card">
+                <div class="ic">🥧</div>
+                <h3>jBake under the hood</h3>
+                <p>We chose the excellent jBake as our static site generator so you can focus on your docs.</p>
             </div>
-            <div class="col">
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-header">
-                        <h4 class="my-0 fw-normal">Start your docs-as-code journey today</h4>
-                    </div>
-                    <div class="card-body">
-                        Many organisations and projects have already embraced docToolchain. Will yours be next?<br /><br />
-                        <a class="btn btn-primary" href="025_development/050_who-uses-dtc.html" role="button">learn more</a>
-                    </div>
-                </div>
+            <div class="dtc-card">
+                <div class="ic">📝</div>
+                <h3>We love AsciiDoc</h3>
+                <p>No wasting time choosing which Ascii flavour to use. AsciiDoc has everything you need ready to go.</p>
             </div>
-        </div>
+            <div class="dtc-card">
+                <div class="ic">🔀</div>
+                <h3>Multi-repository builds in Git</h3>
+                <p>Since all of your dev environments already contain a Git client, we didn't add another one. Just use Git to create your multi-repository builds.</p>
+                <p><a class="dtc-btn dtc-btn-ghost" href="020_tutorial/050_multipleRepositories.html">learn more →</a></p>
+            </div>
+            <div class="dtc-card">
+                <div class="ic">🔵</div>
+                <h3>Publish direct to Confluence</h3>
+                <p>Want to do docs-as-code but your team wants docs in a wiki? No problem. docToolchain can publish direct to Confluence!</p>
+                <p><a class="dtc-btn dtc-btn-ghost" href="015_tasks/03_task_publishToConfluence.html">learn more →</a></p>
+            </div>
+            <div class="dtc-card">
+                <div class="ic">🚀</div>
+                <h3>Start your docs-as-code journey today</h3>
+                <p>Many organisations and projects have already embraced docToolchain. Will yours be next?</p>
+                <p><a class="dtc-btn dtc-btn-ghost" href="025_development/050_who-uses-dtc.html">learn more →</a></p>
+            </div>
+        </section>
+
+      </div>
         <!--div class="row row-cols-1">
             <div class="col">
                 <div class="card mb-12 shadow-sm">

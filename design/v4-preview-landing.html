@@ -1,3 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>docToolchain v4 — landing + numbered nav (real CSS)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script>(function(){try{var t=localStorage.getItem('dtc-theme')||'light';document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','light');}})();</script>
+<style>
+.td-navbar{display:flex;align-items:center;gap:18px;height:60px;padding:0 22px;position:sticky;top:0;z-index:30}
+.navbar-brand{display:flex;align-items:center;gap:10px;font-size:18px;text-decoration:none}
+.dtc-logo{width:30px;height:30px;border-radius:8px;background:var(--dtc-grad);display:grid;place-items:center;color:#fff;font-weight:900;font-size:13px}
+.navbar-nav{display:flex;gap:20px}.nav-link{text-decoration:none;font-size:15px}.spacer{margin-left:auto}
+/* sidebar shim to demo arc42 numbering + bracket active */
+.demo-split{display:grid;grid-template-columns:260px 1fr;max-width:1180px;margin:18px auto;gap:0}
+.td-sidebar{padding:22px 14px;border-right:1px solid var(--dtc-border)}
+.td-sidebar-nav__section{list-style:none;padding-left:0;margin:0}
+.ul-0{list-style:none;padding-left:0}
+details{margin:2px 0}summary{list-style:none;cursor:pointer;padding:7px 8px;border-radius:8px}
+summary::-webkit-details-marker{display:none}
+.td-sidebar-link{display:block;padding:7px 8px;border-radius:8px;text-decoration:none;font-size:14px}
+.demo-note{font-family:var(--dtc-mono);font-size:11px;color:var(--dtc-muted);text-transform:uppercase;letter-spacing:.08em;margin:0 0 12px 8px}
+/* REAL theme overlay below */
 /* =====================================================================
    docToolchain v4 — theme overlay
    Loaded AFTER the legacy Docsy/Bootstrap theme so it can override it.
@@ -320,15 +343,13 @@ footer.bg-dark {
   line-height:1.06; letter-spacing:-.03em; font-weight:900;
   color:var(--dtc-ink); margin:0;
 }
-.dtc-hero .grad {
+.dtc-hero h1 .grad {
   background:var(--dtc-grad); -webkit-background-clip:text;
   background-clip:text; color:transparent;
 }
-.dtc-hero-logo { width:64px; height:auto; display:block; margin-bottom:16px; }
 .dtc-hero .lead {
-  font-size:19px; color:var(--dtc-muted); max-width:560px; margin:20px 0 16px;
+  font-size:19px; color:var(--dtc-muted); max-width:560px; margin:20px 0 30px;
 }
-.dtc-hero-intro { color:var(--dtc-muted); max-width:580px; margin:0 0 30px; }
 .dtc-cta { display:flex; gap:14px; flex-wrap:wrap; }
 .dtc-btn {
   display:inline-flex; align-items:center; gap:8px;
@@ -393,3 +414,97 @@ footer.bg-dark {
 [data-theme="dark"] .dtc-card .ic { background:rgba(95,208,192,.12); }
 .dtc-card h3 { font-size:18px; letter-spacing:-.01em; margin:0 0 8px; color:var(--dtc-ink); }
 .dtc-card p { color:var(--dtc-muted); font-size:15px; margin:0; }
+</style></head>
+<body>
+<nav class="td-navbar">
+  <a class="navbar-brand" href="#"><span class="dtc-logo">42</span><b>docToolchain</b></a>
+  <div class="navbar-nav"><a class="nav-link active" href="#">Docs</a><a class="nav-link" href="#">Guides</a></div>
+  <span class="spacer"></span>
+  <input class="td-search-input form-control" placeholder=" Search this site…" style="padding:8px 12px">
+  <button type="button" class="dtc-theme-toggle" onclick="dtcToggleTheme()">🌙</button>
+</nav>
+
+<div class="demo-split">
+  <aside class="td-sidebar">
+    <p class="demo-note">arc42 numbering + C·2 active</p>
+    <nav class="td-sidebar-nav">
+      <ul class="td-sidebar-nav__section ul-0">
+        <li class="td-sidebar-nav__section-title"><a class="td-sidebar-link td-sidebar-link__section" href="#"><span class="arc42-num">01</span> Introduction &amp; Goals</a></li>
+        <li class="td-sidebar-nav__section-title"><a class="td-sidebar-link td-sidebar-link__section" href="#"><span class="arc42-num">02</span> Constraints</a></li>
+        <li class="td-sidebar-nav__section-title"><a class="td-sidebar-link td-sidebar-link__section" href="#"><span class="arc42-num">03</span> Context &amp; Scope</a></li>
+        <li class="td-sidebar-nav__section-title"><a class="td-sidebar-link td-sidebar-link__section active" href="#"><span class="arc42-num">04</span> Solution Strategy</a></li>
+        <details><summary><span class="label"><span class="arc42-num">05</span> Building Block View</span></summary></details>
+        <li class="td-sidebar-nav__section-title"><a class="td-sidebar-link td-sidebar-link__section" href="#"><span class="arc42-num">06</span> Runtime View</a></li>
+        <li class="td-sidebar-nav__section-title"><a class="td-sidebar-link td-sidebar-link__section" href="#"><span class="arc42-num">07</span> Deployment View</a></li>
+      </ul>
+    </nav>
+  </aside>
+  <div>
+<div class="dtc-landing">
+
+    
+    <section class="dtc-hero">
+        <span class="dtc-bp-corner tl"></span><span class="dtc-bp-corner tr"></span>
+        <span class="dtc-bp-corner bl"></span><span class="dtc-bp-corner br"></span>
+        <span class="dtc-bp-dim">— SYSTEM&nbsp;X —</span>
+
+        <span class="dtc-tag">§ ARCHITECTURE / OVERVIEW</span>
+        <h1>Solution Architecture<br><span class="grad">Documentation.</span></h1>
+        <p class="lead">
+            This microsite contains the living documentation for <strong>System&nbsp;X</strong> —
+            written as docs-as-code, versioned in Git and built with docToolchain.
+            Replace this introduction with your own story to make readers curious and read on.
+        </p>
+        <div class="dtc-cta">
+            <a class="dtc-btn dtc-btn-primary" href="#get-started">📘 Read the docs</a>
+            <a class="dtc-btn dtc-btn-ghost" href="https://doctoolchain.org" target="_blank" rel="noopener">Learn more →</a>
+        </div>
+    </section>
+
+    <div class="dtc-divider"><span class="seg"></span><span class="lk">⛓</span><span class="lk">⛓</span><span class="lk">⛓</span><span class="seg"></span></div>
+
+    
+    <div class="dtc-sec-head" id="get-started">
+        <h2>One toolchain, from keystroke to publish</h2>
+        <p>docToolchain wires the best open-source tools into a single, reproducible documentation flow.</p>
+    </div>
+    <section class="dtc-pipeline">
+        <div class="dtc-link"><div class="node on">📝</div><b>Write</b><span>asciidoc</span></div>
+        <div class="dtc-link"><div class="node">🎨</div><b>Render</b><span>asciidoctor</span></div>
+        <div class="dtc-link"><div class="node">📐</div><b>Diagram</b><span>plantuml</span></div>
+        <div class="dtc-link"><div class="node">🚀</div><b>Publish</b><span>confluence</span></div>
+    </section>
+
+    <div class="dtc-divider"><span class="seg"></span><span class="lk">⛓</span><span class="lk">⛓</span><span class="lk">⛓</span><span class="seg"></span></div>
+
+    
+    <div class="dtc-sec-head">
+        <h2>What you'll find here</h2>
+        <p>A few starting points — edit these cards to highlight the key parts of your documentation.</p>
+    </div>
+    <section class="dtc-features">
+        <div class="dtc-card">
+            <div class="ic">🧩</div>
+            <h3>Architecture</h3>
+            <p>Structured along arc42 — context, building blocks, runtime and deployment views of System&nbsp;X.</p>
+        </div>
+        <div class="dtc-card">
+            <div class="ic">📐</div>
+            <h3>Diagrams as code</h3>
+            <p>PlantUML and Structurizr diagrams that stay in sync with the system instead of drifting out of date.</p>
+        </div>
+        <div class="dtc-card">
+            <div class="ic">🚀</div>
+            <h3>Getting started</h3>
+            <p>How to build, run and contribute to this documentation locally with the <code>dtcw</code> wrapper.</p>
+        </div>
+    </section>
+
+</div>
+  </div>
+</div>
+<script>
+function dtcToggleTheme(){var r=document.documentElement;var n=r.getAttribute('data-theme')==='dark'?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem('dtc-theme',n);}catch(e){}document.querySelectorAll('.dtc-theme-toggle').forEach(function(b){b.textContent=n==='dark'?'☀️':'🌙';});}
+document.addEventListener('DOMContentLoaded',function(){var d=document.documentElement.getAttribute('data-theme')==='dark';document.querySelectorAll('.dtc-theme-toggle').forEach(function(b){b.textContent=d?'☀️':'🌙';});});
+</script>
+</body></html>
