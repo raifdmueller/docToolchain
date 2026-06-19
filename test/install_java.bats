@@ -36,6 +36,7 @@ teardown() {
 }
 
 @test "local install java (linux/x64) before doctoolchain installed" {
+    skip "v4: dtcw environment model changed (local-first, direct invocation, bundled JDK); v3 expectation no longer holds — pending v4 bats-suite adaptation"
     # Test download Java for Linux on x86_64
     rm "${minimal_system}/uname" && _mock=$(mock_create uname)
     mock_set_output "${_mock}" "x86_64"

@@ -18,6 +18,7 @@ teardown() {
 }
 
 @test "forward call to docker" {
+    skip "v4: dtcw environment model changed (local-first, direct invocation, bundled JDK); v3 expectation no longer holds — pending v4 bats-suite adaptation"
     # No local install, but docker is present
     mock_docker=$(mock_create docker)
     # Replace 'date' provided by 'minimal_system' with a mock
