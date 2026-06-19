@@ -225,6 +225,18 @@ configurations {
         canBeConsumed = false
     }
 }
+// jBake (even 2.7.0-rc) still ships Groovy 3 (org.codehaus.groovy). Force its
+// transitive Groovy modules onto Groovy 4 (org.apache.groovy) to avoid the
+// capability clash with the rest of the runtime. jBake's public API usage
+// (SimpleTemplateEngine, groovy.lang.*) is compatible across 3->4.
+configurations.all {
+    resolutionStrategy.eachDependency { details ->
+        if (details.requested.group == 'org.codehaus.groovy') {
+            details.useTarget "org.apache.groovy:${details.requested.name}:${libs.versions.groovy.get()}"
+            details.because 'force Groovy 4 (jBake still pulls Groovy 3)'
+        }
+    }
+}
 dependencies {
     v4Runtime(libs.groovy.all)
     v4Runtime(libs.asciidoctorj)
