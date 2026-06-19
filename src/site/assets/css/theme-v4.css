@@ -1,0 +1,92 @@
+/* docToolchain v4 — color & typography overrides
+ * Loaded after main.min.css (Docsy). Only overrides colors and fonts,
+ * layout structure stays untouched.
+ */
+
+/* ── Typography ───────────────────────────────────────────────── */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ── Navbar ────────────────────────────────────────────────────── */
+.td-navbar {
+    background: #064e3b;
+}
+
+.td-navbar .nav-link:hover,
+.td-navbar .nav-link:focus {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 0.25rem;
+}
+
+/* ── Links & primary color ────────────────────────────────────── */
+a {
+    color: #059669;
+}
+
+a:hover {
+    color: #047857;
+}
+
+.btn-primary,
+.btn-primary:active {
+    background-color: #059669;
+    border-color: #059669;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #047857;
+    border-color: #047857;
+}
+
+.btn-outline-primary {
+    color: #059669;
+    border-color: #059669;
+}
+
+.btn-outline-primary:hover {
+    background-color: #059669;
+    border-color: #059669;
+    color: #fff;
+}
+
+/* ── Sidebar active state ─────────────────────────────────────── */
+.td-sidebar-link.active,
+.td-sidebar-link__section.active {
+    color: #059669;
+    font-weight: 600;
+}
+
+/* ── Footer ───────────────────────────────────────────────────── */
+footer.bg-dark {
+    background: #1a1a2e !important;
+}
+
+/* ── Landing page hero ────────────────────────────────────────── */
+.bg-light.jumbotron,
+div.bg-light.jumbotron {
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%) !important;
+    border: 1px solid #a7f3d0;
+    border-radius: 0.75rem;
+}
+
+/* ── Cards ────────────────────────────────────────────────────── */
+.card {
+    border-radius: 0.5rem;
+    transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.card-header {
+    border-radius: 0.5rem 0.5rem 0 0 !important;
+}
+
+/* ── Badge (v4 badge on landing page) ─────────────────────────── */
+.badge.bg-primary {
+    background-color: #059669 !important;
+}
