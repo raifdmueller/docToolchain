@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 // @task
-// v4: Generate HTML5 from AsciiDoc sources using AsciidoctorJ (no external Ruby needed)
+// v4: Generate PDF from AsciiDoc sources using AsciidoctorJ PDF
 
 import org.asciidoctor.Asciidoctor
 import org.asciidoctor.Options
@@ -17,39 +17,42 @@ def config = dtcConfig.getRaw()
 
 def inputPath = new File(docDir, config.inputPath ?: 'src/docs')
 def outputPath = new File(docDir, config.outputPath ?: 'build')
-def htmlOutputDir = new File(outputPath, 'html5')
-htmlOutputDir.mkdirs()
+def pdfOutputDir = new File(outputPath, 'pdf')
+pdfOutputDir.mkdirs()
 
-println "docToolchain v4 — generateHTML"
+println "docToolchain v4 — generatePDF"
 println "  inputPath:  ${inputPath.absolutePath}"
-println "  outputPath: ${htmlOutputDir.absolutePath}"
+println "  outputPath: ${pdfOutputDir.absolutePath}"
 println ""
 
 def inputFiles = config.inputFiles ?: []
 if (!inputFiles) {
     System.err.println "No inputFiles configured in ${configFile}."
-    System.err.println "Add: inputFiles = [[file: 'arc42/arc42.adoc', formats: ['html']]]"
+    System.err.println "Add: inputFiles = [[file: 'arc42/arc42.adoc', formats: ['pdf']]]"
     System.exit(1)
 }
 
-def htmlFiles = inputFiles.findAll { entry ->
+def pdfFiles = inputFiles.findAll { entry ->
     def formats = entry.formats ?: ['html']
-    formats.any { it.toLowerCase().contains('html') }
+    formats.any { it.toLowerCase().contains('pdf') }
 }
 
-if (!htmlFiles) {
-    println "No input files configured for HTML output."
+if (!pdfFiles) {
+    println "No input files configured for PDF output."
     System.exit(0)
 }
 
 def imageDirs = config.imageDirs ?: ['images']
 def asciidoctor = Asciidoctor.Factory.create()
+
+// Register PDF converter by requiring the gem
+asciidoctor.requireLibrary('asciidoctor-pdf')
 asciidoctor.requireLibrary('asciidoctor-diagram')
-println "AsciidoctorJ ${Asciidoctor.class.package.implementationVersion ?: '2.5.x'} ready (with diagram support)"
+println "AsciidoctorJ PDF ready (with diagram support)"
 
 def failed = false
 
-htmlFiles.each { entry ->
+pdfFiles.each { entry ->
     def sourceFile = new File(inputPath, entry.file)
     if (!sourceFile.exists()) {
         System.err.println "Source file not found: ${sourceFile.absolutePath}"
@@ -59,30 +62,37 @@ htmlFiles.each { entry ->
 
     println "Processing: ${entry.file}"
 
-    def attrs = Attributes.builder()
+    def pdfThemeDir = config.pdfThemeDir ?: null
+    if (pdfThemeDir?.startsWith('.')) {
+        pdfThemeDir = new File(docDir, pdfThemeDir).canonicalPath
+    }
+    def pdfTheme = config.pdfTheme ?: null
+    def pdfFontsDir = config.pdfFontsDir ?: (pdfThemeDir ? "${pdfThemeDir}/fonts" : null)
+
+    def attrsBuilder = Attributes.builder()
         .imagesDir(imageDirs[0])
         .sourceHighlighter(config.sourceHighlighter ?: 'rouge')
-        .tableOfContents(true)
-        .attribute('toc', config.toc ?: 'left')
-        .attribute('toclevels', (config.toclevels ?: 3) as String)
         .attribute('icons', config.icons ?: 'font')
         .attribute('doctype', 'book')
-        .build()
+
+    if (pdfTheme) attrsBuilder.attribute('pdf-theme', pdfTheme)
+    if (pdfThemeDir) attrsBuilder.attribute('pdf-themesdir', pdfThemeDir)
+    if (pdfFontsDir) attrsBuilder.attribute('pdf-fontsdir', pdfFontsDir)
 
     def safeMode = SafeMode.valueOf((config.safeMode ?: 'UNSAFE').toUpperCase())
 
     def options = Options.builder()
-        .backend('html5')
+        .backend('pdf')
         .safe(safeMode)
-        .toDir(htmlOutputDir)
+        .toDir(pdfOutputDir)
         .mkDirs(true)
         .baseDir(sourceFile.parentFile)
-        .attributes(attrs)
+        .attributes(attrsBuilder.build())
         .build()
 
     try {
         asciidoctor.convertFile(sourceFile, options)
-        def outputFile = new File(htmlOutputDir, sourceFile.name.replaceAll(/\.(adoc|ad|asciidoc)$/, '.html'))
+        def outputFile = new File(pdfOutputDir, sourceFile.name.replaceAll(/\.(adoc|ad|asciidoc)$/, '.pdf'))
         println "  -> ${outputFile.absolutePath} (${String.format('%.1f', outputFile.length() / 1024.0)} KB)"
     } catch (Exception e) {
         System.err.println "Failed: ${entry.file} — ${e.message}"
@@ -93,8 +103,8 @@ htmlFiles.each { entry ->
 asciidoctor.close()
 println ""
 if (failed) {
-    System.err.println "HTML generation completed with errors."
+    System.err.println "PDF generation completed with errors."
     System.exit(1)
 } else {
-    println "HTML generation completed successfully."
+    println "PDF generation completed successfully."
 }
