@@ -65,4 +65,7 @@ These tasks publish your documentation to external systems (currently Confluence
 
 | xref:03_task_publishToConfluence.adoc[publishToConfluence]
 | Publish HTML documentation to Confluence
+
+| xref:03_task_copyThemes.adoc[copyThemes]
+| Copy a built-in theme (jBakeTheme or pdfTheme) into your project for customization
 |===
