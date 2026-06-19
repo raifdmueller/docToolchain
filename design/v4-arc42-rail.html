@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>docToolchain v4 — arc42 rail, reworked</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+  :root{
+    --blue-700:#1e53a0;--blue-500:#3772ff;--teal-300:#5fd0c0;--coral:#ed6a5a;--orange:#ffa630;
+    --ink:#10141c;--muted:#5b6677;--bg:#ffffff;--bg-soft:#f5f8fc;--card:#fff;
+    --border:#e4ebf3;--blue-line:rgba(55,114,255,.10);
+    --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+    --font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --grad:linear-gradient(120deg,var(--blue-700),var(--blue-500) 55%,var(--teal-300));
+    --shadow:0 14px 40px -18px rgba(16,41,79,.30);
+  }
+  [data-theme="dark"]{
+    --ink:#eaf1fb;--muted:#9fb0c7;--bg:#0a1120;--bg-soft:#0f1a2e;--card:#111c30;
+    --border:#1e2c44;--blue-line:rgba(95,208,192,.10);--shadow:0 14px 40px -18px rgba(0,0,0,.7);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:980px;margin:0 auto;padding:0 26px}
+  .mono{font-family:var(--mono)}
+
+  .topbar{position:sticky;top:0;z-index:60;display:flex;align-items:center;gap:14px;height:60px;padding:0 22px;
+    background:color-mix(in srgb,var(--bg) 84%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+  .logo{width:30px;height:30px;border-radius:8px;background:var(--grad);display:grid;place-items:center;color:#fff;font-weight:900;font-size:13px}
+  .brand{font-weight:800;letter-spacing:-.02em}
+  .topbar .mono{margin-left:auto;font-size:12px;color:var(--muted)}
+  .theme-toggle{width:36px;height:36px;border-radius:9px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:15px}
+
+  .elabel{display:flex;align-items:baseline;gap:12px;margin:64px 0 20px}
+  .elabel .num{font-family:var(--mono);font-size:13px;font-weight:700;color:#fff;background:var(--ink);padding:3px 9px;border-radius:6px}
+  [data-theme="dark"] .elabel .num{background:var(--teal-300);color:#0a1120}
+  .elabel h2{font-size:21px;font-weight:850;letter-spacing:-.02em}
+  .elabel .ghost{font-family:var(--mono);font-size:12px;color:var(--muted);margin-left:auto}
+
+  /* blueprint frame reused from element B */
+  .blueprint{background:
+      linear-gradient(var(--blue-line) 1px,transparent 1px) 0 0/26px 26px,
+      linear-gradient(90deg,var(--blue-line) 1px,transparent 1px) 0 0/26px 26px,
+      var(--card);
+    border:1px solid var(--border);border-radius:16px;padding:34px;position:relative;box-shadow:var(--shadow)}
+  .bp-corner{position:absolute;width:14px;height:14px;border:2px solid var(--blue-500)}
+  .bp-corner.tl{top:10px;left:10px;border-right:0;border-bottom:0}
+  .bp-corner.tr{top:10px;right:10px;border-left:0;border-bottom:0}
+  .bp-corner.bl{bottom:10px;left:10px;border-right:0;border-top:0}
+  .bp-corner.br{bottom:10px;right:10px;border-left:0;border-top:0}
+
+  .arc{display:flex;gap:30px;align-items:flex-start}
+  .arc-rail{display:flex;flex-direction:column;gap:2px;flex:0 0 270px}
+  .arc-body{flex:1;padding-top:4px}
+  .arc-body .chip{font-family:var(--mono);font-size:11px;color:var(--orange);border:1px solid var(--orange);border-radius:5px;padding:2px 8px}
+  .arc-body h3{font-size:22px;margin:12px 0 8px;letter-spacing:-.02em}
+  .arc-body p{color:var(--muted);font-size:14.5px;max-width:380px}
+
+  /* base row (no colored fill bar) */
+  .r{display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:8px;font-size:14px;color:var(--muted);text-decoration:none;font-weight:500;position:relative}
+  .r:hover{color:var(--ink)}
+  .r .n{font-family:var(--mono);font-weight:700;font-size:12px;opacity:.55}
+
+  /* ---- VARIANT 1: stamp number ---- */
+  .v1 .r .n{display:grid;place-items:center;width:26px;height:26px;border:1.5px solid var(--border);border-radius:7px;opacity:1;flex:0 0 auto;transition:.18s}
+  .v1 .r.on{color:var(--ink);font-weight:700}
+  .v1 .r.on .n{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  [data-theme="dark"] .v1 .r.on .n{background:var(--teal-300);color:#0a1120;border-color:var(--teal-300)}
+
+  /* ---- VARIANT 2: blueprint bracket ---- */
+  .v2 .r{font-family:inherit}
+  .v2 .r.on{color:var(--ink);font-weight:700}
+  .v2 .r.on::before{content:"[";position:absolute;left:-2px;color:var(--blue-500);font-family:var(--mono);font-weight:700}
+  .v2 .r.on::after{content:"]";position:absolute;right:6px;color:var(--blue-500);font-family:var(--mono);font-weight:700}
+  .v2 .r.on .n{opacity:1;color:var(--blue-500)}
+
+  /* ---- VARIANT 3: index tab docking into the panel ---- */
+  .v3{position:relative;z-index:1}
+  .v3 .r{transition:.18s}
+  .v3 .r.on{color:var(--ink);font-weight:700;background:var(--card);
+    border:1px solid var(--border);border-right-color:var(--card);border-radius:9px 0 0 9px;
+    margin-right:-1px;box-shadow:-6px 0 14px -10px rgba(16,41,79,.25)}
+  .v3 .r.on .n{opacity:1;color:var(--blue-500)}
+  .v3 .r.on::after{content:"›";margin-left:auto;color:var(--blue-500);font-weight:700}
+  .v3-wrap .arc-body{border:1px solid var(--border);border-radius:0 14px 14px 14px;background:var(--card);padding:22px 24px;box-shadow:var(--shadow)}
+
+  /* ---- VARIANT 4: leader-line (engineering callout) ---- */
+  .v4 .r.on{color:var(--ink);font-weight:700}
+  .v4 .r.on .n{opacity:1;color:var(--ink)}
+  .v4-wrap{position:relative}
+  .v4-lead{flex:0 0 54px;align-self:stretch;position:relative}
+  .v4-lead::before{content:"";position:absolute;top:0;bottom:0;left:50%;border-left:1px dashed var(--coral)}
+  .v4 .r.on .dot{width:7px;height:7px;border-radius:50%;background:var(--coral);position:absolute;right:-3px}
+  .v4 .arc-body{border-left:2px dashed var(--coral);padding-left:24px}
+  .v4 .arc-body .chip{color:var(--coral);border-color:var(--coral)}
+
+  footer{padding:64px 0 50px;text-align:center;color:var(--muted);font-size:13px}
+  .hint{font-size:13px;color:var(--muted);margin:6px 0 0 2px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="logo">42</span><span class="brand">docToolchain</span>
+  <span class="mono">design-lab · arc42 rail · active-state, reworked</span>
+  <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+</div>
+
+<div class="wrap">
+
+  <p class="hint" style="margin-top:30px">The pastel left-border marker is gone in all four. Each active-state treatment borrows from the blueprint / engineering idiom of element <b>B</b>.</p>
+
+  <!-- V1 -->
+  <div class="elabel"><span class="num">C·1</span><h2>Stamp number</h2><span class="ghost">number becomes a filled sheet-stamp</span></div>
+  <section class="blueprint">
+    <span class="bp-corner tl"></span><span class="bp-corner tr"></span><span class="bp-corner bl"></span><span class="bp-corner br"></span>
+    <div class="arc v1">
+      <div class="arc-rail">
+        <a class="r"><span class="n">01</span> Introduction &amp; Goals</a>
+        <a class="r"><span class="n">02</span> Constraints</a>
+        <a class="r"><span class="n">03</span> Context &amp; Scope</a>
+        <a class="r on"><span class="n">04</span> Solution Strategy</a>
+        <a class="r"><span class="n">05</span> Building Block View</a>
+        <a class="r"><span class="n">06</span> Runtime View</a>
+      </div>
+      <div class="arc-body">
+        <span class="chip">CHAPTER 04</span><h3>Solution Strategy</h3>
+        <p>The chapter number is a filled stamp — like the sheet number on a technical drawing. Quiet, structural, no soft color wash.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- V2 -->
+  <div class="elabel"><span class="num">C·2</span><h2>Blueprint bracket</h2><span class="ghost">active row wrapped in [ … ]</span></div>
+  <section class="blueprint">
+    <span class="bp-corner tl"></span><span class="bp-corner tr"></span><span class="bp-corner bl"></span><span class="bp-corner br"></span>
+    <div class="arc v2">
+      <div class="arc-rail">
+        <a class="r"><span class="n">01</span> Introduction &amp; Goals</a>
+        <a class="r"><span class="n">02</span> Constraints</a>
+        <a class="r"><span class="n">03</span> Context &amp; Scope</a>
+        <a class="r on"><span class="n">04</span> Solution Strategy</a>
+        <a class="r"><span class="n">05</span> Building Block View</a>
+        <a class="r"><span class="n">06</span> Runtime View</a>
+      </div>
+      <div class="arc-body">
+        <span class="chip">CHAPTER 04</span><h3>Solution Strategy</h3>
+        <p>Monospace brackets mark the selection like a code token or a dimension reference — pure linework, no fill.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- V3 -->
+  <div class="elabel"><span class="num">C·3</span><h2>Index tab</h2><span class="ghost">active item docks into the content card</span></div>
+  <section class="blueprint v3-wrap">
+    <span class="bp-corner tl"></span><span class="bp-corner tr"></span><span class="bp-corner bl"></span><span class="bp-corner br"></span>
+    <div class="arc v3">
+      <div class="arc-rail">
+        <a class="r"><span class="n">01</span> Introduction &amp; Goals</a>
+        <a class="r"><span class="n">02</span> Constraints</a>
+        <a class="r"><span class="n">03</span> Context &amp; Scope</a>
+        <a class="r on"><span class="n">04</span> Solution Strategy</a>
+        <a class="r"><span class="n">05</span> Building Block View</a>
+        <a class="r"><span class="n">06</span> Runtime View</a>
+      </div>
+      <div class="arc-body">
+        <span class="chip">CHAPTER 04</span><h3>Solution Strategy</h3>
+        <p>The selected chapter becomes a physical index-card tab that connects into the content panel — tactile, like flipping through a binder.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- V4 -->
+  <div class="elabel"><span class="num">C·4</span><h2>Leader line</h2><span class="ghost">callout-style dashed connector</span></div>
+  <section class="blueprint v4-wrap">
+    <span class="bp-corner tl"></span><span class="bp-corner tr"></span><span class="bp-corner bl"></span><span class="bp-corner br"></span>
+    <div class="arc v4">
+      <div class="arc-rail">
+        <a class="r"><span class="n">01</span> Introduction &amp; Goals</a>
+        <a class="r"><span class="n">02</span> Constraints</a>
+        <a class="r"><span class="n">03</span> Context &amp; Scope</a>
+        <a class="r on"><span class="n">04</span> Solution Strategy<span class="dot"></span></a>
+        <a class="r"><span class="n">05</span> Building Block View</a>
+        <a class="r"><span class="n">06</span> Runtime View</a>
+      </div>
+      <div class="v4-lead"></div>
+      <div class="arc-body">
+        <span class="chip">CHAPTER 04</span><h3>Solution Strategy</h3>
+        <p>A dashed leader line ties the active chapter to its content, exactly like the annotated callouts in element F. Fully consistent engineering language.</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>docToolchain · v4 design-lab · four non-cliché active states for the arc42 rail</footer>
+
+<script>
+  function toggleTheme(){
+    const r=document.documentElement;
+    const next=r.getAttribute('data-theme')==='dark'?'light':'dark';
+    r.setAttribute('data-theme',next);
+    document.querySelector('.theme-toggle').textContent=next==='dark'?'☀️':'🌙';
+  }
+</script>
+</body>
+</html>
