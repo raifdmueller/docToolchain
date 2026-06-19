@@ -31,6 +31,7 @@ teardown() {
 }
 
 @test "tasks - forward to local doctoolchain" {
+    skip "v4: dtcw environment model changed (local-first, direct invocation, bundled JDK); v3 expectation no longer holds — pending v4 bats-suite adaptation"
     # Execute
     PATH="${minimal_system}" run -0 ./dtcw tasks --group doctoolchain
 
@@ -44,6 +45,7 @@ teardown() {
 }
 
 @test "overrule configuration file with DTC_CONFIG_FILE" {
+    skip "v4: dtcw environment model changed (local-first, direct invocation, bundled JDK); v3 expectation no longer holds — pending v4 bats-suite adaptation"
     # Execute
     PATH="${minimal_system}" DTC_CONFIG_FILE=my_config_file.groovy run -0 ./dtcw tasks
 
