@@ -22,6 +22,7 @@ asciidoctorj-pdf = "2.3.18"
 asciidoctorj-diagram = "2.3.2"
 jbake-core = "2.6.7"
 pebble = "3.2.2"
+flexmark = "0.62.2"
 http-client = "5.3"
 guava = "33.0.0-jre"
 
@@ -45,6 +46,8 @@ jbake-site = { id = "org.jbake.site", version.ref = "jbake"}
 [libraries]
 groovy-all = { module = "org.apache.groovy:groovy-all", version.ref = "groovy" }
 groovy-xml = { module = "org.apache.groovy:groovy-xml", version.ref = "groovy" }
+# Date.format(String) used by the microsite GSP templates — not part of groovy-all
+groovy-dateutil = { module = "org.apache.groovy:groovy-dateutil", version.ref = "groovy" }
 asciidoctor = { module = "org.asciidoctor:asciidoctor-gradle-jvm", version.ref = "asciidoctor-jvm" }
 asciidoctor-pdf = { module = "org.asciidoctor:asciidoctor-gradle-jvm-pdf", version.ref = "asciidoctor-jvm" }
 asciidoctor-gems = { module = "org.asciidoctor:asciidoctor-gradle-jvm-gems", version.ref = "asciidoctor-jvm" }
@@ -64,6 +67,8 @@ asciidoctorj-pdf = { module = "org.asciidoctor:asciidoctorj-pdf", version.ref = 
 asciidoctorj-diagram = { module = "org.asciidoctor:asciidoctorj-diagram", version.ref = "asciidoctorj-diagram" }
 jbake-core = { module = "org.jbake:jbake-core", version.ref = "jbake-core" }
 pebble = { module = "io.pebbletemplates:pebble", version.ref = "pebble" }
+# Markdown rendering for the v4 MicrositeBaker (previously transitive via jBake)
+flexmark-all = { module = "com.vladsch.flexmark:flexmark-all", version.ref = "flexmark" }
 http-client = { module = "org.apache.httpcomponents.client5:httpclient5", version.ref = "http-client" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 

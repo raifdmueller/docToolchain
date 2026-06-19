@@ -227,22 +227,15 @@ configurations {
         canBeConsumed = false
     }
 }
-// jBake (even 2.7.0) still ships Groovy 3 (org.codehaus.groovy). Force its
-// transitive Groovy modules onto Groovy 4 (org.apache.groovy) to avoid the
-// capability clash with the rest of the v4 runtime. jBake's public API usage
-// (SimpleTemplateEngine, groovy.lang.*) is compatible across 3->4.
-// Scoped to v4Runtime only: the root project's tests use gradleTestKit (which
-// pins Gradle's bundled Groovy 3) and must NOT be forced to Groovy 4.
-configurations.v4Runtime {
-    resolutionStrategy.eachDependency { details ->
-        if (details.requested.group == 'org.codehaus.groovy') {
-            details.useTarget "org.apache.groovy:${details.requested.name}:${libs.versions.groovy.get()}"
-            details.because 'force Groovy 4 (jBake still pulls Groovy 3)'
-        }
-    }
-}
+// The v4 runtime no longer depends on jBake: MicrositeBaker (scripts/lib)
+// renders the microsite directly via Groovy's SimpleTemplateEngine. Dropping
+// jBake removes its OrientDB content store (the Apple-Silicon pain) and its
+// Groovy-3 (org.codehaus.groovy) transitive dependency — so the previous
+// Groovy-4 force-substitution is no longer needed, and the runtime is free to
+// move to Groovy 5 / Java 25.
 dependencies {
     v4Runtime(libs.groovy.all)
+    v4Runtime(libs.groovy.dateutil)
     v4Runtime(libs.asciidoctorj)
     v4Runtime(libs.asciidoctorj.pdf)
     v4Runtime(libs.asciidoctorj.diagram)
@@ -251,8 +244,7 @@ dependencies {
     v4Runtime(libs.poi.ooxml)
     v4Runtime(libs.guava)
     v4Runtime(libs.markdown.to.asciidoc)
-    v4Runtime(libs.jbake.core)
-    v4Runtime(libs.pebble)
+    v4Runtime(libs.flexmark.all)
 }
 task packageLibs(type: Copy) {
     group = 'docToolchain'
