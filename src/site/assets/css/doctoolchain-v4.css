@@ -1,0 +1,264 @@
+/* =====================================================================
+   docToolchain v4 — theme overlay
+   Loaded AFTER the legacy Docsy/Bootstrap theme so it can override it.
+   Design language: blueprint surface · docs-as-code · the toolchain.
+   ===================================================================== */
+
+:root {
+  --dtc-blue-900:#10294f;
+  --dtc-blue-700:#1e53a0;
+  --dtc-blue-500:#3772ff;
+  --dtc-teal-500:#1aa890;
+  --dtc-teal-300:#5fd0c0;
+  --dtc-teal-100:#d3f3ee;
+  --dtc-coral:#ed6a5a;
+  --dtc-orange:#ffa630;
+
+  --dtc-ink:#10141c;
+  --dtc-muted:#5b6677;
+  --dtc-bg:#ffffff;
+  --dtc-bg-soft:#f5f8fc;
+  --dtc-card:#ffffff;
+  --dtc-border:#e4ebf3;
+  --dtc-code-bg:#0d1830;
+  --dtc-grid:rgba(55,114,255,.07);
+
+  --dtc-shadow:0 14px 40px -18px rgba(16,41,79,.28);
+  --dtc-radius:14px;
+  --dtc-grad:linear-gradient(120deg,var(--dtc-blue-700),var(--dtc-blue-500) 55%,var(--dtc-teal-300));
+
+  --dtc-font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --dtc-mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+}
+
+[data-theme="dark"] {
+  --dtc-ink:#eaf1fb;
+  --dtc-muted:#9fb0c7;
+  --dtc-bg:#0a1120;
+  --dtc-bg-soft:#0f1a2e;
+  --dtc-card:#111c30;
+  --dtc-border:#1e2c44;
+  --dtc-grid:rgba(95,208,192,.08);
+  --dtc-shadow:0 14px 40px -18px rgba(0,0,0,.7);
+}
+
+/* ---- base ---------------------------------------------------------- */
+body {
+  font-family:var(--dtc-font);
+  background:var(--dtc-bg);
+  color:var(--dtc-ink);
+  -webkit-font-smoothing:antialiased;
+  transition:background .25s ease, color .25s ease;
+}
+.td-main, .td-content, main[role="main"] { background:transparent; }
+
+/* blueprint surface behind the whole page */
+body::before {
+  content:"";
+  position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background:
+    linear-gradient(var(--dtc-grid) 1px, transparent 1px) 0 0 / 28px 28px,
+    linear-gradient(90deg, var(--dtc-grid) 1px, transparent 1px) 0 0 / 28px 28px;
+}
+
+/* ---- navbar -------------------------------------------------------- */
+.td-navbar {
+  background:color-mix(in srgb, var(--dtc-bg) 84%, transparent) !important;
+  backdrop-filter:saturate(180%) blur(14px);
+  border-bottom:1px solid var(--dtc-border);
+  box-shadow:none !important;
+}
+.td-navbar .navbar-brand,
+.td-navbar .nav-link { color:var(--dtc-ink) !important; }
+.td-navbar .nav-link { font-weight:500; opacity:.8; }
+.td-navbar .nav-link:hover,
+.td-navbar .nav-link.active { opacity:1; }
+.td-navbar .navbar-brand { font-weight:800; letter-spacing:-.02em; }
+
+.td-search-input {
+  background:var(--dtc-bg-soft);
+  border:1px solid var(--dtc-border);
+  border-radius:10px;
+  color:var(--dtc-ink);
+}
+.td-search-input::placeholder { color:var(--dtc-muted); }
+
+/* theme toggle button (injected in menu.gsp) */
+.dtc-theme-toggle {
+  width:38px; height:38px; flex:0 0 auto;
+  border-radius:10px;
+  border:1px solid var(--dtc-border);
+  background:var(--dtc-card);
+  color:var(--dtc-ink);
+  cursor:pointer; font-size:16px; line-height:1;
+  display:inline-grid; place-items:center;
+  margin-left:.75rem;
+  transition:border-color .2s, transform .15s;
+}
+.dtc-theme-toggle:hover { border-color:var(--dtc-blue-500); transform:translateY(-1px); }
+
+/* ---- sidebar (left nav) ------------------------------------------- */
+.td-sidebar { border-right:1px solid var(--dtc-border); }
+.td-sidebar-link__section,
+.td-sidebar-nav a.td-sidebar-link {
+  color:var(--dtc-muted); border-radius:9px; font-weight:500;
+}
+.td-sidebar-nav a.td-sidebar-link:hover {
+  color:var(--dtc-ink); background:var(--dtc-bg-soft); text-decoration:none;
+}
+/* C·2 blueprint-bracket active state — no pastel fill bar */
+.td-sidebar-nav a.td-sidebar-link.active,
+.td-sidebar-link__section.active {
+  color:var(--dtc-blue-700) !important;
+  font-weight:700;
+  position:relative;
+}
+[data-theme="dark"] .td-sidebar-nav a.td-sidebar-link.active { color:var(--dtc-teal-300) !important; }
+.td-sidebar-nav a.td-sidebar-link.active::before {
+  content:"["; font-family:var(--dtc-mono); color:var(--dtc-blue-500);
+  margin-right:3px; font-weight:700;
+}
+.td-sidebar-nav a.td-sidebar-link.active::after {
+  content:"]"; font-family:var(--dtc-mono); color:var(--dtc-blue-500);
+  margin-left:3px; font-weight:700;
+}
+
+/* sidebar disclosure arrows */
+summary { color:var(--dtc-ink); }
+
+/* =====================================================================
+   AsciiDoc headings — colour-differentiated per level
+   Scope to generated content so we don't touch chrome.
+   ===================================================================== */
+.td-content h1,
+.td-content h2,
+.td-content h3,
+.td-content h4,
+.td-content h5,
+.td-content h6 {
+  font-family:var(--dtc-font);
+  letter-spacing:-.02em;
+  scroll-margin-top:5rem;
+}
+
+/* H1 — page title: deep blue, blueprint section tag feel */
+.td-content h1 {
+  color:var(--dtc-blue-900) !important;
+  font-weight:900;
+  border-bottom:0;
+}
+[data-theme="dark"] .td-content h1 { color:#eaf1fb !important; }
+
+/* H2 — primary brand blue, with a monospace section tick */
+.td-content h2 {
+  color:var(--dtc-blue-700) !important;
+  font-weight:800;
+  padding-top:.3em;
+  border-top:0;
+}
+.td-content .sect1 + .sect1 { border-top:1px dashed var(--dtc-border); }
+.td-content h2::before {
+  content:"§ ";
+  font-family:var(--dtc-mono);
+  color:var(--dtc-orange);
+  font-weight:700;
+  font-size:.7em;
+  vertical-align:.15em;
+}
+[data-theme="dark"] .td-content h2 { color:var(--dtc-teal-300) !important; }
+
+/* H3 — bright blue */
+.td-content h3 {
+  color:var(--dtc-blue-500) !important;
+  font-weight:700;
+}
+
+/* H4 — teal */
+.td-content h4 {
+  color:var(--dtc-teal-500) !important;
+  font-weight:700;
+}
+[data-theme="dark"] .td-content h4 { color:var(--dtc-teal-300) !important; }
+
+/* H5 / H6 — coral & muted, uppercase micro-headings */
+.td-content h5 {
+  color:var(--dtc-coral) !important;
+  font-weight:700;
+}
+.td-content h6 {
+  color:var(--dtc-muted) !important;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  font-size:.85em;
+}
+
+/* anchor link colour to match brand */
+.td-content h1 > a.link, .td-content h2 > a.link, .td-content h3 > a.link,
+.td-content h4 > a.link, .td-content h5 > a.link, .td-content h6 > a.link {
+  color:inherit !important;
+}
+
+/* body text & links */
+.td-content p, .td-content li { color:var(--dtc-ink); }
+.td-content a:not(.btn) { color:var(--dtc-blue-500); }
+
+/* ---- code ---------------------------------------------------------- */
+.td-content pre,
+.td-content .listingblock pre {
+  background:var(--dtc-code-bg);
+  color:#cdd9f0;
+  border:1px solid #1b2c4d;
+  border-radius:var(--dtc-radius);
+  box-shadow:var(--dtc-shadow);
+  font-family:var(--dtc-mono);
+  font-size:.86em;
+}
+.td-content code,
+.td-content :not(pre) > code {
+  font-family:var(--dtc-mono);
+  background:var(--dtc-bg-soft);
+  border:1px solid var(--dtc-border);
+  border-radius:6px;
+  padding:.12em .4em;
+  color:var(--dtc-blue-700);
+}
+[data-theme="dark"] .td-content :not(pre) > code { color:var(--dtc-teal-300); }
+
+/* ---- admonitions --------------------------------------------------- */
+.td-content .admonitionblock > table {
+  background:var(--dtc-card);
+  border:1px solid var(--dtc-border);
+  border-left:4px solid var(--dtc-blue-500);
+  border-radius:var(--dtc-radius);
+  box-shadow:var(--dtc-shadow);
+}
+.td-content .admonitionblock td.content { color:var(--dtc-muted); }
+.td-content .admonitionblock.tip > table     { border-left-color:var(--dtc-teal-300); }
+.td-content .admonitionblock.note > table    { border-left-color:var(--dtc-blue-500); }
+.td-content .admonitionblock.warning > table { border-left-color:var(--dtc-orange); }
+.td-content .admonitionblock.caution > table,
+.td-content .admonitionblock.important > table { border-left-color:var(--dtc-coral); }
+
+/* ---- tables -------------------------------------------------------- */
+.td-content table.tableblock {
+  border:1px solid var(--dtc-border);
+  border-radius:var(--dtc-radius);
+  overflow:hidden;
+}
+.td-content table.tableblock thead th {
+  background:var(--dtc-bg-soft);
+  color:var(--dtc-ink);
+}
+.td-content table.tableblock td { color:var(--dtc-muted); }
+
+/* ---- right column / TOC ------------------------------------------- */
+.td-toc { border-left:1px solid var(--dtc-border); }
+.td-page-meta a { color:var(--dtc-muted); }
+.td-page-meta a:hover { color:var(--dtc-blue-500); }
+
+/* ---- footer -------------------------------------------------------- */
+footer.bg-dark {
+  background:var(--dtc-blue-900) !important;
+  border-top:1px solid var(--dtc-border);
+}
