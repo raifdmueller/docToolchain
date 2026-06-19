@@ -43,4 +43,5 @@
         </form>
     <% } %>
     </div>
+    <button type="button" class="dtc-theme-toggle" aria-label="Toggle colour scheme" onclick="dtcToggleTheme()">🌙</button>
 </nav>

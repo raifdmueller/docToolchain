@@ -23,6 +23,11 @@
         return title
     }
 
+    // arc42 chapter number — only for top-level entries (Element C)
+    def arc42Num(int idx, int pos) {
+        idx == 0 ? "<span class=\"arc42-num\">${String.format('%02d', pos + 1)}</span> " : ''
+    }
+
     def printMenu(def c, int index, def entries) {
         String result = ''
         if(entries) {
@@ -44,7 +49,7 @@
                         result = result + """
                             <li class="td-sidebar-nav__section-title td-sidebar-nav__section $hasChild">
                                 <a class="align-left pl-0 pr-2 pt-2 td-sidebar-link td-sidebar-link__section $isActive"
-                                   href="${c.rootpath}${entry.uri}" title="${printTitle(entry)}">${printTitle(entry)}</a>
+                                   href="${c.rootpath}${entry.uri}" title="${printTitle(entry)}">${arc42Num(index, index2)}${printTitle(entry)}</a>
                                 """
                     }
                 } else {
@@ -56,9 +61,9 @@
                     if (entry.children) {
                         result += """\n<details id="d${printTitle(entry).md5()}">"""
                         if (has00file) {
-                        result = result + """<summary><span class="label"><a style="margin-left: 0px;" class="$isActive" href="${c.rootpath}${has00file.uri}" title="${printTitle(has00file)}">${printTitle(has00file)}</a></span></summary>"""
+                        result = result + """<summary><span class="label">${arc42Num(index, index2)}<a style="margin-left: 0px;" class="$isActive" href="${c.rootpath}${has00file.uri}" title="${printTitle(has00file)}">${printTitle(has00file)}</a></span></summary>"""
                         } else {
-                        result = result + """<summary><span class="label">${printTitle(entry)}</span></summary>"""
+                        result = result + """<summary><span class="label">${arc42Num(index, index2)}${printTitle(entry)}</span></summary>"""
                         }
                     } else {
                         result += """<li class="td-sidebar-nav__section-title td-sidebar-nav__section $hasChild">"""
