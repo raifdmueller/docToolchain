@@ -12,8 +12,6 @@
 :disableredirects:
 include::_config.adoc[]
 
-:manualdir: https://github.com/docToolchain/docToolchain/edit/master/src/docs/
-
 = docToolchain Manual
 
 
@@ -52,37 +50,8 @@ include::40_features.adoc[leveloffset=+1]
 :leveloffset: +0
 
 <<<
-include::../015_tasks/03_task_autobuildSite.adoc[]
-
-'''
-
-<<<
 
 include::../015_tasks/03_task_generateHTML.adoc[]
-
-'''
-
-<<<
-
-include::../015_tasks/03_task_copy_themes.adoc[]
-
-'''
-
-<<<
-
-include::../015_tasks/03_task_fixencoding.adoc[]
-
-'''
-
-<<<
-
-include::../015_tasks/03_task_prependFilename.adoc[]
-
-'''
-
-<<<
-
-include::../015_tasks/03_task_collectIncludes.adoc[]
 
 '''
 
@@ -100,79 +69,7 @@ include::../015_tasks/03_task_generateSite.adoc[]
 
 <<<
 
-include::../015_tasks/03_task_generateDocBook.adoc[]
-
-'''
-
-<<<
-
-include::../015_tasks/03_task_generateDeck.adoc[]
-
-'''
-
-<<<
-
 include::../015_tasks/03_task_publishToConfluence.adoc[]
-
-'''
-
-<<<
-
-include::../015_tasks/03_task_convertToDocx.adoc[]
-
-'''
-
-<<<
-
-include::../015_tasks/03_task_createReferenceDoc.adoc[]
-
-'''
-
-<<<
-
-include::../015_tasks/03_task_convertToEpub.adoc[]
-
-'''
-
-<<<
-
-include::../015_tasks/03_task_exportEA.adoc[]
-
-'''
-
-<<<
-
-include::../015_tasks/03_task_exportVisio.adoc[]
-
-'''
-
-<<<
-
-include::../015_tasks/03_task_exportDrawIo.adoc[]
-
-'''
-
-<<<
-
-include::../015_tasks/03_task_exportChangeLog.adoc[]
-
-'''
-
-<<<
-
-include::../015_tasks/03_task_exportContributors.adoc[]
-
-'''
-
-<<<
-
-include::../015_tasks/03_task_exportJiraIssues.adoc[]
-
-'''
-
-<<<
-
-include::../015_tasks/03_task_exportJiraSprintChangelog.adoc[]
 
 '''
 
@@ -190,37 +87,7 @@ include::../015_tasks/03_task_exportExcel.adoc[]
 
 <<<
 
-include::../015_tasks/03_task_exportMarkdown.adoc[]
-
-'''
-
-<<<
-
-include::../015_tasks/03_task_exportOpenApi.adoc[]
-
-'''
-
-<<<
-
-include::../015_tasks/03_task_exportStructurizr.adoc[]
-
-'''
-
-<<<
-
-include::../015_tasks/03_task_htmlSanityCheck.adoc[]
-
-'''
-
-<<<
-
-include::../015_tasks/03_task_dependencyUpdates.adoc[]
-
-'''
-
-<<<
-
-include::../025_development/development.adoc[leveloffset=+1]
+include::../015_tasks/03_task_downloadTemplate.adoc[]
 
 '''
 
@@ -233,10 +100,6 @@ include::../010_manual/50_Frequently_asked_Questions.adoc[leveloffset=+1]
 <<<
 
 include::../010_manual/60_further_reading.adoc[leveloffset=+1]
-
-<<<
-
-include::../010_manual/040_contributors.adoc[leveloffset=+1]
 
 <<<
 

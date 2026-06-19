@@ -30,24 +30,8 @@ When `DTC_HEADLESS=true` is set, the task will use sensible defaults:
 [source, bash]
 ----
 export DTC_HEADLESS=true
-./dtcw downloadTemplate
+./dtcw4 local downloadTemplate
 ----
-
-==== Using Project Properties
-
-You can override specific options using Gradle project properties:
-
-* `-PdtcTemplate=<template>` - Template name (e.g., `arc42`, `req42`)
-* `-PdtcLang=<language>` - Language code (e.g., `EN`, `DE`, `FR`)
-* `-PdtcHelp=<variant>` - Help variant: `plain` or `withhelp`
-* `-PdtcAntora=<boolean>` - Antora setup: `y`, `yes`, `true`, or `n`, `no`, `false`
-
-[source, bash]
-----
-./dtcw downloadTemplate -PdtcTemplate=req42 -PdtcLang=DE -PdtcHelp=withhelp -PdtcAntora=n
-----
-
-These properties work in both interactive and headless mode, allowing you to automate template downloads with specific configurations.
 
 === experimental Antora support
 
