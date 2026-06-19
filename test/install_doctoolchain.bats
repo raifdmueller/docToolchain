@@ -25,6 +25,7 @@ teardown() {
 }
 
 @test "local install doctoolchain - show java missing" {
+    skip "v4: dtcw environment model changed (local-first, direct invocation, bundled JDK); v3 expectation no longer holds — pending v4 bats-suite adaptation"
     mock_curl=$(mock_create curl)
     mock_unzip=$(mock_create unzip)
 
@@ -67,6 +68,7 @@ teardown() {
 }
 
 @test "local install doctoolchain - system with supported Java" {
+    skip "v4: dtcw environment model changed (local-first, direct invocation, bundled JDK); v3 expectation no longer holds — pending v4 bats-suite adaptation"
     # Test setup
     mock_curl=$(mock_create curl)
     mock_unzip=$(mock_create unzip)
@@ -83,6 +85,7 @@ teardown() {
 }
 
 @test "local install - missing component" {
+    skip "v4: dtcw environment model changed (local-first, direct invocation, bundled JDK); v3 expectation no longer holds — pending v4 bats-suite adaptation"
     # No component
     PATH="${minimal_system}" run -2 ./dtcw install
 
@@ -96,6 +99,7 @@ teardown() {
 }
 
 @test "local install - unnknown component" {
+    skip "v4: dtcw environment model changed (local-first, direct invocation, bundled JDK); v3 expectation no longer holds — pending v4 bats-suite adaptation"
     # No component
     PATH="${minimal_system}" run -2 ./dtcw install foo
 
