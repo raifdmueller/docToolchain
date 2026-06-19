@@ -8,17 +8,20 @@ include::../_feedback.adoc[]
 
 === About This Task
 
-When you have only one document, the output of `generateHTML` might meet your requirements.
-But as your documentation grows, and you have multiple documents, you will need a microsite which bundles all the information.
-The `generateSite` task uses https://jbake.org[jBake] to create a static site with a landing page, a blog and search.
+When your documentation grows beyond a single document, a microsite bundles everything into a navigable website with landing page, blog, and search.
+The `generateSite` task uses https://jbake.org[jBake] to create a static site from your AsciiDoc sources.
+
+[source,bash]
+----
+./dtcw4 local generateSite
+----
+
+Output is written to `build/microsite/output/`.
 
 === Pages
 
-The microsite is page-oriented, not document-oriented.
-If you have already organized your documents by chapter, use them as pages to create a great user experience.
-The arc42-template sources are a good example.
-
-To include a page in the microsite, add a metadata header to it.
+The microsite is page-oriented: each AsciiDoc file becomes a page.
+Add jBake metadata to include a page in the site:
 
 .page metadata
 [source, asciidoc]
@@ -28,249 +31,112 @@ To include a page in the microsite, add a metadata header to it.
 :jbake-order: 4
 :jbake-type: page_toc
 :jbake-status: published
-:filename: 015_tasks/03_task_generateSite.adoc
 ifndef::imagesdir[:imagesdir: ../../images]
 
 :toc:
 
-[[section-solution-strategy]]
-=== Solution Strategy
+== Solution Strategy
 ----
 
-Here is an overview of each element:
+*jbake-menu*:: The top-level menu code. Defaults to the top-level folder name (without order prefix).
 
-*jbake-menu*
+*jbake-title*:: Title shown in the navigation. Defaults to the first headline.
 
-The top-level menu's code for this page.
-Defaults to the top-level folder name (without the order prefix) of the .adoc file within the `docDir`.
-Example: if the top-level folder name is `10_news` it will default to the value `news`.
+*jbake-order*:: Sort order in the sidebar. Defaults to the numeric prefix of the filename or folder.
 
-For each code, the display text and the order in the top-level menu can be <<#top-menu-config, configured>>.
+*jbake-type*:: Controls the template. Use `page_toc` for a page with sidebar table of contents, or `page` for full-width.
 
-*jbake-title*
+*jbake-status*:: Either `draft` or `published`. Files prefixed with `_` default to `draft`.
 
-The title to be displayed in the drop-down top-level menu.
-Defaults to the first headline of the file.
-
-*jbake-order*
-
-Applies a sort order to drop-down entries.
-Defaults to a prefixed file number, such as `**04**_filename.adoc` or to the prefixed number of the second-level folder name.
-When nothing is defined the default value is `-1` or `-987654321` for `index` pages.
-
-*jbake-type*
-
-The page type.
-Controls which template is used to render the page.
-You will mostly use `page` for a full-width page or `page_toc` for a page with a table of contents (toc) rendered on the left.
-Defaults to `page_toc`.
-
-*jbake-status*
-
-Either `draft` or `published`.
-Only `published` pages will be rendered.
-Defaults to `published` for files with a `jbake-order` and `draft` for files without `jbake-order` or files prefixed with `_`.
-
-*filename*
-
-Required for edit and feedback links (coming soon).
-Defaults to the filename :-).
-
-*ifndef*
-
-Fixes the imagesdir according to the nesting level of your docs folder.
-Defaults to the main `docDir/images`.
-
-*toc*
-
-For `:jbake-type: page_toc`, you need this line to generate the toc.
-
-NOTE: Start your pages with a `==` level headline.
-You can fix the level offset when you include the page in a larger document with `include::chapter.adoc[leveloffset=+1]`.
+NOTE: Start pages with a `==` level headline.
 
 [[config]]
 === Configuration
 
-The configuration follows the __convention-over-configuration__ approach.
-If you follow the conventions, you don't have to configure anything.
-But if you want to, you can override the convention behaviour with a configuration.
+Configuration follows a convention-over-configuration approach.
+Defaults work out of the box — configure only what you want to change.
 
 ==== Menu
 
-===== Navigation elements
+===== Navigation Structure
 
-The navigation is organized with following elements:
+* A *top-level menu* with entries across the top of the page.
+* A *section sidebar* for each top-level menu entry.
 
-* A top level menu.
-* For each item of this top level menu, a section sidebar on the left.
-
-The location of a page in the top-level menu and in the section sidebar depends on:
-
-* Its location in the folder structure
-* Page attributes
-* Site configurations
-
-Example:
+The structure is derived from your folder layout:
 
 [source]
 ----
 src/docs/
 ├── 10_foo
-│   ├── 10_first.adoc
-│   └── 20_second.adoc
+│   ├── 10_first.adoc
+│   └── 20_second.adoc
 └── 20_bar
     ├── 10_lorem.adoc
-    ├── 20_ipsum
-    │   ├── 10_topic-A.adoc
-    │   └── 20_topic-B.adoc
-    └── 30_delis
-        ├── 10_one.adoc
-        ├── 20_two.adoc
-        └── index.adoc
+    └── 20_ipsum
+        ├── 10_topic-A.adoc
+        └── 20_topic-B.adoc
 ----
 
-The top level folders (`10_foo` and `20_bar`) are used to determine to which menu-code the page belongs (`foo` and `bar`, unless overridden by the `:jbake-menu:` inside each page).
-
-In the section sidebar, the navigation tree is determined by the folder structure.
-Folders are nodes in the sidebar tree.
-Each node can contain pages (leafs) or other folders (child nodes).
-The order is controlled by the prefix of the file or folder name (unless overridden by the `:jbake-order:` inside each page).
-
-When an index page is present (like `20_bar/30_delis/index.adoc` in the example) then the navigation tree node corresponds to this index page (you can click on it and the title is taken from the page).
-When this `index.adoc` does not declare a specific order with `:jbake-order:` then the order of the parent folder (for the example: `30` because the folder is named `30_delis`).
-
-When the index page is absent (like there is no `20_bar/20_ipsum/index.adoc` in the example) then the name of the folder is used to create the node, and you can not click on the node because no pages is associated with this node.
-You can still define the order with the name (for the example `20` because the folder is named `20_ipsum`).
-
-When there is no sub-folder, only a flat list of pages is created.
-
-NOTE: When an `index.adoc` page is defined inside the top level folder (like: `10_foo/index.adoc` or `20_bar/index.adoc`) then the page will be listed in the section navigation tree in the sidebar as any other regular page. By default, it will be the first element of the tree, unless the value is overridden by a `:jbake-order:` attribute.
+Top-level folders determine menu codes (`foo`, `bar`).
+Sub-folders create navigation tree nodes.
+Numeric prefixes control sort order.
 
 [[top-menu-config]]
-===== Configuring the top level menu
+===== Configuring the Top-Level Menu
 
-The `:jbake-menu:` is only the code for the menu entry to be created.
-You can map these codes to menu entries through the configuration (`microsite`-Section) in the following way:
+Map menu codes to display titles in your `docToolchainConfig.groovy`:
 
 [source, groovy]
 ----
 menu = [code1: 'Some Title 1', code2: 'Other Title 2', code3: '-']
 ----
 
-When no mapping is defined in the configuration file, the code is used as title.
-
-The menu configuration is also impacting the display order.
-
-If you have four files, located in following folder structure:
-
-[source]
-----
-src/docs
-├── code1
-│   ├── demo1.adoc
-│   └── demo2.adoc
-└── code3
-    ├── demo3.adoc
-    └── _demo4.adoc
-----
-
-Where `demo1.adoc` and `demo3.adoc` contain no `:jbake-menu:` header, `demo2.adoc` contains `:jbake-menu: code2`, then:
-
-* `demo1.adoc` will have a menu-code of `code1` because it is located in the folder `code1`.
-This code is translated through the configuration to the menu named `Some Title 1`.
-* `demo2.adoc` is in the same folder, but the `:jbake-menu:` attribute has a higher precedence which results in menu-code `code2`.
-This code is translated through the configuration to the menu named `Other Title 2`.
-* `demo3.adoc` will have a menu-code `code3` because it is located in the folder `code3`.
-This code is translated through the configuration to the special menu `-` which will not be displayed.
-This is an easy way to hide a menu in the rendered microsite.
-* `\_demo4.adoc` starts with an underscore `_` and thus will be handled as `draft` (`:jbake-status: draft`).
-It will not be rendered as part of any menu, but it will be available in the microsite as "hidden" `_demo4-draft.html`.
-Feel free to remove these draft renderings before you publish your microsite.
+Use `'-'` to hide a menu entry.
+When no mapping is defined, the code itself is used as the title.
+The order in the map determines the display order.
 
 ==== Links
 
-In the column on the right, links are driven by the values defined in `docToolchainConfig.groovy`.
+In the right column, links are controlled by values in `docToolchainConfig.groovy`:
 
-* "Improve this doc": displayed when `gitRepoUrl` is set.
-* "Create an issue": displayed when `issueUrl` is set.
-
-==== Configuring the JBake plugin
-
-Behind the scene the `generateSite` task is relying on Jbake.
-
-In the `docToolchainConfig.groovy` it is possible to amend the configuration of the jbake gradle plugin:
-
-* Add additional asciidoctorj plugins (add dependencies to the `jbake` configuration)
-* Add additional asciidoctor attributes
-
-[source,groovy]
-.jbake configuration
-----
-include::{projectRootDir}/Config.groovy[tags=jbakeConfig]
-----
-
-The plugins are retrieved from a repository (by default maven-central) configured with project property `depsMavenRepository`.
-When a repository requiring credentials is used the properties `depsMavenUsername` and `depsMavenPassword` can be set as well.
+* "Improve this doc": shown when `gitRepoUrl` is set.
+* "Create an issue": shown when `issueUrl` is set.
 
 === Templates and Style
 
-The jBake templates and CSS are hidden for convenience.
-
-The basic template uses http://getbootstrap.com/[Twitter Bootstrap 5] as its CSS framework.
-Use the xref:03_task_copy_themes.adoc[`copyThemes`] task to copy all hidden jBake resources to your project.
-You can then remove the resources you don't need, and change those you want to change.
-
-NOTE: `copyThemes` overwrites existing files, but because your code is safely managed using version control, this shouldn't be a problem.
+The jBake templates use https://getbootstrap.com/[Bootstrap 5] as their CSS framework.
+Templates and styles are bundled with docToolchain.
 
 === Landing Page
 
-Place an `index.gsp` page as your landing page in `src/site/templates`.
-This landing page is plain HTML5 styled with Twitter Bootstrap.
-The page header and footer are added by docToolchain.
-An example can be found at xref:03_task_copy_themes.adoc[`copyThemes`] or https://github.com/docToolchain/docToolchain/blob/ng/src/site/templates/index.gsp[on GitHub].
+Place an `index.gsp` in `src/site/templates` as your landing page.
+It is plain HTML5 styled with Bootstrap — the header and footer are added automatically.
 
 === Blog
 
-The microsite also contains a simple but powerful blog.
-Use it to inform your team about changes, as well as architecture decision records (ADRs).
-
-To create a new blog post, create a new file in `src/docs/blog/<year>/<post-name>.adoc` with the following template:
+The microsite includes a blog.
+Create posts in `src/docs/blog/<year>/<post-name>.adoc`:
 
 .blog post template
 [source, asciidoc]
 ----
-:jbake-title: <title-of your post>
-:jbake-date: <date formatted as 2021-02-28>
+:jbake-title: My Post Title
+:jbake-date: 2025-01-15
 :jbake-type: post
-:jbake-tags: <blog, asciidoc>
+:jbake-tags: blog, asciidoc
 :jbake-status: published
 
-:imagesdir: ../../images
-
 = {jbake-title}
-{jbake-author}
 {jbake-date}
 
-<insert your text here>
-
+Your content here.
 ----
 
 === Search
 
-The microsite does not have its own local search.
-But it does have a search input field which can be used to link to another search engine.
+The microsite includes a search input field that can be linked to an external search engine.
 
 === CI/CD
 
-When running in an automated build, set the environment variable `DTC_HEADLESS` to `true` or `1`. This stops docToolchain from asking to install the configured theme, and it will simply assume that you do want to install it.
-You can also avoid the theme downloading with every build by copying the themes folder from `$HOME/.doctoolchain/themes` to the corresponding folder in your build container.
-
-=== Further Reading and Resources
-
-Read about the `previewSite` task xref:03_task_previewSite.adoc[here.]
-
-=== Source
-
-:param_source_file: scripts/generateSite.gradle
-:param_source_language: groovy
-include::_viewTaskSource.adoc[]
+Set `DTC_HEADLESS=true` in automated builds to skip interactive prompts (e.g., theme installation).

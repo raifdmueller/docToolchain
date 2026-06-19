@@ -12,6 +12,9 @@ This task is primarily used to bootstrap a new project. You can choose to downlo
 
 === Setup and Configuration
 
+IMPORTANT: `downloadTemplate` requires an existing `docToolchainConfig.groovy` in your project root (or the path set via `DTC_CONFIG_FILE`).
+If the file doesn't exist yet, create an empty one: `touch docToolchainConfig.groovy`.
+
 You can choose to bootstrap your project as an Antora project or as a plain AsciiDoc project. The Antora integration is currently in beta. The Antora integration enables you to register the project seamlessly with an existing Antora playbook.
 
 === Headless Mode
@@ -30,24 +33,8 @@ When `DTC_HEADLESS=true` is set, the task will use sensible defaults:
 [source, bash]
 ----
 export DTC_HEADLESS=true
-./dtcw downloadTemplate
+./dtcw4 local downloadTemplate
 ----
-
-==== Using Project Properties
-
-You can override specific options using Gradle project properties:
-
-* `-PdtcTemplate=<template>` - Template name (e.g., `arc42`, `req42`)
-* `-PdtcLang=<language>` - Language code (e.g., `EN`, `DE`, `FR`)
-* `-PdtcHelp=<variant>` - Help variant: `plain` or `withhelp`
-* `-PdtcAntora=<boolean>` - Antora setup: `y`, `yes`, `true`, or `n`, `no`, `false`
-
-[source, bash]
-----
-./dtcw downloadTemplate -PdtcTemplate=req42 -PdtcLang=DE -PdtcHelp=withhelp -PdtcAntora=n
-----
-
-These properties work in both interactive and headless mode, allowing you to automate template downloads with specific configurations.
 
 === experimental Antora support
 

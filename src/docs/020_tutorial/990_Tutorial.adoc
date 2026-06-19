@@ -62,7 +62,7 @@ As soon as the PR is submitted, netlify will start to render a preview.
 You will see some tasks running on the PR-page and the last one will give you a link to the preview-site.
 
 Two:: you can render the page locally through docToolchain.
-Execute `./dtcw generateSite` locally and you will find the result in `build/microsite/output/index.html`
+Execute `./dtcw4 local generateSite` locally and you will find the result in `build/microsite/output/index.html`
 
 === Submit your Pull-Request
 

@@ -1,12 +1,48 @@
 :jbake-rightColumnHtml: <a href="single-page.html"><i class="fa fa-file fa-fw"></i> View single page</a>
-//tag::install[]
 
 :filename: 010_manual/40_features.adoc
 
-== Using docToolchain to Build Docs
+== Features
 
 include::../_feedback.adoc[]
 
-docToolchain implements many features via scripts, which you call through the command line. These scripts are called `tasks` in this documentation.
+docToolchain v4 is a docs-as-code tool that generates professional documentation from AsciiDoc sources.
 
-Learn more about these scripts in the xref:../015_tasks/03_tasks.adoc[Tasks] menu.
+=== Fast Startup
+
+Tasks run via direct JVM invocation — no Gradle daemon, no build system overhead.
+Typical startup time is 2-3 seconds.
+
+=== No Ruby Required
+
+v4 uses AsciidoctorJ (the Java port of AsciiDoctor) exclusively.
+No Ruby gems, no external `asciidoctor` CLI needed.
+
+=== Multiple Output Formats
+
+Generate HTML, PDF, or a full microsite from the same AsciiDoc sources.
+See the xref:../015_tasks/03_tasks.adoc[Tasks] section for all available output formats.
+
+=== Diagram Support
+
+Built-in support for text-based diagrams via https://asciidoctor.org/docs/asciidoctor-diagram/[asciidoctor-diagram]:
+PlantUML, ditaa, Mermaid, and more.
+
+=== Confluence Publishing
+
+Publish your documentation directly to Confluence, keeping docs-as-code and Confluence in sync.
+Only changed pages are updated — no spam for page watchers.
+
+=== Cross-Platform
+
+All tasks work on Linux, macOS, and Windows.
+The `exportPPT` task uses Apache POI — no Windows-only dependencies.
+
+=== Template Support
+
+Bootstrap your project with architecture templates like https://arc42.org[arc42] or https://req42.de[req42].
+
+=== CI/CD Ready
+
+Set `DTC_HEADLESS=true` for non-interactive mode.
+Works with GitHub Actions, GitLab CI, Jenkins, and any CI system with Java 17.

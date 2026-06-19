@@ -5,95 +5,89 @@
 
 include::../_feedback.adoc[]
 
-This appendix covers all configuration introduced by docToolchain.
-AsciiDoc, AsciiDoctor, Gradle and other tools and libraries used know of more configuration settings and you can read about those in the corresponding documentation.
+docToolchain uses a single Groovy configuration file for all settings.
 
-== `mainConfigFile` and `docDir`
+== Configuration File
 
-docToolchain should be easy to use.
-That's why the goal is to have one config file with all settings for each project.
-But first of all, docToolchain has to know where your documentation project is located.
+By default, docToolchain looks for `docToolchainConfig.groovy` in your project root.
 
-If `docDir` is defined, the default for `mainConfigFile` is `Config.groovy` in the root folder of your `docDir`.
+=== Overriding the Config File
 
-You have several options to specify the location of your documentation project (`docDir`) and the location of your config file (`mainConfigFile`).
+Use the `DTC_CONFIG_FILE` environment variable:
 
-=== Commandline
-
-Specify the property on the commandline
-
-    ./dtcw generateHTML -PmainConfigFile=Config.groovy
-
-TIP: you can verify the location of your `Config.groovy` by executing docToolchain with the `--info` parameter which sets the loglevel to `info`.
-It will print the location on the command line (among other settings)
-
-=== Environment Variable
-
-You can also specify the `mainConfigFile` using the environment variable `DTC_CONFIG_FILE`. This will override the default value of `docToolchainConfig.groovy`.
-
-    export DTC_CONFIG_FILE=path/to/config.groovy
-
-=== Automatic Config File Creation
-
-If the config file does not exist, docToolchain will prompt you to create a default one. For unattended use (e.g., with CI/CD pipelines or LLM agents), you can enable automatic config file creation:
-
-==== Using the DTC_HEADLESS Environment Variable
-
-When `DTC_HEADLESS=true` is set, docToolchain will automatically create a default config file without prompting:
-
-[source, bash]
+[source,bash]
 ----
-export DTC_HEADLESS=true
-./dtcw generateHTML
+export DTC_CONFIG_FILE=path/to/config.groovy
 ----
 
-==== Using Project Property
+IMPORTANT: The config file must exist before running any task.
+If it is missing, `DtcConfig.load()` will fail.
+Run `./dtcw4 local downloadTemplate` to create a default one, or create an empty `docToolchainConfig.groovy` manually.
 
-You can also explicitly request automatic config creation using the `-PcreateConfig=true` property:
-
-[source, bash]
-----
-./dtcw generateHTML -PcreateConfig=true
-----
-
-This is useful when you want to ensure a config file exists without enabling full headless mode.
-
-=== dynamic configuration properties
-
-Sometimes you need a more dynamic configuration.
-Since the configuration file is an executable `.groovy` file, you can not only configure static values but also fetch dynamic once.
-
-For example,
-
-[source]
-----
-   example = System.properties.myProperty
-----
-
-You can then specify the property with the `-D` parameter like this
-
-[source]
-----
-./dtcw docker generateHTML -DmyProperty=myValue
-----
-
-In the same way, you can use environment variables
-
-[source]
-----
-   example = System.getenv("myEnvVariable")
-----
-
-But in this case, you have to ensure that the environment variable can be accessed.
-It will not work for docker based execution of `dtcw`
-
-=== Content of the `mainConfigFile`
+== Core Settings
 
 [source,groovy]
 ----
-include::{projectRootDir}/Config.groovy[tags=**]
+outputPath = 'build'
+inputPath = 'src/docs'
+
+inputFiles = [
+    [file: 'manual.adoc', formats: ['html','pdf']],
+]
+
+imageDirs = ['images/.']
 ----
 
-== AsciiDoc config
+`outputPath`:: Base directory for all generated output.
+`inputPath`:: Directory containing your AsciiDoc sources.
+`inputFiles`:: List of files to process, with desired output formats (`html`, `pdf`).
+`imageDirs`:: Directories to scan for images (relative to `inputPath`).
 
-== Command Line Parameters
+== Microsite Settings
+
+[source,groovy]
+----
+microsite.with {
+    contextPath = '/'
+    title = 'My Documentation'
+    host = 'https://example.com'
+    landingPage = 'landingpage.gsp'
+    menu = [
+        about: 'About',
+        manual: 'User Docs',
+        tasks: 'Tasks',
+    ]
+}
+----
+
+`menu`:: Maps menu codes (from folder names or `:jbake-menu:` attributes) to display titles.
+Use `'-'` to hide a menu entry.
+
+== Confluence Settings
+
+[source,groovy]
+----
+confluence = [
+    api: 'https://your-wiki.atlassian.net/wiki',
+    spaceKey: 'MY_SPACE',
+    credentials: "user:${new File('/path/to/apitoken').text}",
+    input: [
+        [file: 'build/html5/manual.html', ancestorId: '123456'],
+    ],
+]
+----
+
+See the xref:../015_tasks/03_task_publishToConfluence.adoc[publishToConfluence] task for all options.
+
+== Dynamic Configuration
+
+Since the config file is executable Groovy, you can use dynamic values:
+
+[source,groovy]
+----
+// From system property: ./dtcw4 local generateHTML -DmyProp=value
+example = System.properties.myProp
+
+// From environment variable
+example = System.getenv("MY_VAR")
+----

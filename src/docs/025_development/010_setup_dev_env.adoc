@@ -5,50 +5,85 @@ include::../_feedback.adoc[]
 
 === Before You Begin
 
-When you install docToolchain, all the code is hidden. The information on this page explains how to get access to the code, so you can customise the setup in your dev environment.
+When you install docToolchain, all the code is hidden in `~/.doctoolchain/`.
+This page explains how to set up a development environment to modify and test docToolchain itself.
 
-=== Do a Local Install for Docker and SDKMAN!
+=== Using the Devcontainer
 
-You need a local installation of docToolchain for development. Docker and SDKMAN! are derived from it. Docker simply contains a local install, and SDKMAN! installs docToolchain locally, but the location is controlled by SDKMAN! not docToolchain.
+The easiest way to develop docToolchain is using the multi-repo devcontainer from the workspace root (not this repo):
 
-The docToolchain-Wrapper installs docToolchain locally to `$HOME/.doctoolchain/docToolchain-${VERSION}/`. All task invocations through the docToolchain-Wrapper `dtcw` are redirected to `$HOME/.doctoolchain/docToolchain-${VERSION}/bin/doctoolchain`. This shell script calls the Gradle-Wrapper for most tasks.
+[source, bash]
+----
+# From the workspace root (parent of docToolchain/)
+./start-devcontainer.sh
+----
 
-What you need to do is:
+This provides Java 17, Go, Python, and all necessary tools.
 
-1. Create a local install which is connected to your GitHub fork of docToolchain.
-2. Create a folder called `$HOME/.doctoolchain/docToolchain-2.0.0-dev/`.
-3. Check out the ng-branch of your fork to this folder.
-4. To use this version in your test project, edit the version at the start of your `dtcw` script to `2.0.0-dev`.
+=== Local Development Setup
 
-You now have the full repo locally cloned. To save memory, some parts of the repo are zipped. If you have problems, check out the https://github.com/docToolchain/docToolchain/blob/master/build.gradle#L79[prepareDist-Task].
+1. Fork https://github.com/docToolchain/docToolchain on GitHub.
+2. Clone your fork:
++
+[source, bash]
+----
+git clone --branch main-4.x git@github.com:<your-user>/docToolchain.git
+cd docToolchain
+----
 
-=== Create Gradle-Independent Tasks
+3. Build the runtime JARs:
++
+[source, bash]
+----
+./gradlew packageLibs
+----
++
+This creates `build/lib/*.jar` — the v4 runtime classpath.
+Copy them to `lib/` for the wrapper to detect v4:
++
+[source, bash]
+----
+cp -r build/lib lib
+----
 
-All tasks currently use Gradle to run. You can bypass Gradle for tasks where it doesn’t add any value (and make docToolchain run faster as a result!). To do this, use the `bin/doctoolchain` scripts and create a switch.
+4. Run tasks directly:
++
+[source, bash]
+----
+CLASSPATH=$(find lib/ -name '*.jar' | tr '\n' ':') \
+  java -DdocDir=. -DmainConfigFile=Config.groovy \
+  groovy.ui.GroovyMain scripts/generateHTML.groovy
+----
+
+=== Running Tests
+
+[source, bash]
+----
+./gradlew core:test
+----
+
+See xref:020_run_tests.adoc[] for details.
 
 === Create or Change a Theme
 
-It’s not just the docToolchain code that is hidden. The themes for the static site generator jBake are also hidden. Follow these procedures to customise themes.
-
 ==== How to Overwrite a Project Theme
 
-When docToolchain builds a static website, it first copies an internal theme to a temp folder, then copies an external theme (if defined) over it. Finally, it copies the project theme over the top. This gives you the opportunity to overwrite some parts of the theme on a per-project basis. To do this:
+When docToolchain builds a static website, it copies themes in this order:
 
-1. Run the `copyThemes` task to copy the internal and external themes to the `microsite.siteFolder`.
-2. Check the files (take a look at https://jbake.org/[jbake.org] to get a better understanding).
-3. Modify the relevant files and delete all the other files.
+1. Internal theme → `build/microsite/tmp/site`
+2. External theme (if `DTC_SITETHEME` is set)
+3. Project theme from `src/site/`
 
-==== How to Modify an Existing Theme or Create a Theme from Scratch
+To customize, place your modified files in `src/site/` in your project.
 
-As we have already mentioned, an external theme is simply a zipped copy of the 'microsite.siteFolder'. All themes are downloaded when referenced from a `dtcw` configuration, and are stored in `$HOME/.doctoolchain/themes/[hash of url]`.
+==== How to Create a Theme from Scratch
 
-To modify an existing theme, go to its folder and check out the theme’s project instead of the downloaded copy. This will create a connection back to the GitHub repo so that you can modify the theme directly in `$HOME/.doctoolchain/themes/[hash of url]`.
-
-To create a new theme from scratch, use a simple md5 hash. For example, if you configure your new theme as `"myTheme"` then `"myTheme".md5()` will be the hash.
+A theme is the contents of the `src/site/` directory.
+See the https://jbake.org/docs/2.6.7/#project_structure[jBake documentation] for the expected structure.
 
 === Special Functionality for Themes (Config Fragments)
 
-It’s likely that you will need a new config item for your self-generated theme. And you can also prompt users to set a value for this new config item when they install the theme for the first time. To do this, create a file called `configFragment.groovy` in the `site` folder of your theme. For example:
+Create a `configFragment.groovy` in the `site` folder of your theme to prompt users for config values during theme installation:
 
 [source, groovy]
 ----
@@ -57,6 +92,4 @@ It’s likely that you will need a new config item for your self-generated theme
 title = '##site-title##'
 ----
 
-* The first line is the message that will be shown to the user (can be over several lines).
-* The second line (starting with `Example`:) is the default value for the prompt.
-* The third line is the config item itself. If the value is surrounded by `##`, the user will be prompted for this value and it will be replaced with the user’s input. Otherwise, the config item will be added without a prompt to the user’s current `docToochainConfig.groovy`.
+Values surrounded by `##` will prompt the user during installation.
