@@ -16,27 +16,22 @@ If you encounter problems, create a https://github.com/docToolchain/docToolchain
 * *git*
 * *Bash* — on Windows, use WSL2
 
-=== 1. Get the Wrapper Scripts
+=== 1. Get the Wrapper Script
 
-.Linux / macOS / WSL2 (including Windows via WSL2)
-[role='primary']
---
 [source, bash]
 ----
 cd <your project>
-curl -Lo dtcw https://doctoolchain.org/dtcw
 curl -Lo dtcw4 https://doctoolchain.org/dtcw4
-chmod +x dtcw dtcw4
+chmod +x dtcw4
 ----
 
-NOTE: On Windows, use WSL2. The v4 wrappers (`dtcw4`, `dtcw`) are Bash scripts.
---
+NOTE: On Windows, use WSL2. `dtcw4` is a Bash script.
 
 === 2. Install docToolchain
 
 [source, bash]
 ----
-./dtcw local install java        # if Java is not installed
+./dtcw4 local install java        # if Java is not installed
 ./dtcw4 local install doctoolchain
 ----
 
@@ -51,20 +46,20 @@ This lists all available tasks.
 
 === Problems & solutions
 
-==== `dtcw` doesn't run
+==== `dtcw4` doesn't run
 
 You might get an error like:
 
 [source]
 ----
-./dtcw: line 1: syntax error near unexpected token `newline'
-./dtcw: line 1: `<!DOCTYPE html>'
+./dtcw4: line 1: syntax error near unexpected token `newline'
+./dtcw4: line 1: `<!DOCTYPE html>'
 ----
 
 This means the wrapper didn't download correctly (an HTML page was downloaded instead).
 Please redownload the wrapper.
 
-==== Docker throws an error with `dtcw`
+==== Docker throws an error
 
 On Windows you might get:
 
