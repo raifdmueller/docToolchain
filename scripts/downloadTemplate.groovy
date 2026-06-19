@@ -89,7 +89,7 @@ println "Downloading ${url}"
 def conn = new URL(url).openConnection()
 conn.connectTimeout = 15000
 conn.readTimeout = 60000
-zipFile.bytes = conn.inputStream.bytes
+conn.inputStream.withCloseable { zipFile.bytes = it.bytes }
 
 // Unzip
 new ZipInputStream(new FileInputStream(zipFile)).withCloseable { zis ->

@@ -28,7 +28,7 @@ new File(exportFileDir, 'readme.ad').write("""\
 This folder contains exported workbooks from Excel.
 These are generated files — **contents will be overwritten with each re-export!**
 Use './dtcw exportExcel' to re-export.
-""")
+""", 'UTF-8')
 
 def tree = []
 srcDir.eachFileRecurse { f ->
@@ -159,8 +159,8 @@ def exportSheet = { sheet, evaluator, targetFileName ->
                 style[index] + "| ${value.replaceAll('[|]', '{vbar}').replaceAll("\n", ' +$0') + colors[index]}"
         }.join(nl) + nl * 2, 'UTF-8')
     }
-    targetFileAD.append('|===' + nl)
-    targetFileAD.write(targetFileAD.text.replaceAll("(?m)(\\r?\\n){2,}", nl + nl))
+    targetFileAD.append('|===' + nl, 'UTF-8')
+    targetFileAD.write(targetFileAD.text.replaceAll("(?m)(\\r?\\n){2,}", nl + nl), 'UTF-8')
 }
 
 tree.each { File excel ->

@@ -76,7 +76,7 @@ if (siteThemeUrl) {
             def conn = new URL(siteThemeUrl).openConnection()
             conn.connectTimeout = 15000
             conn.readTimeout = 60000
-            themeZip.bytes = conn.inputStream.bytes
+            conn.inputStream.withCloseable { themeZip.bytes = it.bytes }
             new java.util.zip.ZipInputStream(new FileInputStream(themeZip)).withCloseable { zis ->
                 def entry
                 while ((entry = zis.nextEntry) != null) {
@@ -252,6 +252,8 @@ docDestDir.traverse(type: FileType.FILES) { file ->
                     if (secondLevel ==~ /[0-9]+[-_].*/) {
                         jbake.order = secondLevel.split("[-_]", 2)[0]
                     }
+                } else if (((jbake.order ?: '1') as Integer) <= 0) {
+                    jbake.status = "draft"
                 }
             }
             if (jbake.order == -1 && docname.startsWith('index')) {

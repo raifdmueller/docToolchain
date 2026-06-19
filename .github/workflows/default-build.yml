@@ -6,7 +6,7 @@ on:
       - '!gh-pages'
       - 'ng'
       - 'main-4.x'
-    path:
+    paths:
       - 'core/**'
       - 'scripts/**'
       - 'src/**'
@@ -16,7 +16,7 @@ on:
   pull_request:
     branches: [ master, ng, main-4.x ]
     # Ignore changes for dtcw
-    path:
+    paths:
       - 'core/**'
       - 'scripts/**'
       - 'src/**'
@@ -85,4 +85,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-report-${{ matrix.jdk }}-${{ matrix.java }}
-          path: build/reports/tests/test/
+          paths: build/reports/tests/test/

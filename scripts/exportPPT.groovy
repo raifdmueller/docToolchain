@@ -37,8 +37,8 @@ This folder contains exported slides from PowerPoint.
 These are generated files — **contents will be overwritten with each re-export!**
 Use './dtcw exportPPT' to re-export.
 """
-new File(imagesDir, 'readme.ad').write(readme)
-new File(notesDir, 'readme.ad').write(readme)
+new File(imagesDir, 'readme.ad').write(readme, 'UTF-8')
+new File(notesDir, 'readme.ad').write(readme, 'UTF-8')
 
 def pptFiles = []
 srcDir.eachFileRecurse { f ->
