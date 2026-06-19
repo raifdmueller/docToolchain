@@ -142,12 +142,12 @@
     </url>
 
     <url>
-    	<loc>https://localhost/015_tasks/03_task_publishToConfluence.html</loc>
+    	<loc>https://localhost/015_tasks/03_task_copyThemes.html</loc>
     	<lastmod>2026-06-19</lastmod>
     </url>
 
     <url>
-    	<loc>https://localhost/015_tasks/03_task_copyThemes.html</loc>
+    	<loc>https://localhost/015_tasks/03_task_publishToConfluence.html</loc>
     	<lastmod>2026-06-19</lastmod>
     </url>
 
@@ -162,12 +162,12 @@
     </url>
 
     <url>
-    	<loc>https://localhost/015_tasks/03_task_generateSite.html</loc>
+    	<loc>https://localhost/015_tasks/03_task_exportPPT.html</loc>
     	<lastmod>2026-06-19</lastmod>
     </url>
 
     <url>
-    	<loc>https://localhost/015_tasks/03_task_exportPPT.html</loc>
+    	<loc>https://localhost/015_tasks/03_task_generateSite.html</loc>
     	<lastmod>2026-06-19</lastmod>
     </url>
 
@@ -197,12 +197,12 @@
     </url>
 
     <url>
-    	<loc>https://localhost/025_development/050_who-uses-dtc.html</loc>
+    	<loc>https://localhost/025_development/020_run_tests.html</loc>
     	<lastmod>2026-06-19</lastmod>
     </url>
 
     <url>
-    	<loc>https://localhost/025_development/020_run_tests.html</loc>
+    	<loc>https://localhost/025_development/050_who-uses-dtc.html</loc>
     	<lastmod>2026-06-19</lastmod>
     </url>
 
@@ -442,12 +442,12 @@
     </url>
 
     <url>
-    	<loc>https://localhost/ea/Use_Cases_links.html</loc>
+    	<loc>https://localhost/ea/UseCases.html</loc>
     	<lastmod>2026-06-19</lastmod>
     </url>
 
     <url>
-    	<loc>https://localhost/ea/UseCases.html</loc>
+    	<loc>https://localhost/ea/Use_Cases_links.html</loc>
     	<lastmod>2026-06-19</lastmod>
     </url>
 
