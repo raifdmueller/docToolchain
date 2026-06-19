@@ -28,6 +28,10 @@ guava = "33.0.0-jre"
 # Test
 spock = "2.3-groovy-4.0"
 spock-reports = "2.5.1-groovy-4.0"
+# Groovy-3 Spock for the root project's tests: they use gradleTestKit(), which
+# pins Gradle's bundled Groovy 3, so they can't run the Groovy-4 Spock compiler.
+spockG3 = "2.3-groovy-3.0"
+spockReportsG3 = "2.3.2-groovy-3.0"
 junit = "5.9.3"
 byte-buddy = "1.14.4"
 
@@ -66,5 +70,7 @@ guava = { module = "com.google.guava:guava", version.ref = "guava" }
 # Test
 spock-core = { module = "org.spockframework:spock-core", version.ref = "spock" }
 spock-reports = { module = "com.athaydes:spock-reports", version.ref = "spock-reports" }
+spock-g3-core = { module = "org.spockframework:spock-core", version.ref = "spockG3" }
+spock-g3-reports = { module = "com.athaydes:spock-reports", version.ref = "spockReportsG3" }
 junit = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 byte-buddy = { module = "net.bytebuddy:byte-buddy", version.ref = "byte-buddy" }
