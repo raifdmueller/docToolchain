@@ -1,8 +1,8 @@
 <%
-    if (config.site_menu=="") {
+    if (config.site_menu==null || config.site_menu=="") {
         config.site_menu=[:]
     }
-    def menu = content.menu[content['jbake-menu']]
+    def menu = content.menu ? content.menu[content['jbake-menu']] : null
 
     def printTitle(entry) {
         def title
@@ -16,7 +16,7 @@
         if (config.site_menuType?.toLowerCase()?.startsWith("config")) {
             // do nothing
         } else {
-            if (config.site_menu[title]) {
+            if (config.site_menu && config.site_menu[title]) {
                 title = config.site_menu[title]
             }
         }
