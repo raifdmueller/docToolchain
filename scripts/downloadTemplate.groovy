@@ -86,7 +86,10 @@ outputDir.mkdirs()
 
 def zipFile = new File(outputDir, 'template.zip')
 println "Downloading ${url}"
-zipFile.bytes = new URL(url).bytes
+def conn = new URL(url).openConnection()
+conn.connectTimeout = 15000
+conn.readTimeout = 60000
+zipFile.bytes = conn.inputStream.bytes
 
 // Unzip
 new ZipInputStream(new FileInputStream(zipFile)).withCloseable { zis ->

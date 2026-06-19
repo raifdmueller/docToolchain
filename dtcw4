@@ -82,7 +82,7 @@ v4_install() {
     fi
 
     echo ""
-    echo "Building v4 runtime libraries (this may take a few minutes on first run)..."
+    echo "Building v4 runtime libraries (one-time Gradle build, not needed at runtime)..."
     (cd "${DTC_HOME}" && ./gradlew packageLibs --no-daemon --warning-mode=none -q)
 
     local jar_count
@@ -123,8 +123,8 @@ case "${1:-}" in
         echo "Environment variables:"
         echo "  DTC_V4_BRANCH   Git branch to install from (default: main-4.x)"
         echo ""
-        echo "This wrapper installs v4 from source and delegates task"
-        echo "execution to dtcw, which handles v4 natively."
+        echo "Installation uses Gradle once to package runtime JARs."
+        echo "After that, all tasks run without Gradle (direct JVM execution)."
         exit 0
         ;;
 esac

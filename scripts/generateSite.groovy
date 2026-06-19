@@ -58,7 +58,7 @@ if (internalTheme.exists()) {
 def siteThemeUrl = System.getenv('DTC_SITETHEME') ?: ''
 if (siteThemeUrl) {
     def isHeadless = System.getProperty('DTC_HEADLESS', System.getenv('DTC_HEADLESS') ?: 'false') == 'true'
-    def themeCacheDir = new File(new File(docDir).parentFile, "themes/${siteThemeUrl.md5()}")
+    def themeCacheDir = new File(dtcHome, "themes/${siteThemeUrl.md5()}")
     if (!themeCacheDir.exists()) {
         if (!isHeadless) {
             print "${color('green', "Theme '${siteThemeUrl}' is not cached. Download? [y/n]: ")}"
@@ -73,7 +73,10 @@ if (siteThemeUrl) {
             println "Downloading site theme from ${siteThemeUrl}"
             themeCacheDir.mkdirs()
             def themeZip = new File(themeCacheDir, 'siteTheme.zip')
-            themeZip.bytes = new URL(siteThemeUrl).bytes
+            def conn = new URL(siteThemeUrl).openConnection()
+            conn.connectTimeout = 15000
+            conn.readTimeout = 60000
+            themeZip.bytes = conn.inputStream.bytes
             new java.util.zip.ZipInputStream(new FileInputStream(themeZip)).withCloseable { zis ->
                 def entry
                 while ((entry = zis.nextEntry) != null) {
