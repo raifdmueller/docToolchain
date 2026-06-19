@@ -1,0 +1,166 @@
+:jbake-title: Building Block View
+:jbake-type: page_toc
+:jbake-status: published
+:jbake-menu: arc42
+:jbake-order: 5
+:filename: /chapters/05_building_block_view.adoc
+ifndef::imagesdir[:imagesdir: ../../images]
+
+:toc:
+
+
+
+[[section-building-block-view]]
+
+
+== Building Block View
+
+This section decomposes docToolchain v4 into its static building blocks at three levels of detail.
+The key structural change from v3: Gradle Orchestration and the compiled Core Module are removed. The architecture simplifies to two layers plus an ecosystem of companion tools.
+
+=== Level 1: Whitebox Overall System
+
+[plantuml,level1-container-v4,png]
+----
+@startuml
+!include <C4/C4_Container>
+
+LAYOUT_WITH_LEGEND()
+
+Person(user, "Documentation Author", "Writes AsciiDoc,\nruns dtcw commands")
+Person(llm, "LLM Agent", "Navigates and modifies\ndocs via MCP")
+
+System_Boundary(dtc, "docToolchain v4") {
+    Container(wrapper, "Wrapper Layer", "Bash / PowerShell / Batch", "dtcw, dtcw.ps1, dtcw.bat\nCLI entry point,\nclasspath construction,\nJava/tool installation")
+    Container(scripts, "Groovy Scripts", "Groovy", "scripts/*.groovy\nAll task logic:\ngeneration, publishing,\nexport, site building")
+}
+
+System_Boundary(ecosystem, "Ecosystem") {
+    Container(dacli, "daCLI", "Python / FastMCP", "MCP server for structured\ndocument access (10 tools)")
+    Container(bausteinsicht, "Bausteinsicht", "Go / Cobra", "Architecture-as-code\nJSONC + draw.io sync")
+    Container(prompts, "LLM-Prompts", "AsciiDoc", "Reusable prompts for\narc42 documentation")
+}
+
+System_Ext(asciidoctor, "AsciiDoctor CLI", "Document processor\n(external tool, auto-installed)")
+System_Ext(confluence, "Atlassian Confluence", "REST API v1/v2")
+System_Ext(jira, "Atlassian Jira", "REST API v3")
+
+Rel(user, wrapper, "Invokes tasks via CLI")
+Rel(wrapper, scripts, "Invokes Groovy scripts\nvia java/groovy runtime")
+Rel(scripts, asciidoctor, "Renders AsciiDoc")
+Rel(scripts, confluence, "Publishes pages")
+Rel(scripts, jira, "Exports issues")
+
+Rel(llm, dacli, "MCP tool calls")
+Rel(dacli, scripts, "Reads/writes\ndoc sources")
+Rel(llm, bausteinsicht, "Reads/writes\nJSONC models")
+Rel(llm, prompts, "Uses prompts")
+@enduml
+----
+
+Motivation::
+v4 simplifies from four layers (Wrapper -> Gradle -> Script Plugins -> Core Module) to two layers (Wrapper -> Scripts). The Gradle orchestration layer and the compiled Core Module are eliminated. Business logic returns to scripts. Companion tools (daCLI, Bausteinsicht, LLM-Prompts) handle LLM integration as an ecosystem rather than embedding it into docToolchain itself.
+
+Contained Building Blocks::
+
+[options="header",cols="1,2,2"]
+|===
+|Building Block |Responsibility |Location
+
+|Wrapper Layer
+|Cross-platform CLI entry point. Constructs classpath from `lib/` directory (or resolves via Grape). Manages Java installation. Invokes Groovy scripts directly — no build framework intermediary. Detects execution environment (local/Docker/SDKMAN).
+|`dtcw`, `dtcw.ps1`, `dtcw.bat`
+
+|Groovy Scripts
+|All task logic: document generation (AsciiDoctor invocation), site generation (custom SSG), Confluence publishing, Jira export, changelog extraction, and all other features. Each script is a self-contained unit that runs without compilation.
+|`scripts/*.groovy`
+
+|daCLI (Ecosystem)
+|MCP server providing 10 tools for structured document access: navigation, search, section-level read/write, validation. Separate Python process communicating via stdio.
+|Separate repository (`dacli/`)
+
+|Bausteinsicht (Ecosystem)
+|Architecture-as-code tool. JSONC models with bidirectional draw.io sync. Exports PlantUML/PNG for embedding in AsciiDoc. CLI with `--format json` for LLM interaction.
+|Separate repository (`Bausteinsicht/`)
+
+|LLM-Prompts (Ecosystem)
+|Reusable prompt collection for arc42 documentation: chapter generation, ADR creation, quality scenarios, risk assessment, stakeholder analysis.
+|Separate repository (`LLM-Prompts/`)
+|===
+
+=== Level 2: Whitebox Groovy Scripts
+
+The scripts are organized into functional groups. Unlike v3 (where scripts were Gradle task definitions applied via `apply from:`), v4 scripts are standalone Groovy files invoked directly.
+
+[options="header",cols="1,2,3"]
+|===
+|Category |Scripts |Purpose
+
+|Document Generation
+|`generateHTML.groovy`, `generatePDF.groovy`, `generateDocbook.groovy`, `generateDeck.groovy`
+|Core document generation. Calls AsciiDoctor CLI (external tool, ADR-6) for rendering. Replaces the `AsciiDocBasics.gradle` approach.
+
+|Site Generation
+|`generateSite.groovy`, `copyThemes.groovy`
+|Custom Groovy-based static site generator replacing jBake (ADR-4). Groovy SimpleTemplate engine, in-memory content model, modern HTML output. Reads jBake-compatible metadata headers.
+
+|Atlassian Integration
+|`publishToConfluence.groovy`, `exportJiraIssues.groovy`, `exportJiraSprintChangelog.groovy`, `exportConfluence.groovy`
+|Confluence publishing (with smart MD5-based update detection) and Jira data export. Contains the Confluence client hierarchy (V1/V2) and Jira client/converter logic formerly in `core/`.
+
+|External Tool Export
+|`exportEA.groovy`, `exportPPT.groovy`, `exportVisio.groovy`, `exportStructurizr.groovy`, `exportOpenApi.groovy`
+|Extract diagrams and models from external tools. EA/PPT/Visio are Windows-only (VBScript).
+
+|Data Import/Export
+|`exportExcel.groovy`, `exportMarkdown.groovy`, `exportChangelog.groovy`, `exportContributors.groovy`, `exportMetrics.groovy`, `pandoc.groovy`
+|Import data from Excel, convert Markdown, extract Git metadata, run Pandoc conversions.
+
+|Utilities
+|`collectIncludes.groovy`, `fixEncoding.groovy`, `htmlSanityCheck.groovy`, `downloadTemplate.groovy`
+|Supporting tasks: aggregate includes, fix encodings, validate HTML, download templates.
+
+|Configuration
+|`config.groovy` (or loaded inline)
+|Loads `docToolchainConfig.groovy` via Groovy `ConfigSlurper`. Provides config access to all scripts.
+|===
+
+=== Level 3: Whitebox Atlassian Integration
+
+The Atlassian integration scripts contain the richest business logic. In v3 this was the compiled `core/` module; in v4 it returns to script form.
+
+[plantuml,level3-atlassian-v4,png]
+----
+@startuml
+!include <C4/C4_Component>
+
+LAYOUT_WITH_LEGEND()
+LAYOUT_LEFT_RIGHT()
+
+Container_Boundary(atlassian, "Atlassian Integration Scripts") {
+    Component(pubConf, "publishToConfluence.groovy", "Groovy Script", "Orchestrates HTML parsing,\ntransformation, and publishing")
+    Component(confSvc, "ConfluenceService", "Groovy class", "Page management,\nhash comparison,\nattachment handling")
+    Component(confV1, "ConfluenceClientV1", "Groovy class", "REST API v1\n(Server / Data Center)")
+    Component(confV2, "ConfluenceClientV2", "Groovy class", "REST API v2\n(Cloud)")
+    Component(htmlTrans, "HtmlTransformer", "Groovy class", "HTML to Confluence\nstorage format")
+
+    Component(expJira, "exportJiraIssues.groovy", "Groovy Script", "Orchestrates Jira export")
+    Component(jiraSvc, "JiraService", "Groovy class", "JQL queries,\nconverter dispatch")
+    Component(jiraClient, "JiraServerClient", "Groovy class", "REST API v3/v1")
+    Component(adocConv, "AsciiDocConverter", "Groovy class", "Issues to AsciiDoc")
+    Component(excelConv, "ExcelConverter", "Groovy class", "Issues to XLSX")
+}
+
+Rel(pubConf, confSvc, "Uses")
+Rel(confSvc, confV1, "v1 API calls")
+Rel(confSvc, confV2, "v2 API calls")
+Rel(confSvc, htmlTrans, "Transforms HTML")
+
+Rel(expJira, jiraSvc, "Uses")
+Rel(jiraSvc, jiraClient, "JQL queries")
+Rel(jiraSvc, adocConv, "Formats output")
+Rel(jiraSvc, excelConv, "Formats output")
+@enduml
+----
+
+The key difference from v3: these classes are **not compiled into a Shadow JAR**. They are Groovy source files loaded at runtime. The script entry point (`publishToConfluence.groovy`) loads helper classes from a shared `lib/` directory or via inline `GroovyClassLoader`.

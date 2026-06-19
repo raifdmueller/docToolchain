@@ -1,0 +1,50 @@
+name: CodeNarc (Groovy Linting)
+
+on:
+  pull_request:
+    branches: [main-4.x, ng]
+    paths:
+      - '**.groovy'
+      - '**.gradle'
+      - '.github/workflows/codenarc.yml'
+  workflow_dispatch: {}
+
+jobs:
+  codenarc:
+    name: CodeNarc Static Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: adopt
+          java-version: 17
+
+      - name: Download CodeNarc
+        env:
+          CODENARC_VERSION: '3.5.0'
+          GROOVY_VERSION: '3.0.13'
+          SLF4J_VERSION: '1.7.36'
+          GMETRICS_VERSION: '2.1.0'
+        run: |
+          mkdir -p /tmp/codenarc
+          BASE="https://repo1.maven.org/maven2"
+          curl -sL -o /tmp/codenarc/CodeNarc.jar "${BASE}/org/codenarc/CodeNarc/${CODENARC_VERSION}/CodeNarc-${CODENARC_VERSION}.jar"
+          curl -sL -o /tmp/codenarc/groovy.jar "${BASE}/org/codehaus/groovy/groovy/${GROOVY_VERSION}/groovy-${GROOVY_VERSION}.jar"
+          curl -sL -o /tmp/codenarc/groovy-xml.jar "${BASE}/org/codehaus/groovy/groovy-xml/${GROOVY_VERSION}/groovy-xml-${GROOVY_VERSION}.jar"
+          curl -sL -o /tmp/codenarc/groovy-templates.jar "${BASE}/org/codehaus/groovy/groovy-templates/${GROOVY_VERSION}/groovy-templates-${GROOVY_VERSION}.jar"
+          curl -sL -o /tmp/codenarc/GMetrics.jar "${BASE}/org/gmetrics/GMetrics/${GMETRICS_VERSION}/GMetrics-${GMETRICS_VERSION}.jar"
+          curl -sL -o /tmp/codenarc/slf4j-api.jar "${BASE}/org/slf4j/slf4j-api/${SLF4J_VERSION}/slf4j-api-${SLF4J_VERSION}.jar"
+          curl -sL -o /tmp/codenarc/slf4j-simple.jar "${BASE}/org/slf4j/slf4j-simple/${SLF4J_VERSION}/slf4j-simple-${SLF4J_VERSION}.jar"
+
+      - name: Run CodeNarc on scripts/
+        run: |
+          java -classpath "/tmp/codenarc/*" \
+            org.codenarc.CodeNarc \
+            -basedir=. \
+            -includes="scripts/*.groovy" \
+            -rulesetfiles=rulesets/basic.xml,rulesets/exceptions.xml,rulesets/imports.xml \
+            -report=console

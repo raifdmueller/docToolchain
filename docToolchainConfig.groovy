@@ -12,10 +12,23 @@ outputPath = 'build'
 inputPath = 'src/docs'
 pdfThemeDir = './src/docs/pdfTheme'
 
+//*****************************************************************************************
+
+// v4: AsciiDoctor options for generateHTML task
+// These are only used in v4 direct Groovy execution mode.
+// Uncomment and change to override defaults.
+
+// sourceHighlighter = 'rouge'          // Syntax highlighter: rouge, coderay, highlight.js, prettify
+// toc = 'left'                         // TOC position: left, right, auto, preamble, or '' to disable
+// toclevels = '3'                      // TOC depth (1-5)
+// icons = 'font'                       // Icon set: font (Font Awesome) or image
+// asciidoctorRequires = ['asciidoctor-diagram']  // AsciiDoctor extensions to load (-r flag)
+
 inputFiles = [
         //[file: 'doctoolchain_demo.adoc',       formats: ['html','pdf']],
         //[file: 'arc42-template.adoc',    formats: ['html','pdf']],
         [file: 'manual_test_script.adoc',    formats: ['html', 'pdf']],
+	[file: 'arc42/arc42.adoc', formats: ['html','pdf']],
 	/** inputFiles **/
 ]
 
@@ -24,7 +37,7 @@ inputFiles = [
 imageDirs = [
     'images/.',
     '020_tutorial/images/.',
-    '020_tutorial/040_microsite/images/.'
+    '020_tutorial/040_microsite/images/.',
     /** imageDirs **/
 ]
 

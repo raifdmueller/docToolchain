@@ -1,0 +1,139 @@
+:jbake-title: Context and Scope
+:jbake-type: page_toc
+:jbake-status: published
+:jbake-menu: arc42
+:jbake-order: 3
+:filename: /chapters/03_context_and_scope.adoc
+ifndef::imagesdir[:imagesdir: ../../images]
+
+:toc:
+
+
+
+[[section-context-and-scope]]
+== Context and Scope
+
+docToolchain sits between documentation authors (human and AI) and their audiences.
+Authors write AsciiDoc sources in a version-controlled repository; docToolchain processes these sources and delivers the output to readers.
+In v4, LLM agents become first-class users of the system via daCLI's MCP server.
+
+=== Business Context
+
+[plantuml,business-context,png]
+----
+@startuml
+!include <C4/C4_Context>
+
+LAYOUT_WITH_LEGEND()
+
+Person(author, "Documentation Author", "Writes AsciiDoc sources,\nruns docToolchain tasks")
+Person(devops, "DevOps Engineer", "Integrates docToolchain\ninto CI/CD pipelines")
+Person(reader, "Documentation Reader", "Consumes generated\ndocumentation")
+Person(llm, "LLM Agent", "Navigates and modifies\ndocs via MCP")
+
+System(dtc, "docToolchain v4", "Lightweight docs-as-code tool.\nGroovy scripts, no Gradle.\nLLM-native.")
+
+System_Ext(dacli, "daCLI", "MCP server for structured\ndocument access (10 tools)")
+System_Ext(bausteinsicht, "Bausteinsicht", "Architecture-as-code with\nbidirectional draw.io sync")
+System_Ext(llmprompts, "LLM-Prompts", "Reusable prompts for\narc42 documentation")
+
+System_Ext(confluence, "Atlassian Confluence", "Enterprise wiki")
+System_Ext(jira, "Atlassian Jira", "Issue tracker")
+System_Ext(ea, "Enterprise Architect", "UML modeling (Windows)")
+System_Ext(git, "Git Repository", "Version control")
+System_Ext(structurizr, "Structurizr", "Architecture DSL")
+
+Rel(author, dtc, "Writes docs, invokes tasks via dtcw")
+Rel(devops, dtc, "Automates doc builds in CI/CD")
+Rel(dtc, reader, "Delivers HTML, PDF, microsites")
+Rel(llm, dacli, "Navigates docs via MCP tools")
+Rel(dacli, dtc, "Reads/writes doc sources")
+Rel(llm, llmprompts, "Uses prompts for\narc42 generation")
+Rel(llm, bausteinsicht, "Reads/writes JSONC\narchitecture models")
+Rel(dtc, confluence, "Publishes pages")
+Rel(dtc, jira, "Exports issues")
+Rel(dtc, ea, "Extracts diagrams")
+Rel_Back(dtc, git, "Reads changelog, contributors")
+Rel(dtc, structurizr, "Renders architecture diagrams")
+@enduml
+----
+
+[options="header",cols="1,2,2"]
+|===
+|Communication Partner |Input to docToolchain |Output from docToolchain
+
+|Documentation Author
+|AsciiDoc source files, configuration (`docToolchainConfig.groovy`), CLI commands via `dtcw`
+|Generated HTML, PDF, DocBook, Reveal.js slides, microsite
+
+|LLM Agent (via daCLI)
+|MCP tool calls: `get_structure`, `get_section`, `search`, `update_section`, `insert_content`
+|Structured section content, metadata, validation results
+
+|Bausteinsicht
+|JSONC architecture models, draw.io diagram exports (PNG, PlantUML)
+|-- (consumed as images/includes in AsciiDoc sources)
+
+|LLM-Prompts
+|Prompt-guided AsciiDoc output (arc42 chapters, ADRs, quality scenarios)
+|-- (consumed as doc sources)
+
+|Atlassian Confluence
+|--
+|HTML pages with attachments, page hierarchy, labels
+
+|Atlassian Jira
+|Issues (via JQL queries), sprint data, custom fields
+|--
+
+|Enterprise Architect
+|UML diagrams (via COM automation, Windows only)
+|--
+
+|Git Repository
+|Commit history, contributor metadata
+|--
+
+|Structurizr
+|Architecture model (DSL files)
+|--
+|===
+
+=== Technical Context
+
+[options="header",cols="1,2,2"]
+|===
+|External System |Protocol / Interface |Configuration
+
+|daCLI
+|MCP protocol via stdio. LLMs call 10 tools for document navigation, search, and modification.
+|`dacli-mcp --docs-root <path>` — points to docToolchain's `src/docs/` directory.
+
+|Atlassian Confluence
+|REST API v1 (Server/Data Center) or v2 (Cloud). HTTPS with Basic Auth or Bearer Token.
+|`confluence.api`, `confluence.credentials`, `confluence.spaceKey` in config
+
+|Atlassian Jira
+|REST API v3 (Cloud) or v1 (Server). HTTPS with Basic Auth or Bearer Token.
+|`jira.api`, `jira.credentials`, `jira.exports[].jql` in config
+
+|Enterprise Architect
+|COM automation via VBScript. Reads `.eap` / `.eapx` project files.
+|`exportEA.connection`, `exportEA.packageFilter` in config
+
+|Structurizr
+|File-based. Parses Structurizr DSL, renders to PlantUML.
+|`structurizr.workspace.filename` in config
+
+|Git
+|Local CLI (`git log`, `git shortlog`). No network access required.
+|`changelog.dir`, `changelog.cmd` in config
+
+|AsciiDoctor CLI
+|External tool (gem/brew/apt), auto-installed by `dtcw` in a pinned version (ADR-6). Processes AsciiDoc to HTML5, PDF, DocBook via CLI batch invocation.
+|`inputFiles`, `inputPath`, `outputPath` in config
+
+|Groovy Site Generator
+|Custom Groovy script replacing jBake. Reads AsciiDoc + Groovy SimpleTemplates, generates static HTML microsite.
+|`microsite.*` config section (backward-compatible with v3 jBake metadata headers)
+|===

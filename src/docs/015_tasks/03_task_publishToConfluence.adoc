@@ -123,6 +123,29 @@ To authenticate with username and API token, use:
     credentials = "user:${new File("/users/me/apitoken").text}"`.bytes.encodeBase64().toString()` to ........
 You can create an API-token in https://confluence.atlassian.com/cloud/api-tokens-938839638.html[your profile].
 
+[IMPORTANT]
+====
+Atlassian is deprecating unscoped (classic) API tokens.
+If you receive a `403 - Forbidden` error with an existing token, create a new *scoped API token* and select the following scopes:
+
+[%header,cols="1,2"]
+|===
+|Scope |Purpose
+
+|`read:me`
+|Verify API credentials (read current user info)
+
+|`read:confluence-content.all`
+|Read pages, attachments, and labels
+
+|`write:confluence-content`
+|Create, update, and delete pages, attachments, and labels
+
+|`read:confluence-space.summary`
+|Read space information (required when using API V2)
+|===
+====
+
 To authenticate with username and password, use:
     credentials = ......
 
@@ -130,14 +153,6 @@ You can also set your username, password of apitoken as an environment variable.
 1. Open the file that contains the environment variables:
     a. On a Mac, go to your Home folder and open the file .zpfrofile.
 2. ....
-
-
-If you wish to simplify the injection of credentials from external sources, do the following:
-1. In docToolchainConfig.groovy, do not enter the credentials. Make sure the credentials are escaped.
-2. Create a `gradle.properties` file in the project or home directory. See https://docs.gradle.org/current/userguide/build_environment.html[the gradle user guide].
-3. Open the file, and put the variables in it:
-    - confluenceUser=myusername, and on a new line
-    - confluencePass=myuserpassword
 
 
 *apikey*
@@ -218,13 +233,6 @@ Using the plugin can be handled on different ways.
     ----
 --
 
-.configuration
-.publishToConfluence.gradle
-[source,groovy]
-----
-include::{projectRootDir}/Config.groovy[tags=confluenceConfig]
-----
-
 === CSS Styling
 
 Some AsciiDoctor features depend on specific CSS style definitions.
@@ -283,13 +291,3 @@ The following style definitions are Confluence-compatible, and will enable the u
 .yellow-background{background-color:#fafa00}
 ----
 
-=== Source
-
-:param_source_file: scripts/publishToConfluence.gradle
-:param_source_language: groovy
-:param_source_tags: publishToConfluence
-include::_viewTaskSource.adoc[]
-
-:param_source_file: core/src/main/groovy/org/docToolchain/scripts/asciidoc2confluence.groovy
-:param_source_language: groovy
-include::_viewTaskSource.adoc[]

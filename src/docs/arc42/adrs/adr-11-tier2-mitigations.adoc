@@ -1,0 +1,76 @@
+=== ADR-11: Tier 2 Mitigation Implementation
+
+* **Status**: Decided
+* **Context**: ADR-10 assessed docToolchain as Tier 2 (Extended Assurance) with only 5 of 10 required mitigations in place. Four gaps needed to be closed: pre-commit hooks, dependency checking, type checking/static analysis, and AI code review. Property-based tests were identified as the tenth measure but deferred.
+* **Decision**: Implement the four missing mitigations using free, open-source tools that work independently of Gradle (preparing for the v4 transition per ADR-3).
++
+**Implemented measures:**
++
+[cols="2,2,3", options="header"]
+|===
+|Measure |Tool |Rationale
+
+|Pre-Commit Hooks
+|pre-commit framework with bash-syntax, shellcheck, asciidoc-linter, gitleaks
+|Catches issues locally before CI. Gitleaks prevents accidental credential commits. asciidoc-linter ensures documentation quality at the source.
+
+|Dependency Check
+|Trivy (aquasecurity/trivy-action)
+|Scans `lib/*.jar` for known CVEs. Works without Gradle — scans the filesystem directly. Runs on PRs and weekly (Monday 06:00 UTC). Results uploaded to GitHub Security tab via SARIF.
+
+|Type Checking / Static Analysis
+|CodeNarc (standalone CLI, no Gradle plugin)
+|Standard Groovy linter. Checks basic rules, exception handling, unused imports. Runs standalone via downloaded JARs — no Gradle dependency. Matches Groovy 3.0.13 (same version as docToolchain).
+
+|AI Code Review
+|GitHub Copilot Code Review
+|Enabled on the default branch. Automated reviewer on PRs. Complements manual reviews and SonarCloud.
+|===
++
+**Deferred measure:**
++
+Property-Based Tests — deferred until v4 Groovy scripts are production-ready. The v4 functions currently live in `dtcw` (shell) where property-based testing is impractical. When Groovy scripts handle business logic, jqwik or Spock data-driven tests will be added.
+
+* **Alternatives considered**:
+
+[cols="1,1,1,1", options="header"]
+|===
+|Criterion |Gradle-integrated tools |Standalone tools |No additional tooling
+
+|Gradle independence (ADR-3)
+|–1 (ties us to Gradle)
+|+1 (works after Gradle removal)
+|+1
+
+|Setup complexity
+|+1 (plugins are easy)
+|0 (JARs must be downloaded)
+|+1
+
+|CI transparency
+|0 (hidden in Gradle output)
+|+1 (dedicated workflows, clear logs)
+|–1
+
+|Maintenance after v4 migration
+|–1 (must be rewritten)
+|+1 (unchanged)
+|+1
+
+|Coverage of mitigation requirements
+|+1
+|+1
+|–1 (gaps remain)
+
+|**Total**
+|**0**
+|**+4**
+|**+1**
+|===
+
+* **Quality Tradeoffs**:
+** Supports **QS-4 (Reliability)**: 9/10 mitigations cover automated gates and extended assurance comprehensively.
+** Supports **QS-9 (Fast startup)**: All tools run standalone — no Gradle overhead in CI for these checks.
+** Supports **QS-11 (Script-first)**: CodeNarc analyzes scripts directly without requiring compilation.
+** Neutral on **QS-14 (v3 compatibility)**: Tools analyze the codebase as-is, no changes to runtime behavior.
+* **Consequences**: All CI workflows are independent of Gradle and will survive the v4 migration unchanged. The `pre-commit` framework must be installed in the devcontainer (added to `post-create.sh`). CodeNarc downloads JARs from Maven Central at CI runtime (~12 MB). Trivy scans require `./gradlew packageLibs` to populate `build/lib/` — after v4 migration this will be replaced by whatever populates `lib/`.

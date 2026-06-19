@@ -1,0 +1,197 @@
+:jbake-title: Quality Requirements
+:jbake-type: page_toc
+:jbake-status: published
+:jbake-menu: arc42
+:jbake-order: 10
+:filename: /chapters/10_quality_requirements.adoc
+ifndef::imagesdir[:imagesdir: ../../images]
+
+:toc:
+
+
+
+[[section-quality-scenarios]]
+== Quality Requirements
+
+The quality goals from <<section-introduction-and-goals>> drive every architecture decision in docToolchain v4.
+This section refines those goals into a structured quality tree and concrete, measurable scenarios that serve as acceptance criteria for the architecture.
+
+Quality scenarios QS-1 through QS-8 were derived from v3 codebase analysis.
+Quality scenarios QS-9 through QS-14 were derived from the v4 architecture requirements.
+
+=== Quality Requirements Overview
+
+The quality tree organizes requirements by ISO 25010 categories.
+Each leaf maps to one or more quality scenarios below.
+
+[plantuml,quality-tree,png]
+----
+@startmindmap
+* Quality
+** Functional Suitability
+*** Correct output generation
+*** Faithful Confluence publishing
+*** LLM-structured document access
+** Portability
+*** Cross-platform execution (incl. Apple Silicon)
+*** Environment equivalence
+** Usability
+*** Zero-config start
+*** Headless CI mode
+*** Modern documentation UI
+*** LLM-managed configuration
+*** Actionable error guidance
+*** Minimal repository footprint
+*** Clean uninstallation
+** Maintainability
+*** Script-first extensibility
+*** No compilation step required
+*** LLM-friendly codebase
+** Reliability
+*** Idempotent publishing
+*** Stable test suite
+** Performance Efficiency
+*** Fast startup (no build framework overhead)
+*** Fast HTML generation
+** Security / Privacy
+*** No implicit cloud data processing
+** Compatibility
+*** v3 config backward compatibility
+@endmindmap
+----
+
+=== Quality Scenarios
+
+The following scenarios are the **evaluation framework** for all architecture decisions (Section 09).
+Each ADR must state which quality scenarios it supports or compromises.
+
+==== Carried forward from v3
+
+[options="header",cols="1,1,2,2,2"]
+|===
+|ID |Quality Goal |Stimulus |Response |Metric
+
+|QS-1
+|Extensibility
+|A contributor wants to add a new export feature (e.g., export to Notion).
+|They create one Groovy script in `scripts/` and register it. No build system knowledge required.
+|No compilation step needed. The new task appears in `./dtcw tasks` output.
+
+|QS-2
+|Portability
+|A user runs `./dtcw docker generateHTML` on the same project that previously built with `./dtcw local generateHTML`.
+|Docker execution produces the same HTML output as the local execution.
+|Output files are byte-identical (excluding timestamps in HTML meta tags).
+
+|QS-3
+|Usability
+|A developer with no prior docToolchain experience clones a project containing `dtcw` and AsciiDoc sources.
+|They run `./dtcw local generateHTML` and get rendered documentation.
+|Time from first command to viewing HTML output is under 5 minutes (including automatic Java and docToolchain installation).
+
+|QS-4
+|Reliability
+|Confluence publishing is triggered twice for the same documentation without changes.
+|The second run detects that page content has not changed (via MD5 hash comparison) and skips the update.
+|No new Confluence page versions are created. Existing attachments and labels are preserved.
+
+|QS-5
+|Maintainability
+|A CI/CD pipeline runs `./dtcw local generateHTML` in a container without a TTY.
+|The `dtcw` wrapper detects headless mode (`DTC_HEADLESS=true`) and suppresses all interactive prompts. The build completes unattended.
+|Exit code 0 on success; non-zero on failure. No hanging processes waiting for user input.
+
+|QS-6
+|Usability (Installability)
+|A user runs `./dtcw local generateHTML` on a machine without a JDK.
+|The `dtcw` wrapper detects the missing JDK, downloads and installs it locally, and proceeds with the build.
+|No manual Java installation required. The installed JDK is reused for subsequent runs.
+
+|QS-7
+|Reliability
+|The test suite is executed.
+|All tests pass. Environment-dependent tests are skipped gracefully.
+|Zero test failures. Test execution completes in under 15 seconds.
+
+|QS-8
+|Performance Efficiency
+|A user runs `./dtcw local generateHTML` on a typical documentation project (~50 AsciiDoc pages with PlantUML diagrams).
+|HTML output is generated.
+|Generation completes in under 20 seconds.
+|===
+
+==== New for v4
+
+[options="header",cols="1,1,2,2,2"]
+|===
+|ID |Quality Goal |Stimulus |Response |Metric
+
+|QS-9
+|Performance (Startup + Throughput)
+|A user runs `./dtcw local generateHTML` for the second time (docToolchain already installed).
+|The task starts executing immediately without build framework initialization. AsciiDoc processing completes without unnecessary overhead from dependency resolution, daemon negotiation, or build graph computation.
+|Startup (command to first AsciiDoc processing): under 3 seconds. End-to-end time for 50 pages: under 10 seconds. No Gradle daemon, no dependency resolution, no build graph overhead.
+
+|QS-10
+|Portability (Apple Silicon)
+|A user runs `./dtcw local generateSite` on a Mac with Apple Silicon (M1/M2/M3/M4).
+|The site generation completes without errors or platform-specific workarounds.
+|No JNI/native library issues. Same output as on x86_64.
+
+|QS-11
+|Maintainability (Script-first)
+|A contributor wants to fix a bug in the Confluence publishing logic.
+|They edit a Groovy script directly and re-run. No compilation, no JAR rebuild, no Shadow JAR assembly.
+|Change-to-test cycle is under 5 seconds. No `./gradlew core:jar` step required.
+
+|QS-12
+|LLM Friendliness
+|An LLM (via daCLI MCP server) needs to read, navigate, and modify docToolchain-generated documentation.
+|daCLI provides structured access via 10 MCP tools: `get_structure`, `get_section`, `search`, `update_section`, etc. Documentation follows Semantic Anchor conventions for machine-readable navigation.
+|LLM can locate and read any section with at most 3 tool calls. Token usage is under 10% of what reading full files would require.
+
+|QS-13
+|Usability (Modern UI)
+|A reader opens a docToolchain-generated microsite in a browser.
+|The site has a modern, clean design with responsive layout, dark mode support, fast full-text search, and clear navigation.
+|Visual appearance is comparable to modern documentation sites (Starlight, Nextra, Diataxis). Page load time under 1 second.
+
+|QS-14
+|Compatibility (v3 config)
+|A user upgrades from docToolchain v3 to v4 without changing their `docToolchainConfig.groovy`.
+|The v4 `dtcw` reads the existing configuration file and executes all previously configured tasks.
+|Zero config file changes required for basic usage (generateHTML, generatePDF, publishToConfluence). Deprecated features emit warnings but do not fail.
+
+|QS-15
+|Usability (LLM-Managed Configuration)
+|A user asks an LLM to configure Confluence publishing for their project.
+|The LLM reads the current `docToolchainConfig.groovy`, understands which values deviate from defaults, and adds only the necessary settings (API URL, space key, credentials reference). The config file stays minimal — no commented-out defaults, no boilerplate.
+|The config file contains only explicit deviations from defaults. Defaults are defined in code and documented in a machine-readable reference. An LLM can read the config, explain what is configured, and modify it correctly — without hallucinating defaults or duplicating them.
+
+|QS-16
+|Privacy (No Implicit Cloud Processing)
+|A user runs `./dtcw generateHTML` with diagrams in their AsciiDoc sources. The `diagramServer` is set to `https://kroki.io/` (external service).
+|docToolchain prints a clear warning: "Diagramm-Quelltexte werden an kroki.io gesendet. Für lokale Verarbeitung setze `diagramServer = 'docker'`." The user must explicitly acknowledge or configure an external server. No data leaves the machine without the user's informed consent.
+|Zero external API calls unless the user has explicitly configured an external `diagramServer` URL. Default should be `docker` (local) or no diagrams rendered. External URLs trigger a warning on every run.
+
+|QS-17
+|Usability (Actionable Guidance)
+|A task fails due to a problem the user can fix (locked file, missing config, wrong credentials, unreachable API, missing tool).
+|Instead of a stack trace or cryptic error message, docToolchain tells the user **what to do next**: which file to close, which config key to set, which command to run. The message is a concrete action, not a diagnosis.
+|Every error message that a user can resolve contains a remediation step. Example: "Die PDF-Datei build/pdf/manual.pdf ist gesperrt. Bitte schließe sie in deinem PDF-Viewer und führe den Befehl erneut aus." Zero stack traces for user-recoverable errors. Stack traces only for bugs (unexpected exceptions).
+
+|QS-18
+|Usability (Minimal Repository Footprint)
+|A user adds docToolchain to an existing project repository.
+|Only `dtcw` (wrapper script) and `docToolchainConfig.groovy` (configuration) are committed to the project repository. All other files — JARs, scripts, templates, Java runtime — are installed externally in `$HOME/.doctoolchain/`.
+|Exactly 2 files added to the project repo (plus optional `dtcw.ps1`/`dtcw.bat` for Windows). The `build/` output directory is in `.gitignore`. No Gradle wrapper, no `build.gradle`, no `settings.gradle`, no `libs/` in the project.
+
+|QS-19
+|Usability (Clean Uninstallation)
+|A user decides to remove docToolchain from their system.
+|Deleting `$HOME/.doctoolchain/` removes the entire installation — binaries, JARs, Java runtime, caches. docToolchain does not modify shell profiles (`.bashrc`, `.zshrc`, `.profile`), does not register system services, and does not write to directories outside `$HOME/.doctoolchain/`.
+|Zero side effects after `rm -rf $HOME/.doctoolchain/`. No orphaned entries in PATH, no lingering environment variables, no modified shell config files. The project's `dtcw` and config file remain inert without the installation.
+|===
+
+// Source: v4 architecture requirements (Gradle removal, jBake replacement, LLM-native strategy),
+// daCLI MCP server (10 tools), Bausteinsicht (architecture-as-code), LLM-Prompts (Skills/Prompts)

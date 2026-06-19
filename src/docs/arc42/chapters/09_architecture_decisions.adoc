@@ -1,0 +1,44 @@
+:jbake-title: Architecture Decisions
+:jbake-type: page_toc
+:jbake-status: published
+:jbake-menu: arc42
+:jbake-order: 9
+:filename: /chapters/09_architecture_decisions.adoc
+ifndef::imagesdir[:imagesdir: ../../images]
+
+:toc:
+
+
+
+[[section-design-decisions]]
+== Architecture Decisions
+
+All architecture decisions are evaluated against the quality scenarios defined in <<section-quality-scenarios>>.
+docToolchain v4 represents a fundamental shift: from a Gradle-based build tool to an LLM-native docs-as-code platform.
+v3 is the current production version.
+
+include::../adrs/adr-01-groovy-scripting-language.adoc[]
+
+include::../adrs/adr-02-separate-core-logic.adoc[]
+
+include::../adrs/adr-03-remove-gradle.adoc[]
+
+include::../adrs/adr-04-replace-jbake.adoc[]
+
+include::../adrs/adr-05-llm-native-architecture.adoc[]
+
+include::../adrs/adr-06-asciidoctor-external.adoc[]
+
+include::../adrs/adr-07-lib-directory.adoc[]
+
+include::../adrs/adr-08-actionable-error-guidance.adoc[]
+
+include::../adrs/adr-09-kroki-diagram-server.adoc[]
+
+include::../adrs/adr-10-risk-based-qa.adoc[]
+
+include::../adrs/adr-11-tier2-mitigations.adoc[]
+
+include::../adrs/adr-tbd-1-confluence-api.adoc[]
+
+include::../adrs/adr-tbd-2-jira-client.adoc[]

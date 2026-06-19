@@ -17,7 +17,10 @@ structurizr-export = "3.0.0"
 structurizr-graphviz = "2.2.2"
 structurizr-d2-exporter = "1.5.3"
 openai-gpt3 = "0.12.0"
+asciidoctorj = "2.5.13"
+asciidoctorj-pdf = "2.3.18"
 asciidoctorj-diagram = "2.3.2"
+jbake-core = "2.6.7"
 pebble = "3.2.2"
 http-client = "5.3"
 guava = "33.0.0-jre"
@@ -52,7 +55,10 @@ structurizr-export = { module = "com.structurizr:structurizr-export", version.re
 structurizr-graphviz = { module = "com.structurizr:structurizr-graphviz", version.ref = "structurizr-graphviz" }
 structurizr-d2-exporter = { module = "io.github.goto1134:structurizr-d2-exporter", version.ref = "structurizr-d2-exporter" }
 openai-gpt3-service = { module = "com.theokanning.openai-gpt3-java:service", version.ref = "openai-gpt3" }
+asciidoctorj = { module = "org.asciidoctor:asciidoctorj", version.ref = "asciidoctorj" }
+asciidoctorj-pdf = { module = "org.asciidoctor:asciidoctorj-pdf", version.ref = "asciidoctorj-pdf" }
 asciidoctorj-diagram = { module = "org.asciidoctor:asciidoctorj-diagram", version.ref = "asciidoctorj-diagram" }
+jbake-core = { module = "org.jbake:jbake-core", version.ref = "jbake-core" }
 pebble = { module = "io.pebbletemplates:pebble", version.ref = "pebble" }
 http-client = { module = "org.apache.httpcomponents.client5:httpclient5", version.ref = "http-client" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }

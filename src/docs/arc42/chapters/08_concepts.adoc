@@ -1,0 +1,137 @@
+:jbake-title: Cross-cutting Concepts
+:jbake-type: page_toc
+:jbake-status: published
+:jbake-menu: arc42
+:jbake-order: 8
+:filename: /chapters/08_concepts.adoc
+ifndef::imagesdir[:imagesdir: ../../images]
+
+:toc:
+
+
+
+[[section-concepts]]
+== Cross-cutting Concepts
+
+=== Configuration Management
+
+Unchanged from v3 in principle, simplified in implementation.
+
+[options="header",cols="1,2,2"]
+|===
+|Layer |Source |Precedence
+
+|Project configuration
+|`docToolchainConfig.groovy` — Groovy DSL parsed by `ConfigSlurper`. Contains all task-specific settings. (`Config.groovy` is the template, not a separate config file.)
+|Primary. Project-specific settings.
+
+|CLI overrides
+|Environment variables (`DTC_CONFIG_FILE`, `DTC_HEADLESS`) and script arguments.
+|Highest. Per-invocation customization.
+|===
+
+`gradle.properties` is removed with Gradle. Build-time settings that were in `gradle.properties` (e.g., JVM memory, version) move to `dtcw` defaults or `docToolchainConfig.groovy`.
+
+**LLM-first principle (QS-15):** The config file contains **only deviations from defaults**. All defaults are defined in code and documented in a machine-readable reference. This enables LLMs to read a config, understand what the user has customized, and make targeted changes — without hallucinating or duplicating default values. A minimal config for a project that only generates HTML might be just:
+
+```groovy
+inputFiles = [
+    [file: 'arc42/arc42.adoc', formats: ['html','pdf']],
+]
+```
+
+Everything else (outputPath, inputPath, imageDirs, etc.) comes from sensible defaults in the scripts.
+
+=== Script Execution Model
+
+v4 replaces Gradle's task model with direct script invocation:
+
+1. User runs `./dtcw <taskName>` (e.g., `./dtcw generateHTML`)
+2. `dtcw` constructs the classpath from the `lib/` directory (or resolves via Grape)
+3. `dtcw` invokes `java -cp <classpath> groovy.ui.GroovyMain scripts/<taskName>.groovy`
+4. The script loads configuration, executes its logic, writes output, and exits
+5. No daemon persists between invocations
+
+Tasks are independent. There are no implicit dependencies. Users call them in the order they need: `./dtcw generateHTML` then `./dtcw publishToConfluence`. This matches real-world usage patterns.
+
+=== Authentication and Security
+
+Unchanged from v3:
+
+* **Basic Auth**: Username + API token, encoded as Base64 for `Authorization` header.
+* **Bearer Token**: OAuth or personal access token.
+* Credentials supplied via CLI arguments or environment variables — never stored in config files.
+* Properties containing `credential`, `token`, or `secret` are masked in output.
+* User-Agent header identifies docToolchain version for API calls.
+
+=== Headless / CI Mode
+
+Unchanged from v3:
+
+* `dtcw` detects headless mode via `DTC_HEADLESS` environment variable or absence of TTY.
+* All interactive prompts suppressed; defaults auto-accepted.
+* Critical for GitHub Actions, Jenkins, and other CI/CD platforms.
+
+=== LLM Integration Architecture
+
+New in v4. docToolchain supports LLMs through an ecosystem of companion tools:
+
+**daCLI (MCP Server)** provides 10 tools for structured document access:
+
+* `get_structure(max_depth)` — Hierarchical table of contents
+* `get_section(path)` — Read section content by path
+* `search(query)` — Full-text search with relevance scoring
+* `update_section(path, content, expected_hash)` — Modify with optimistic locking
+* `insert_content(path, position, content)` — Insert before/after/append
+* `get_elements(type, section)` — Extract code blocks, tables, diagrams
+* `get_metadata()` — Project-wide statistics
+* `get_dependencies()` — Include tree
+* `get_sections_at_level(level)` — Sections by depth
+* `validate_structure()` — Structural integrity checks
+
+**Semantic Anchors** are well-defined terms, methodologies, and frameworks that serve as precise reference points when communicating with LLMs.
+Rather than lengthy instructions, a single anchor like "arc42", "SOLID Principles", or "Socratic Method" activates a rich body of interconnected knowledge in the LLM.
+Quality criteria for anchors: Precise, Rich, Consistent, Attributable. (See https://llm-coding.github.io/Semantic-Anchors/)
+
+**Semantic Contracts** bundle multiple anchors into reusable working agreements, defined in `CLAUDE.md` files:
+
+* "Specification = Use Cases with Activity Diagrams + Gherkin acceptance criteria"
+* "Architecture Documentation = arc42 + C4 diagrams + ADRs with Pugh Matrix"
+* "Writing Style = Plain English according to Strunk & White"
+
+These contracts ensure that LLMs apply consistent conventions across a project without repeating detailed instructions in every prompt.
+
+**LLM-Prompts** provide reusable interaction patterns:
+
+* arc42 Chapter Generator — step-by-step architecture documentation
+* Architecture Decision Record — structured decisions with Pugh Matrix
+* Quality Scenarios Builder — testable quality requirements
+* Risk Assessment, Stakeholder Analysis, Context Diagram Generator, etc.
+
+**Bausteinsicht** provides architecture-as-code:
+
+* JSONC models that LLMs read/write natively
+* Bidirectional draw.io sync — model changes update diagrams and vice versa
+* CLI with `--format json` for programmatic access
+
+=== Content Transformation Pipeline
+
+Unchanged from v3 for Confluence publishing:
+
+1. AsciiDoctor generates HTML5 from AsciiDoc sources
+2. jsoup parses HTML into DOM tree
+3. HtmlTransformer rewrites DOM for Confluence compatibility
+4. LinkTransformer rewrites cross-references
+5. CodeBlockTransformer formats code blocks as Confluence macros
+
+=== Custom Site Generator (replacing jBake)
+
+New in v4. The site generator is a Groovy script implementing:
+
+1. **Content scanning**: Recursively scan `src/docs/` for `.adoc` files
+2. **Metadata extraction**: Parse jBake-compatible headers (`:jbake-title:`, `:jbake-type:`, `:jbake-menu:`, `:jbake-order:`)
+3. **In-memory model**: Build content model (pages, menu structure, tags) — no database
+4. **AsciiDoc rendering**: Call AsciiDoctor CLI (external tool, ADR-6) for each page
+5. **Template application**: Apply Groovy SimpleTemplate templates (reused from v3's `src/site/templates/`)
+6. **Static output**: Write HTML + assets to `build/microsite/output/`
+7. **Modern theme**: Clean, responsive design with dark mode and search (Phase 1)

@@ -12,7 +12,7 @@ set -o pipefail
 
 # See https://github.com/docToolchain/docToolchain/releases for available versions.
 # Set DTC_VERSION to "latest" to get the latest, yet unreleased version.
-: "${DTC_VERSION:=3.4.2}"
+: "${DTC_VERSION:=4.0.0}"
 
 # if not set, public docker hub is used
 : "${DTC_DOCKER_PREFIX:=}"
@@ -47,7 +47,7 @@ GITHUB_PROJECT_URL=https://github.com/docToolchain/docToolchain
 GITHUB_PROJECT_URL_SSH=git@github.com:docToolchain/docToolchain
 
 # Bump this version up if something is changed in the wrapper script
-DTCW_VERSION=0.51
+DTCW_VERSION=0.60
 # Template replaced by the GitHub value upon releasing dtcw
 DTCW_GIT_HASH=##DTCW_GIT_HASH##
 
@@ -94,14 +94,31 @@ main() {
 
     # No install command, so forward call to docToolchain but first we check if
     # everything is there.
+
+    # S1: Validate task name format early (applies to all environments incl. Docker)
+    if [[ ! "${1}" =~ ^[a-zA-Z][a-zA-Z0-9_-]*$ ]]; then
+        error "Invalid task name: '${1}'. Task names must be alphanumeric (letters, digits, hyphens, underscores)."
+        exit ${ERR_ARG}
+    fi
+
+    # v4: handle 'tasks' command and validate task name (before environment split)
+    if is_v4_installation "${DTC_HOME}"; then
+        if [ "${1}" = "tasks" ]; then
+            # v4-S29: Warn about deprecated Gradle-style --group flag
+            if [[ "${2:-}" == "--group" ]]; then
+                echo "Note: v4 uses direct script invocation. --group is ignored." >&2
+            fi
+            list_v4_tasks "${DTC_HOME}"
+            exit 0
+        fi
+        assert_v4_task_exists "${1}" "${DTC_HOME}"
+    fi
+
     docker_image_name=""
     docker_extra_arguments=""
     if [[ ${environment} != docker ]]; then
         assert_doctoolchain_installed "${environment}" "${DTC_VERSION}"
         assert_java_version_supported
-
-        # TODO: what if 'doctoolchain' found by $PATH does not match the one from the local environment?
-        # The version provided by $DTC_VERSION could be a different one.
     else
         docker_image_name="doctoolchain/doctoolchain"
         if [ "${1}" = "image" ]; then
@@ -182,10 +199,10 @@ Examples:
   Multiple tasks may be provided at once:
     ./dtcw generatePDF generateHTML
 
-Detailed documentation how to use docToolchain may be found at https://doctoolchain.org/
+  List available tasks:
+    ./dtcw tasks
 
-Use './dtcw tasks --group doctoolchain' to see docToolchain related tasks.
-Use './dtcw tasks' to see all tasks.
+Detailed documentation how to use docToolchain may be found at https://doctoolchain.org/
 EOF
 }
 
@@ -225,7 +242,10 @@ get_dtc_installations() {
     local version=${2}
     local installations=""
 
-    if [ -x "${DTC_HOME}/bin/doctoolchain" ]; then
+    if is_v4_installation "${DTC_HOME}"; then
+        # v4: detected by lib/ directory
+        installations+=" local"
+    elif [ -x "${DTC_HOME}/bin/doctoolchain" ]; then
         installations+=" local"
     else
         # maybe it is just available in the path
@@ -252,7 +272,8 @@ sdk_home_doctoolchain() {
     local sdk_doctoolchain="${SDKMAN_DIR}/candidates/doctoolchain/${version}"
 
     # Don't use `sdk home doctoolchain ${version}` - see https://github.com/sdkman/sdkman-cli/issues/1196
-    if [[ -x "${sdk_doctoolchain}/bin/doctoolchain" ]]; then
+    # v4: check for lib/ directory; v3: check for bin/doctoolchain
+    if [[ -d "${sdk_doctoolchain}/lib" ]] || [[ -x "${sdk_doctoolchain}/bin/doctoolchain" ]]; then
         printf "%s" "${sdk_doctoolchain}"
         return 0
     fi
@@ -613,6 +634,96 @@ how_to_install_doctoolchain() {
         ""
 }
 
+# --- v4: Direct Groovy execution (no Gradle) ---
+
+# Detect v4 installation by presence of lib/ directory (or major version >= 4)
+is_v4_installation() {
+    local home=${1:-${DTC_HOME}}
+    if [ -d "${home}/lib" ]; then
+        return 0
+    fi
+    # Fallback: check version number (for Docker where local lib/ doesn't exist)
+    local major
+    major=$(echo "${DTC_VERSION}" | cut -d'.' -f1)
+    [[ "${major}" =~ ^[0-9]+$ ]] && [ "${major}" -ge 4 ]
+}
+
+# Build Java classpath from all JARs in lib/
+build_classpath() {
+    local home=${1:-${DTC_HOME}}
+    local cp=""
+    for jar in "${home}/lib/"*.jar; do
+        [ -f "$jar" ] || continue
+        if [ -z "$cp" ]; then
+            cp="$jar"
+        else
+            cp="${cp}:${jar}"
+        fi
+    done
+    echo "$cp"
+}
+
+# List available v4 tasks (only scripts with '// @task' marker in first 5 lines)
+list_v4_tasks() {
+    local home=${1:-${DTC_HOME}}
+    local scripts_dir="${home}/scripts"
+    echo ""
+    echo "Available tasks:"
+    echo ""
+    for script in "${scripts_dir}/"*.groovy; do
+        [ -f "$script" ] || continue
+        # Only list scripts explicitly marked as tasks
+        if head -5 "$script" | grep -q '// @task'; then
+            local name
+            name=$(basename "$script" .groovy)
+            echo "  ${name}"
+        fi
+    done
+    echo ""
+    echo "Usage: ./dtcw [environment] <task>"
+    echo ""
+}
+
+# Check if a v4 task exists, suggest alternatives if not
+assert_v4_task_exists() {
+    local task=${1}
+    local home=${2:-${DTC_HOME}}
+    local script="${home}/scripts/${task}.groovy"
+
+    if [ -f "$script" ] && head -5 "$script" | grep -q '// @task'; then
+        return 0
+    fi
+
+    # Task not found or not marked as task — provide actionable guidance (QS-17)
+    echo "" >&2
+    echo "Error: Unknown task '${task}'" >&2
+    echo "" >&2
+
+    # Suggest similar task names
+    local suggestions=""
+    for script in "${home}/scripts/"*.groovy; do
+        [ -f "$script" ] || continue
+        local name
+        name=$(basename "$script" .groovy)
+        # Simple substring match
+        if [[ "${name,,}" == *"${task,,}"* ]] || [[ "${task,,}" == *"${name,,}"* ]]; then
+            suggestions="${suggestions}  ${name}\n"
+        fi
+    done
+
+    if [ -n "$suggestions" ]; then
+        echo "Did you mean:" >&2
+        printf "%b" "$suggestions" >&2
+        echo "" >&2
+    fi
+
+    echo "Run './dtcw tasks' to see all available tasks." >&2
+    echo "" >&2
+    exit ${ERR_ARG}
+}
+
+# --- End v4 functions ---
+
 build_command() {
     local env=${1}
     local version=${2}
@@ -639,26 +750,63 @@ build_command() {
             ${docker_extra_arguments} ${env_file_option} \
             --entrypoint /bin/bash -v '${pwd}:/project' ${DTC_DOCKER_PREFIX}${docker_image}:v${version}"
 
-        cmd="docker ${docker_args} -c \"doctoolchain . ${*} ${DTC_OPTS} && exit\""
-    else
-        # TODO: What is this good for? Has probably to do with Docker image creation.
-        if [[ "${DTC_HEADLESS}" = false ]]; then
-            # important for the docker file to find dependencies
-            DTC_OPTS="${DTC_OPTS} '-Dgradle.user.home=${DTC_ROOT}/.gradle'"
-        fi
-        if [ "${env}" = local ]; then
-            if [ -x "${DTC_HOME}/bin/doctoolchain" ]; then
-                cmd="${DTC_HOME}/bin/doctoolchain"
-            # is doctoolchain available on the path?
-            elif command -v doctoolchain >/dev/null 2>&1; then
-                cmd="doctoolchain"
-            else
-                echo "Could not find doctoolchain executable, neither in '${DTC_HOME}' nor on PATH ('${PATH}')" >&2
-                exit 1
-            fi
-            cmd="${cmd} . ${*} ${DTC_OPTS}"
+        if is_v4_installation "${DTC_HOME}"; then
+            # v4 Docker: direct Groovy invocation inside container
+            local task=${1}
+            shift
+            local java_opts="-Xmx2048m -Dfile.encoding=UTF-8"
+            java_opts="${java_opts} -DdocDir=. -DmainConfigFile=\"${DTC_CONFIG_FILE}\""
+            java_opts="${java_opts} -DDTC_HEADLESS=true -DDTC_PROJECT_BRANCH=\"${DTC_PROJECT_BRANCH}\""
+            # Expansion must happen inside container, not locally
+            # shellcheck disable=SC2016
+            local docker_cp='$(for f in /opt/docToolchain/lib/*.jar; do [ -f "$f" ] && printf "%s:" "$f"; done)'
+            cmd="docker ${docker_args} -c \"java ${java_opts} -cp ${docker_cp} groovy.ui.GroovyMain /opt/docToolchain/scripts/${task}.groovy ${*} && exit\""
         else
-            cmd="$(sdk_home_doctoolchain "${version}")/bin/doctoolchain . ${*} ${DTC_OPTS}"
+            # v3 Docker: Gradle via doctoolchain
+            cmd="docker ${docker_args} -c \"doctoolchain . ${*} ${DTC_OPTS} && exit\""
+        fi
+    else
+        local dtc_home="${DTC_HOME}"
+        if [ "${env}" = sdk ]; then
+            dtc_home="$(sdk_home_doctoolchain "${version}")"
+        fi
+
+        if is_v4_installation "${dtc_home}"; then
+            # v4: Direct Groovy script execution — no Gradle, no daemon
+            local task=${1}
+            shift
+            local classpath
+            classpath=$(build_classpath "${dtc_home}")
+            if [ -z "$classpath" ]; then
+                error "No JARs found in '${dtc_home}/lib/'. Installation may be incomplete."
+                echo "Reinstall docToolchain with: ./dtcw local install doctoolchain"
+                exit ${ERR_DTCW}
+            fi
+
+            local java_opts="-Xmx2048m -Dfile.encoding=UTF-8"
+            java_opts="${java_opts} -DdocDir=. -DmainConfigFile=\"${DTC_CONFIG_FILE}\""
+            java_opts="${java_opts} -DDTC_HEADLESS=${DTC_HEADLESS}"
+            java_opts="${java_opts} -DDTC_PROJECT_BRANCH=\"${DTC_PROJECT_BRANCH}\""
+            # Pass remaining arguments as system properties or script args
+            cmd="${JAVA_CMD:-java} ${java_opts} -cp \"${classpath}\" groovy.ui.GroovyMain \"${dtc_home}/scripts/${task}.groovy\" ${*}"
+        else
+            # v3: Gradle-based execution
+            if [[ "${DTC_HEADLESS}" = false ]]; then
+                DTC_OPTS="${DTC_OPTS} '-Dgradle.user.home=${DTC_ROOT}/.gradle'"
+            fi
+            if [ "${env}" = local ]; then
+                if [ -x "${dtc_home}/bin/doctoolchain" ]; then
+                    cmd="${dtc_home}/bin/doctoolchain"
+                elif command -v doctoolchain >/dev/null 2>&1; then
+                    cmd="doctoolchain"
+                else
+                    echo "Could not find doctoolchain executable, neither in '${dtc_home}' nor on PATH ('${PATH}')" >&2
+                    exit 1
+                fi
+                cmd="${cmd} . ${*} ${DTC_OPTS}"
+            else
+                cmd="${dtc_home}/bin/doctoolchain . ${*} ${DTC_OPTS}"
+            fi
         fi
     fi
     echo "${cmd}"

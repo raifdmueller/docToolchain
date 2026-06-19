@@ -1,0 +1,124 @@
+:jbake-title: Deployment View
+:jbake-type: page_toc
+:jbake-status: published
+:jbake-menu: arc42
+:jbake-order: 7
+:filename: /chapters/07_deployment_view.adoc
+ifndef::imagesdir[:imagesdir: ../../images]
+
+:toc:
+
+
+
+[[section-deployment-view]]
+
+
+== Deployment View
+
+docToolchain v4 supports three execution environments (unchanged from v3).
+The key difference: without Gradle, the installation footprint is smaller and startup is faster.
+
+=== Infrastructure Level 1: Execution Environments
+
+[plantuml,deployment-overview-v4,png]
+----
+@startuml
+!include <C4/C4_Deployment>
+
+LAYOUT_WITH_LEGEND()
+
+Deployment_Node(workstation, "Developer Workstation", "Linux / macOS (incl. Apple Silicon) / Windows") {
+
+    Deployment_Node(local, "Local Installation", "$HOME/.doctoolchain/") {
+        Deployment_Node(jdk, "JDK 17+", "Auto-installed by dtcw") {
+            Container(dtcLocal, "docToolchain v4", "Groovy Scripts + lib/", "No Gradle. Scripts + JARs\nin $HOME/.doctoolchain/\ndocToolchain-<version>/")
+        }
+    }
+
+    Deployment_Node(docker, "Docker Engine", "Container runtime") {
+        Container(dtcDocker, "docToolchain Container", "doctoolchain/doctoolchain:v4", "Alpine + JDK + Scripts\nProject mounted as /project")
+    }
+
+    Deployment_Node(sdk, "SDKMAN", "$HOME/.sdkman/") {
+        Container(dtcSdk, "docToolchain v4", "Groovy Scripts + lib/", "SDK-managed installation")
+    }
+
+    Deployment_Node(dacliNode, "daCLI", "Separate process") {
+        Container(dacliServer, "daCLI MCP Server", "Python 3.12+", "dacli-mcp --docs-root .\nRuns alongside docToolchain")
+    }
+}
+
+Deployment_Node(ci, "GitHub Actions", "CI/CD") {
+    Container(ciRunner, "CI Runner", "Ubuntu + JDK", "Runs dtcw in headless mode")
+}
+@enduml
+----
+
+Motivation::
+Three environments remain equally supported (QS-2). Local is fastest (no container overhead). Docker guarantees reproducibility. SDKMAN integrates with JVM ecosystem tooling. daCLI runs as a separate process alongside any environment.
+
+[options="header",cols="1,2,2,2"]
+|===
+|Environment |v4 changes from v3 |Advantages |Typical Use
+
+|Local
+|No Gradle wrapper download (saves ~95s first run). No daemon. Smaller installation (no Gradle distribution).
+|Fastest startup (under 3s). Direct filesystem access.
+|Daily development, documentation preview
+
+|Docker
+|Smaller image (no Gradle). Faster container startup.
+|Consistent environment. No local dependencies beyond Docker.
+|CI/CD pipelines, team standardization
+
+|SDKMAN
+|Unchanged.
+|Familiar JVM tooling. Version switching.
+|JVM developers, multi-version testing
+
+|daCLI (companion)
+|New in v4. Not bundled — runs as a separate process.
+|LLM document access. Runs alongside any docToolchain environment.
+|LLM-assisted documentation workflows
+|===
+
+=== Infrastructure Level 2: CI/CD Pipeline
+
+The CI/CD pipeline simplifies with Gradle removed:
+
+[plantuml,deployment-cicd-v4,png]
+----
+@startuml
+rectangle "GitHub Repository" as repo {
+    rectangle "Push / Pull Request" as trigger
+}
+
+rectangle "GitHub Actions" as gha {
+    rectangle "v4 CI Pipeline" as build {
+        rectangle "1. Setup JDK" as step1
+        rectangle "2. ./dtcw generateHTML" as step2
+        rectangle "3. ./dtcw generatePDF" as step3
+        rectangle "4. ./dtcw generateSite" as step4
+        rectangle "5. Run tests" as step5
+    }
+}
+
+rectangle "Release" as release {
+    rectangle "GitHub Release (ZIP)" as relGh
+    rectangle "Docker Hub image" as relDocker
+    rectangle "SDKMAN registry" as relSdk
+}
+
+trigger --> build
+step1 --> step2
+step2 --> step3
+step3 --> step4
+step4 --> step5
+
+step5 --> relGh
+relGh --> relDocker
+relGh --> relSdk
+@enduml
+----
+
+**Key simplification**: No Gradle cache setup, no `./gradlew clean`, no dependency resolution step. Each `./dtcw` command is a direct script invocation with predictable timing.

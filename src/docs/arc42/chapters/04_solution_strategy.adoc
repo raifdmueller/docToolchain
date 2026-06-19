@@ -1,0 +1,81 @@
+:jbake-title: Solution Strategy
+:jbake-type: page_toc
+:jbake-status: published
+:jbake-menu: arc42
+:jbake-order: 4
+:filename: /chapters/04_solution_strategy.adoc
+ifndef::imagesdir[:imagesdir: ../../images]
+
+:toc:
+
+
+
+[[section-solution-strategy]]
+== Solution Strategy
+
+The following table maps each quality goal to the architectural approach that achieves it and the supporting architecture decision(s).
+
+[options="header",cols="1,2,2,1"]
+|===
+|Quality Goal |Architectural Approach |Rationale |ADR
+
+|Performance (Startup + Throughput)
+|**Remove Gradle entirely.** `dtcw` invokes Groovy scripts directly via `java`/`groovy` runtime. No daemon, no dependency resolution, no build graph computation.
+|Gradle adds 10-95 seconds of overhead per invocation. Direct script execution eliminates this completely.
+|ADR-3
+
+|Script-first Maintainability
+|**Scripts as primary code artifacts.** No compiled `core/` module. Business logic lives in Groovy scripts that run without compilation. The `core/` Shadow JAR is dissolved.
+|Compilation creates a slow feedback loop. Scripts enable change-to-test in under 5 seconds. Contributors need no build system knowledge.
+|ADR-3 (supersedes ADR-2)
+
+|Cross-platform + Apple Silicon
+|**Replace jBake with custom Groovy SSG.** No OrientDB (JNI issues on ARM64). No unmaintained upstream dependencies. AsciiDoctor as external CLI tool (ADR-6).
+|jBake's OrientDB dependency breaks Apple Silicon. The project is unmaintained. A custom generator eliminates the platform risk.
+|ADR-4, ADR-6
+
+|LLM Friendliness
+|**Ecosystem approach.** daCLI provides MCP-based document access. Bausteinsicht provides architecture-as-code with JSONC. LLM-Prompts provide reusable interaction patterns. Semantic Anchors enable machine-readable navigation.
+|LLMs need structured access, not raw files. The ecosystem tools each solve one aspect of LLM integration.
+|ADR-5
+
+|Ease of adoption
+|**dtcw auto-bootstrapping.** `dtcw` detects missing Java, downloads it, detects missing docToolchain, installs it. Zero prerequisites beyond a shell.
+|Unchanged from v3. The principle is proven and effective.
+|--
+
+|Modern UI
+|**Custom site generator with modern theme.** Full control over HTML output. Phase 1: clean, responsive design with dark mode and search. Phase 2: LLM-augmented UI (future).
+|Docsy theme is dated. jBake replacement gives full control over output design.
+|ADR-4
+
+|v3 backward compatibility
+|**Config file compatibility.** `docToolchainConfig.groovy` format unchanged. jBake metadata headers (`:jbake-title:` etc.) supported by the new site generator. `dtcw` CLI interface stable.
+|Existing users must upgrade without pain. Config is the contract.
+|ADR-4 (metadata), ADR-3 (dtcw)
+|===
+
+=== Key Technology Decisions
+
+[options="header",cols="1,2"]
+|===
+|Technology |Decision Rationale
+
+|**Groovy (scripting)**
+|JVM language with native Java interop. Scripts run without compilation. Groovy's `@Grab` may handle dependency management (ADR-TBD-6). (ADR-1)
+
+|**Direct JVM invocation (replacing Gradle)**
+|`dtcw` constructs the classpath and invokes `java -cp ... groovy.ui.GroovyMain script.groovy`. No build framework overhead. (ADR-3)
+
+|**AsciiDoctor CLI (external tool)**
+|AsciiDoc processor installed as standalone tool (gem/brew/apt), auto-installed by `dtcw` in a pinned version (ADR-6). Supports PDF, HTML5, DocBook. Extensible via `asciidoctor-diagram` for PlantUML. Eliminates 45 MB of JRuby/asciidoctorj JARs.
+
+|**Custom Groovy SSG (replacing jBake)**
+|Groovy SimpleTemplate engine. In-memory content model (no database). Reads jBake-compatible metadata headers. Modern HTML output. (ADR-4)
+
+|**daCLI (MCP server)**
+|Python-based MCP server providing 10 tools for structured document access. Separate process, communicates via stdio. Already operational. (ADR-5)
+
+|**Bausteinsicht**
+|Go-based architecture-as-code tool. JSONC models with bidirectional draw.io sync. LLMs read/write JSONC natively. (ADR-5)
+|===

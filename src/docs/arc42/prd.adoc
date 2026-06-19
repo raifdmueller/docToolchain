@@ -1,0 +1,204 @@
+= docToolchain v4 — Product Requirements Document
+:toc:
+:toclevels: 3
+:sectnums:
+
+== Problem Statement
+
+docToolchain v3 is a successful open-source docs-as-code tool used by teams worldwide.
+It generates multi-format documentation from AsciiDoc sources and publishes to platforms like Atlassian Confluence.
+However, v3 has accumulated significant architectural debt that blocks the next evolution of the tool.
+
+=== Problems with v3
+
+[options="header",cols="1,2,2"]
+|===
+|Problem |Impact |Root Cause
+
+|Slow execution
+|Startup takes 10-95 seconds. Even simple tasks like HTML generation have 10-15 seconds of overhead before any AsciiDoc processing begins.
+|Gradle build framework: wrapper download, daemon negotiation, dependency resolution, build graph computation — all before the first line of user logic runs.
+
+|Contributor friction
+|New contributors struggle to understand the build system. The `core/` module requires compilation. Changes to business logic require `./gradlew core:jar` before testing.
+|Gradle's complexity and the compiled core module create a high barrier to entry. Two patterns to learn (scripts + compiled classes).
+
+|Apple Silicon incompatibility
+|docToolchain's microsite generation fails on modern Macs (M1/M2/M3/M4).
+|jBake depends on OrientDB, which uses JNI with native libraries that lack ARM64 support. jBake is unmaintained — no fix is coming from upstream.
+
+|Outdated microsite UI
+|Generated documentation sites look dated compared to modern alternatives (Starlight, Nextra).
+|Docsy theme is aging. jBake's template system limits customization. No control over the output pipeline.
+
+|No LLM integration
+|LLMs cannot efficiently access, navigate, or modify docToolchain-managed documentation. Processing a 50-page project requires reading all files (~100k tokens).
+|v3 was designed for human-only workflows. No structured access layer, no machine-readable conventions, no MCP support.
+
+|Unmaintained dependencies
+|jBake (governance crisis), jBake Gradle plugin (stale since 2021). Risk of security vulnerabilities and incompatibility with future Java versions.
+|Tight coupling to external projects with uncertain futures.
+|===
+
+== Goals
+
+=== Primary Goals
+
+[arabic]
+. **Eliminate Gradle**: Replace with direct Groovy script invocation. Startup under 3 seconds, end-to-end generation under 10 seconds for 50 pages.
+. **Replace jBake**: Build a custom Groovy-based static site generator. Run on all platforms including Apple Silicon. Produce modern, responsive HTML.
+. **Enable LLM workflows**: Integrate with the docToolchain ecosystem (daCLI, Bausteinsicht, LLM-Prompts) using Semantic Anchors and Contracts.
+. **Simplify architecture**: Scripts as primary code artifacts. No compilation step. Change-to-test cycle under 5 seconds.
+
+=== Secondary Goals
+
+[arabic,start=5]
+. **v3 backward compatibility**: Existing `docToolchainConfig.groovy` files work without changes.
+. **Modern documentation UI**: Phase 1 — clean, responsive design with dark mode and search. Phase 2 (future) — LLM-augmented UI.
+. **Maintain all existing features**: All v3 scripts remain available. No functionality removed.
+
+=== Non-Goals
+
+* docToolchain does **not** become an MCP server itself (daCLI handles that).
+* No change to the `dtcw` CLI interface (commands remain the same).
+* No change to the `docToolchainConfig.groovy` format.
+* No task dependency chains. Tasks are called individually.
+* No switch away from Groovy as the implementation language.
+
+== Personas
+
+=== Ralf — Documentation Author
+Ralf writes architecture documentation in AsciiDoc. He uses docToolchain daily to preview HTML output and publish to Confluence. He wants instant feedback — every second of startup delay disrupts his flow. He works on a MacBook with Apple Silicon and expects things to just work.
+
+=== Lena — LLM-Assisted Architect
+Lena uses Claude with daCLI to generate arc42 documentation. She asks the LLM to read specific sections, suggest improvements, and write new ADRs. She expects the LLM to navigate her 80-page documentation efficiently without reading every file. She uses LLM-Prompts for structured interaction and Bausteinsicht for architecture diagrams.
+
+=== Kai — Open-Source Contributor
+Kai wants to add an export feature to docToolchain. In v3, he gave up after struggling with Gradle's build setup and the `core/` module compilation. In v4, he expects to create a single Groovy script, test it immediately, and submit a PR — without understanding build infrastructure.
+
+=== Sarah — DevOps Engineer
+Sarah integrates docToolchain into GitHub Actions. She needs headless execution, Docker support, and predictable exit codes. She wants faster CI pipelines — the 95-second Gradle first-run is her biggest pain point.
+
+== Success Criteria
+
+[options="header",cols="1,2,2"]
+|===
+|Criterion |Metric |Verification
+
+|Fast startup
+|Time from `./dtcw generateHTML` invocation to first AsciiDoc processing: under 3 seconds (installed).
+|Benchmark on Linux, macOS (Intel + Apple Silicon), Windows.
+
+|Fast throughput
+|End-to-end HTML generation for 50 pages: under 10 seconds.
+|Benchmark with docToolchain's own documentation.
+
+|Apple Silicon support
+|All tasks including `generateSite` run on macOS ARM64 without errors.
+|CI matrix includes macOS ARM64 runner.
+
+|Script-first development
+|Adding a new export feature requires exactly 1 file (a Groovy script). No compilation.
+|Contributor walkthrough test.
+
+|v3 config compatibility
+|An unmodified v3 `docToolchainConfig.groovy` produces the same output with v4 for: generateHTML, generatePDF, publishToConfluence.
+|Regression test with v3 sample projects.
+
+|LLM integration
+|daCLI MCP server can navigate and modify docToolchain-generated documentation. LLM locates any section with at most 3 tool calls.
+|Integration test with daCLI against docToolchain's own docs.
+
+|Modern UI
+|Generated microsite has responsive layout, dark mode, search, and renders correctly on mobile.
+|Visual comparison with reference design. Lighthouse score above 90.
+|===
+
+== Scope
+
+=== In Scope
+
+[options="header",cols="1,3"]
+|===
+|Area |Details
+
+|Gradle removal
+|Remove `build.gradle`, `settings.gradle`, `gradle.properties`, `libs.versions.toml`, `gradle/` wrapper. Modify `dtcw` to invoke Groovy scripts directly.
+
+|Core module dissolution
+|Move business logic from `core/src/main/groovy/` back into `scripts/`. Remove Shadow JAR build. Classes become script-loadable Groovy source files.
+
+|jBake replacement
+|New `generateSite.groovy` script: scan AsciiDoc files, parse jBake metadata headers, render via AsciiDoctor JVM, apply Groovy SimpleTemplate templates, output static HTML.
+
+|Modern theme
+|New HTML/CSS theme replacing Docsy. Responsive, dark mode, search. Reuse Groovy SimpleTemplate approach.
+
+|Dependency management
+|Solution for loading JARs without Gradle (ADR-TBD-6): lib/ directory, Grape, or on-demand download.
+
+|dtcw adaptation
+|Modify wrapper to construct classpath and invoke `java -cp ... groovy.ui.GroovyMain scripts/<task>.groovy` instead of `./gradlew <task>`.
+
+|Backward compatibility
+|Support v3 `docToolchainConfig.groovy` format. Support jBake metadata headers in AsciiDoc files. Emit deprecation warnings for removed features.
+
+|Documentation
+|Updated arc42 architecture documentation (already in progress). Migration guide from v3 to v4.
+|===
+
+=== Out of Scope
+
+[options="header",cols="1,3"]
+|===
+|Area |Reason
+
+|MCP server in docToolchain
+|daCLI already provides this. No duplication.
+
+|Task dependency chains
+|Real-world usage shows users call tasks individually. No implicit dependencies.
+
+|New export scripts
+|v4 focuses on architecture migration, not new features. Existing scripts are ported unchanged.
+
+|LLM-augmented UI (Phase 2)
+|Phase 1 delivers a modern static theme. AI features in the UI are a future version.
+
+|Language change
+|Groovy remains. No migration to Kotlin, Python, or Go.
+|===
+
+== Risks
+
+[options="header",cols="1,1,2"]
+|===
+|Risk |Probability / Impact |Mitigation
+
+|Custom SSG does not reach feature parity with jBake
+|Medium / High
+|Start with jBake's own test projects as acceptance tests. Implement features incrementally: metadata parsing -> content rendering -> menu generation -> search -> theme.
+
+|Dependency management solution causes startup regression
+|Medium / Medium
+|Benchmark each option (lib/, Grape, download) against the 3-second startup target before committing.
+
+|v3 users experience breaking changes despite compatibility goal
+|High / Medium
+|Release v4 as alpha/beta alongside v3. Provide automated migration checker. Document every breaking change.
+
+|Custom SSG security vulnerabilities (template injection)
+|Low / High
+|Templates are authored by doc maintainers, not end users. No user-supplied template input. Sanitize all interpolated values.
+|===
+
+== Timeline
+
+The v4 migration is structured in work packages, not calendar dates:
+
+[arabic]
+. **WP1: dtcw adaptation + dependency management** — dtcw invokes Groovy directly. Resolve ADR-TBD-6.
+. **WP2: Script migration** — Move `core/` classes back to scripts. Verify all existing tasks work without Gradle.
+. **WP3: Custom site generator** — Replace jBake. Implement metadata parsing, rendering, template application.
+. **WP4: Modern theme** — Design and implement new HTML/CSS theme. Dark mode, search, responsive.
+. **WP5: Integration testing + migration guide** — v3 compatibility regression tests. Documentation.

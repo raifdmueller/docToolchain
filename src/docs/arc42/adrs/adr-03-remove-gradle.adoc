@@ -1,0 +1,60 @@
+=== ADR-3: Remove Gradle — Direct Groovy Script Execution
+
+* **Status**: Decided for v4
+* **Context**: Gradle has been the task orchestration framework since docToolchain's inception. Over time it has caused significant problems:
+** Slow startup (~95 seconds first run, 10-15 seconds subsequent runs)
+** Complex configuration hard for contributors to understand
+** Tight coupling between business logic and build system
+** Gradle daemon management issues (zombie processes, port conflicts)
+** Dependency resolution overhead for simple documentation tasks
+* **Decision**: Remove Gradle entirely. The `dtcw` wrapper invokes Groovy scripts directly via the `java`/`groovy` runtime. AsciiDoctor is an external CLI tool, auto-installed by dtcw (ADR-6). Task orchestration is handled by simple script conventions, not a build framework.
+* **Alternatives considered**:
+
+[cols="1,1,1,1,1", options="header"]
+|===
+|Criterion |Keep Gradle |dtcw + Groovy direct |Switch to Maven |Custom task runner
+
+|Startup time
+|–1
+|+1
+|0
+|+1
+
+|Contributor friendliness
+|–1
+|+1
+|0
+|0
+
+|Ecosystem compatibility
+|+1
+|0
+|+1
+|–1
+
+|Maintenance burden
+|–1
+|+1
+|0
+|0
+
+|LLM-friendliness
+|–1
+|+1
+|–1
+|+1
+
+|**Total**
+|**–3**
+|**+4**
+|**0**
+|**+1**
+|===
+
+* **Quality Tradeoffs**:
+** Supports **QS-9 (Fast startup)**: No Gradle wrapper, no daemon, no dependency resolution. Startup under 3 seconds.
+** Supports **QS-11 (Script-first)**: Scripts are the primary code artifacts, no compilation needed.
+** Supports **QS-1 (Extensibility)**: Adding a feature requires no build system knowledge.
+** Supports **QS-3 (Usability)**: Simpler mental model for contributors.
+** Risk on **QS-14 (v3 compatibility)**: v3 projects using `./gradlew` directly will need to switch to `./dtcw`. The `dtcw` interface remains stable.
+* **Consequences**: `build.gradle`, `settings.gradle`, `gradle.properties`, `libs.versions.toml`, and the `gradle/` wrapper directory are removed. The `core/` module is dissolved back into scripts. Dependencies are managed as JARs in a `lib/` directory or downloaded on demand.

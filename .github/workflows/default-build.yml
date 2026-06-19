@@ -5,7 +5,8 @@ on:
     branches:
       - '!gh-pages'
       - 'ng'
-    path:
+      - 'main-4.x'
+    paths:
       - 'core/**'
       - 'scripts/**'
       - 'src/**'
@@ -13,9 +14,9 @@ on:
       - '!dtcw'
       - '!test/**'
   pull_request:
-    branches: [ master, ng ]
+    branches: [ master, ng, main-4.x ]
     # Ignore changes for dtcw
-    path:
+    paths:
       - 'core/**'
       - 'scripts/**'
       - 'src/**'
@@ -77,6 +78,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JDK_VERSION: "${{ matrix.jdk }}-${{ matrix.java }}"
+          # deploy-only web analytics; injected into gh-pages by scripts/injectAnalytics.sh.
+          # Only populated for non-PR events, since publishing never runs on PR builds.
+          GOATCOUNTER_ENDPOINT: ${{ github.event_name != 'pull_request' && secrets.GOATCOUNTER_ENDPOINT || '' }}
         run: |
           ./.ci.sh
       - name: Archive test results

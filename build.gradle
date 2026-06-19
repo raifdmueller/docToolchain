@@ -216,6 +216,47 @@ task createDist(type: Zip, dependsOn: prepareDist) {
     destinationDirectory = buildDir
 }
 
+// v4: Package runtime JARs into lib/ for direct Groovy execution (ADR-7)
+// This replaces the Shadow JAR + Gradle approach with a flat lib/ directory.
+// AsciiDoctor is NOT included — it's an external tool (ADR-6).
+configurations {
+    v4Runtime {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+}
+dependencies {
+    v4Runtime(libs.groovy.all)
+    v4Runtime(libs.asciidoctorj)
+    v4Runtime(libs.asciidoctorj.pdf)
+    v4Runtime(libs.asciidoctorj.diagram)
+    v4Runtime(libs.http.client)
+    v4Runtime(libs.jsoup)
+    v4Runtime(libs.poi.ooxml)
+    v4Runtime(libs.guava)
+    v4Runtime(libs.markdown.to.asciidoc)
+    v4Runtime(libs.jbake.core)
+    v4Runtime(libs.pebble)
+}
+task packageLibs(type: Copy) {
+    group = 'docToolchain'
+    description = 'Copy v4 runtime dependencies to lib/ for direct Groovy execution'
+
+    from configurations.v4Runtime
+    // Include the core Shadow JAR if it exists
+    from(fileTree("libs/org/docToolchain") { include "core-*.jar" })
+    into "${buildDir}/lib"
+
+    doFirst {
+        delete "${buildDir}/lib"
+    }
+    doLast {
+        println "Packaged ${fileTree("${buildDir}/lib").files.size()} JARs to ${buildDir}/lib/"
+        def totalSize = fileTree("${buildDir}/lib").files.collect { it.size() }.sum() ?: 0
+        println "Total size: ${String.format('%.1f', totalSize / 1024.0 / 1024.0)} MB"
+    }
+}
+
 task downloadDependencies {
     doLast {
 

@@ -334,6 +334,14 @@ NOTE: This method only works for Confluence Cloud.
 I can use an API token.
 The key has to be generated from the central Atlassian account.
 
+[IMPORTANT]
+====
+Atlassian is deprecating unscoped (classic) API tokens.
+When creating a new API token, you must select specific scopes.
+If you receive a `403 - Forbidden` error, you likely need to create a new scoped API token.
+See the required scopes below.
+====
+
 . Navigate to your central Atlassian profile.
 +
 [.center]
@@ -352,6 +360,27 @@ image::070-third.png[width=80%]
 NOTE: Here is the https://id.atlassian.com/manage-profile/security/api-tokens[shortcut] to this page.
 
 . Now, click **Create API token**.
+
+. When prompted to select scopes, choose the following scopes required by docToolchain:
++
+[%header,cols="1,2"]
+|===
+|Scope |Purpose
+
+|`read:me`
+|Verify API credentials (read current user info)
+
+|`read:confluence-content.all`
+|Read pages, attachments, and labels
+
+|`write:confluence-content`
+|Create, update, and delete pages, attachments, and labels
+
+|`read:confluence-space.summary`
+|Read space information (required when using API V2)
+|===
++
+NOTE: If you also use the `wipeConfluenceSpace` task, `write:confluence-content` already covers page deletion for API V1. For API V2, `delete:page:confluence` may also be needed.
 
 . Store your API token in a safe location.
 

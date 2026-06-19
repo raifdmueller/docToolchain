@@ -1,0 +1,93 @@
+=== ADR-9: Server-Based Diagram Rendering via Kroki-Compatible API
+
+* **Status**: Decided for v4
+* **Context**: With AsciiDoctor externalized (ADR-6), diagram rendering (PlantUML, Mermaid, GraphViz, Ditaa, C4, BPMN) requires either locally installed tools or a diagram server. Local tools mean installing PlantUML (Java), Graphviz (C binary), Mermaid (Node.js) — different package managers per OS, per tool. A diagram server reduces this to one URL.
++
+Kroki provides a unified HTTP API for 20+ diagram formats. Crucially, Kroki is **compatible with GitLab's built-in PlantUML server API**. Large enterprises running GitLab already have a PlantUML server — replacing it with Kroki gives them all diagram formats for free. This makes enterprise adoption frictionless.
+
+* **Decision**: Use a **Kroki-compatible diagram server** as the default rendering strategy. The user configures one URL — everything else follows. Default is `https://kroki.io/` (public). Enterprises point to their own Kroki or GitLab PlantUML server.
++
+Configuration (one line in `docToolchainConfig.groovy`):
++
+[source,groovy]
+----
+// Option 1: dtcw starts a local Kroki Docker container automatically
+diagramServer = 'docker'
+
+// Option 2: Public Kroki service
+diagramServer = 'https://kroki.io/'
+
+// Option 3: Enterprise server (GitLab PlantUML / self-hosted Kroki)
+diagramServer = 'https://gitlab.company.com/kroki/'
+----
++
+When `diagramServer = 'docker'` (default), dtcw checks if Docker is available, starts `yuzutech/kroki` as a container on port 8000, and sets the URL to `http://localhost:8000/`. The container persists between runs — dtcw only starts it if not already running.
++
+**Privacy rule (QS-16):** When `diagramServer` points to an external URL (anything other than `docker` or `localhost`), docToolchain prints a warning on every run:
++
+    ⚠ Diagramm-Quelltexte werden an kroki.io gesendet.
+      Für lokale Verarbeitung setze diagramServer = 'docker' in docToolchainConfig.groovy.
++
+No data leaves the machine without the user's explicit, informed configuration. The default `docker` mode processes everything locally.
++
+`asciidoctor-diagram` receives the resolved URL via `:diagram-server-url:` and `:diagram-server-type: kroki_io` attributes.
+
+* **Alternatives considered**:
+
+[cols="1,1,1,1", options="header"]
+|===
+|Criterion |Local tools (dtcw installs) |Diagram server (Kroki URL) |Kroki bundled in Docker
+
+|Usability / Zero-config (QS-3)
+|–1 (multiple tools to install per OS)
+|+1 (one URL)
+|+1 (just works)
+
+|LLM-managed config (QS-15)
+|–1 (LLM must know per-OS install commands)
+|+1 (one config key: `diagramServer`)
+|+1 (no config needed)
+
+|Enterprise adoption
+|0
+|+1 (reuse GitLab PlantUML/Kroki server)
+|–1 (conflicts with enterprise infra)
+
+|Format breadth (Mermaid, BPMN, C4...)
+|–1 (each format = separate install)
+|+1 (20+ formats via one service)
+|+1
+
+|Portability / Apple Silicon (QS-10)
+|–1 (Graphviz ARM builds vary)
+|+1 (server-side, platform-irrelevant)
+|+1
+
+|Offline capability (QS-2)
+|+1 (local binaries)
+|0 (needs network to server)
+|+1 (embedded)
+
+|Distribution size
+|+1 (no overhead)
+|+1 (no overhead)
+|–1 (+200 MB image)
+
+|Actionable guidance (QS-16)
+|0 (which tool? which OS? which version?)
+|+1 ("Set diagramServer in config")
+|+1
+
+|**Total**
+|**–2**
+|**+7**
+|**+4**
+|===
+
+* **Quality Tradeoffs**:
+** Supports **QS-15 (LLM-managed Config)**: One config key (`diagramServer`). An LLM understands "set the diagram server URL" — no per-OS tool installation knowledge needed.
+** Supports **QS-3 (Usability)**: One URL instead of installing PlantUML + Graphviz + Mermaid + Node.js.
+** Supports **QS-10 (Apple Silicon)**: Rendering happens server-side — no local native binaries.
+** Supports **QS-17 (Actionable Guidance)**: If diagram rendering fails, the message is: "Setze `diagramServer = 'https://kroki.io/'` in docToolchainConfig.groovy" — not "install PlantUML from https://... and add it to PATH".
+** Risk on **QS-2 (Offline)**: Requires network access to diagram server. Mitigation: enterprises run Kroki locally. For fully offline scenarios, local PlantUML remains an option via `asciidoctor-diagram` without server config.
+* **Consequences**: `kroki.io` is the default diagram server. `asciidoctor-diagram` configuration attributes are set automatically based on `diagramServer` config key. Enterprise users point to their GitLab PlantUML server or self-hosted Kroki. The docToolchain Docker image does NOT bundle Kroki — it connects to the configured server. A `docker-compose.yml` example is provided for users who want to run Kroki locally alongside docToolchain.

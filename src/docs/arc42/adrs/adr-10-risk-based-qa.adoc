@@ -1,0 +1,134 @@
+=== ADR-10: Risk-Based Quality Assurance (Vibe-Coding Risk Radar)
+
+* **Status**: Decided
+* **Context**: docToolchain v4 uses AI-assisted development (Claude Code). AI-generated code carries risks that depend on code type, language safety, deployment context, data sensitivity, and blast radius. Without a systematic framework, mitigation measures are applied inconsistently — some areas are over-tested while critical gaps remain.
++
+The Vibe-Coding Risk Radar provides a dimension-based risk assessment model that maps code to one of four tiers, each with cumulative mitigation requirements.
+* **Decision**: Adopt the Vibe-Coding Risk Radar as the quality assurance framework. The risk assessment is documented in `CLAUDE.md` (machine-readable for AI agents) and reviewed when the codebase changes significantly.
++
+**Assessment result (2026-03-30):**
++
+[cols="2,1,2,3", options="header"]
+|===
+|Dimension |Score |Level |Evidence
+
+|Code Type
+|2
+|Business Logic
+|Doku-Generierung + REST-Client für Jira/Confluence (read/publish, kein eigener API-Server)
+
+|Language
+|2
+|Dynamically typed
+|81 .groovy, 32 .gradle files
+
+|Deployment
+|1
+|Internal tool
+|Open-Source CLI, lokal oder in CI/CD, kein Server/Service
+
+|Data Sensitivity
+|1
+|Internal business data
+|Verarbeitet Dokumentation, Credentials nur durchgereicht
+
+|Blast Radius
+|1
+|Performance / DoS
+|Kaputte Doku oder fehlerhafte Confluence-Seiten, Quellen in Git
+|===
++
+**Tier 2 — Extended Assurance** (determined by Code Type + Language = 2).
++
+Required mitigations for Tier 2 (cumulative with Tier 1):
++
+[cols="2,1,2", options="header"]
+|===
+|Measure |Status |Details
+
+|Linter & Formatter
+|✅
+|shellcheck in CI
+
+|Type Checking
+|❌
+|Groovy is dynamically typed, no static analysis configured
+
+|Pre-Commit Hooks
+|❌
+|Not configured
+
+|Dependency Check
+|❌
+|No audit step in CI
+
+|CI Build & Tests
+|✅
+|GitHub Actions (build, test, shellcheck, BATS)
+
+|SAST
+|✅
+|CodeQL
+
+|AI Code Review
+|✅
+|Claude Code reviews on PRs
+
+|Property-Based Tests
+|❌
+|Not configured
+
+|SonarQube Quality Gate
+|✅
+|SonarCloud as external PR check
+
+|Sampling Review
+|✅
+|PR-based review process
+|===
++
+5/10 mitigations present. Pending: type checking, pre-commit hooks, dependency audit, property-based tests.
+
+* **Alternatives considered**:
+
+[cols="1,1,1,1", options="header"]
+|===
+|Criterion |No framework |Risk Radar |Full formal review
+
+|Consistency of QA measures
+|–1 (ad-hoc)
+|+1 (systematic per dimension)
+|+1
+
+|Overhead
+|+1 (none)
+|0 (one-time assessment + updates)
+|–1 (heavy process)
+
+|AI-agent awareness
+|–1 (no machine-readable risk info)
+|+1 (in CLAUDE.md)
+|0
+
+|Proportionality to risk
+|–1 (same effort for UI and crypto)
+|+1 (tier-based)
+|–1 (over-invests on low risk)
+
+|Community contributor friendliness
+|+1 (no barriers)
+|0 (clear expectations)
+|–1 (discouraging)
+
+|**Total**
+|**–1**
+|**+3**
+|**–1**
+|===
+
+* **Quality Tradeoffs**:
+** Supports **QS-4 (Reliability)**: Systematic mitigation coverage reduces defect risk.
+** Supports **QS-11 (Script-first)**: Tier 2 does not require compilation or formal verification — compatible with script-based development.
+** Supports **QS-12 (LLM Friendliness)**: Risk assessment in CLAUDE.md gives AI agents awareness of which code areas require extra caution.
+** Neutral on **QS-1 (Extensibility)**: Contributors need to add `// @task` markers and follow conventions, but no additional tooling burden.
+* **Consequences**: The risk assessment in CLAUDE.md must be updated when new modules are added or when the deployment context changes. Pending mitigations (type checking, pre-commit hooks, dependency audit, property-based tests) should be addressed incrementally. The tier may change if docToolchain adds authentication features or processes sensitive data.

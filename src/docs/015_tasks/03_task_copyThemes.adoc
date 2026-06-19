@@ -1,0 +1,49 @@
+:filename: 015_tasks/03_task_copyThemes.adoc
+include::_config.adoc[]
+
+[[task_copyThemes]]
+== copyThemes
+
+include::../_feedback.adoc[]
+
+=== About This Task
+
+`copyThemes` copies one of docToolchain's built-in themes into your project so you can customize it.
+Two themes are available:
+
+* `jBakeTheme` — the microsite (jBake) theme: GSP templates plus CSS/JS assets used by `generateSite`.
+* `pdfTheme` — the theme used by `generatePDF`.
+
+Once copied, the theme lives in your project under version control, and your changes survive docToolchain upgrades.
+
+=== Usage
+
+The theme to copy is passed as an argument — there is no interactive prompt, so the task works in CI/CD pipelines and with LLM agents.
+
+[source,bash]
+----
+./dtcw4 local copyThemes jBakeTheme   # copy the microsite theme
+./dtcw4 local copyThemes pdfTheme     # copy the PDF theme
+----
+
+Calling the task without a valid argument prints a usage message and exits with a non-zero status.
+
+=== Where the Theme Is Copied
+
+[cols="1,2"]
+|===
+| Theme | Target location
+
+| `jBakeTheme`
+| `<inputPath>/<microsite.siteFolder>` (default `../site`, i.e. `src/site`)
+
+| `pdfTheme`
+| `pdfThemeDir` from your config (default `./src/docs/pdfTheme`)
+|===
+
+After copying, the task reminds you to set the matching config property (`microsite.siteFolder` or `pdfThemeDir`) if it isn't set yet, so `generateSite` / `generatePDF` pick up your customized theme.
+
+=== Related Tasks
+
+* xref:03_task_generateSite.adoc[generateSite] — uses the `jBakeTheme`
+* xref:03_task_generatePDF.adoc[generatePDF] — uses the `pdfTheme`

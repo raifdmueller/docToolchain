@@ -1,40 +1,71 @@
 :filename: 015_tasks/03_tasks.adoc
 include::_config.adoc[]
 
-== What Is a Task?
+== Tasks
 
 include::../_feedback.adoc[]
 
-A task is another name for a script which triggers the build actions that compile and publish your docs.
+A task is a standalone Groovy script that performs a specific documentation action — generating output, exporting content, or publishing to external systems.
 
-This diagram gives you an overview of the entire build process:
+In v4, tasks are invoked directly via the JVM — no Gradle, no build tool overhead.
+Each task is a self-contained `.groovy` file in the `scripts/` directory.
 
-.docToolchain
-image::overview.dio.png[]
+=== Running a Task
 
-=== How Tasks Are Named
+[source,bash]
+----
+./dtcw4 local <taskName>
+----
 
-Tasks are given a naming prefix which indicates their role in the build process.
-There are currently 4 groups.
+=== Listing Available Tasks
+
+[source,bash]
+----
+./dtcw4 tasks
+----
+
+=== Task Categories
 
 ==== generateX
 
-These tasks use plain old Asciidoctor functionality to render the source to a given format.
+These tasks render your AsciiDoc sources to a target format (HTML, PDF, microsite).
 
 ==== exportX
 
-These tasks export images and AsciiDoc snippets from other systems or file formats.
-The resulting artifacts can then be included from your main sources.
-_export_ tasks differ from _generate_ tasks because with _export_ tasks, you don't have to export with each build.
-Also, with _export_ tasks, it's likely that you will already store the resulting artifacts under version control
-because the tools needed for the export (such as Sparx Enterprise Architect or MS PowerPoint) are typically not available on your build server or another contributor's machine.
-
-==== convertToX
-
-These tasks take the output from Asciidoctor and convert it (through other tools) to the target format.
-This results in a dependency on a _generateX_ task and another external tool (currently https://pandoc.org[pandoc]).
+These tasks export content from other formats (Excel, PowerPoint) into AsciiDoc snippets or images that you can include in your documentation.
+Export results are typically stored under version control because the source tools may not be available on every machine.
 
 ==== publishToX
 
-These tasks not only convert your documents but also deploy, publish and move them to a remote system (currently Confluence),
-meaning the result is immediately visible to others.
+These tasks publish your documentation to external systems (currently Confluence).
+
+=== Available Tasks
+
+[cols="1,2"]
+|===
+| Task | Description
+
+| xref:03_task_generateHTML.adoc[generateHTML]
+| Generate HTML5 from AsciiDoc
+
+| xref:03_task_generatePDF.adoc[generatePDF]
+| Generate PDF from AsciiDoc
+
+| xref:03_task_generateSite.adoc[generateSite]
+| Generate a microsite with navigation, search, and blog
+
+| xref:03_task_downloadTemplate.adoc[downloadTemplate]
+| Download arc42 or req42 documentation templates
+
+| xref:03_task_exportExcel.adoc[exportExcel]
+| Export Excel spreadsheets to AsciiDoc tables and CSV
+
+| xref:03_task_exportPPT.adoc[exportPPT]
+| Export PowerPoint slides as images with speaker notes
+
+| xref:03_task_publishToConfluence.adoc[publishToConfluence]
+| Publish HTML documentation to Confluence
+
+| xref:03_task_copyThemes.adoc[copyThemes]
+| Copy a built-in theme (jBakeTheme or pdfTheme) into your project for customization
+|===

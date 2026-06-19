@@ -1,0 +1,7 @@
+=== ADR-2: Separate Core Logic from Gradle — SUPERSEDED
+
+* **Status**: Superseded by ADR-3
+* **Context**: ADR-2 proposed isolating business logic into a compiled `core/` submodule (Shadow JAR) to decouple from Gradle.
+* **Superseded because**: v4 removes Gradle entirely (ADR-3) and reverts to scripts as the primary code organization. Compiled code requires a build step that slows the edit-run cycle. Scripts are easier to adapt and maintain, especially for community contributors. The problem ADR-2 tried to solve (Gradle coupling) is better addressed by removing Gradle, not by adding a compilation layer.
+
+// Source: src/docs/050_ADRs/ADR-2-separate-core-logic-from-gradle.adoc

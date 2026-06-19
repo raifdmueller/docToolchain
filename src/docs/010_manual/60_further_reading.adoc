@@ -6,97 +6,70 @@ ifndef::imagesdir[:imagesdir: ../images]
 
 include::../_feedback.adoc[]
 
-== Introduction
-
-Everything you need to know about docToolchain, from the underlying technology to useful resources.
-
 == Underlying Technologies
-
-Learn more about the technologies that support docToolchain, as well as some useful resources.
 
 === Markup
 
 .AsciiDoc
 [%collapsible]
 ====
-This is our preferred markup language for technical docs.
+Our preferred markup language for technical docs.
 
-** https://asciidoctor.org/docs/user-manual/[Asciidoctor User-Manual]
-** https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/[AsciiDoc Syntax Quick Reference]
-** https://www.ahus1.de/post/asciidoctor-intro-and-deep-dive["Asciidoctor Deep Dive Video"] by Alexander Schwartz
-
+* https://asciidoctor.org/docs/user-manual/[Asciidoctor User-Manual]
+* https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/[AsciiDoc Syntax Quick Reference]
+* https://www.ahus1.de/post/asciidoctor-intro-and-deep-dive["Asciidoctor Deep Dive Video"] by Alexander Schwartz
 ====
-
 
 .Markdown
 [%collapsible]
 ====
-Since we use JBake as a static site generator, you can write your docs in Markdown too.
-
-** https://github.com/vsch/flexmark-java[flexmark-java] is the Markdown parser and flavor jBake uses.
-** https://github.com/bodiam/markdown-to-asciidoc[markdown-to-asciidoc] library can be used if you prefer to use the xref:../015_tasks/03_task_exportMarkdown.adoc[`exportMarkdown`]-Task.
-
-
+jBake also supports Markdown via https://github.com/vsch/flexmark-java[flexmark-java].
 ====
 
 === Templates
+
 .arc42
 [%collapsible]
 ====
-
-The perfect template for your software solution architecture documentation.
-
-** https://arc42.org/[arc42]
-** https://docs.arc42.org/home/[arc42 Tips & Tricks]
-** https://faq.arc42.org/home/[arc42 FAQ]
+* https://arc42.org/[arc42] — architecture documentation template
+* https://docs.arc42.org/home/[arc42 Tips & Tricks]
+* https://faq.arc42.org/home/[arc42 FAQ]
 ====
 
 === Docs as Code
+
 .Docs as Code
 [%collapsible]
 ====
-
-Treat your docs as if they were code.
-
-** https://docs-as-co.de/[Docs-as-Code]
-** https://www.writethedocs.org/guide/docs-as-code/[write the docs: docs-as-code]
+* https://docs-as-co.de/[Docs-as-Code]
+* https://www.writethedocs.org/guide/docs-as-code/[Write the Docs: Docs-as-Code]
 ====
 
 === Static Site Generator
-.Static Site Generator
+
+.jBake
 [%collapsible]
 ====
-
-* The underlying static site generator for the xref:../015_tasks/03_task_generateSite.adoc[`generateSite`]-Task is https://jbake.org[jBake]
-* Our standard theme is https://www.docsy.dev/[docsy]
-* Our CSS framework is https://getbootstrap.com/docs/4.6/getting-started/introduction/[Twitter Bootstrap]
-
+* https://jbake.org[jBake] — the static site generator behind `generateSite`
+* https://www.docsy.dev/[Docsy] — our standard theme
+* https://getbootstrap.com/[Bootstrap 5] — CSS framework
 ====
 
 == Books
 
-NOTE: These are Amazon affiliate links.
+[cols="2,1,1",options="header"]
+|===
+| Title | Author | Language
 
+| https://www.amazon.com/dp/1387081322[Docs Like Code]
+| Anne Gentle
+| English
 
-[width="80%",options="header"]
-|=========================================================
-|Title |Author |Language
+| https://leanpub.com/arc42byexample[arc42 by Example]
+| Gernot Starke, Stefan Zörner, Michael Simons, Ralf D. Müller
+| English
 
-|https://www.amazon.com/dp/1387081322[Docs Like Code] | Anne Gentle | English
-
-|https://amzn.to/2sn0kyx[Modern Technical Writing: An Introduction to Software Documentation] |Andrew Etter | English
-
-|https://leanpub.com/arc42byexample[arc42 by Example] | Gernot Starke, Stefan Zörner, Michael Simons, Ralf D. Müller | English
-
-
-|https://leanpub.com/arc42inpractice[Communicating Software Architectures with arc42] | Gernot Starke und Peter Hruschka | English
-
-|https://leanpub.com/visualising-software-architecture[Software Architecture for Developers, Volume 2] | Simon Brown | English
-
-|https://amzn.to/2smM5Kp[arc42 in Aktion:
-Praktische Tipps zur Architekturdokumentation] |von Gernot Starke and Peter Hruschka40:00 | German
-
-|https://amzn.to/2ru9Yvr[Softwarearchitekturen dokumentieren und kommunizieren:
-Entwürfe, Entscheidungen und Lösungen nachvollziehbar und wirkungsvoll festhalten] |von Stefan Zörner | German
-
-|=========================================================
+| https://leanpub.com/arc42inpractice[Communicating Software Architectures with arc42]
+| Gernot Starke, Peter Hruschka
+| English
+|===

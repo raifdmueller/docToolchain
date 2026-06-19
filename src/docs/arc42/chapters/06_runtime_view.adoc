@@ -1,0 +1,171 @@
+:jbake-title: Runtime View
+:jbake-type: page_toc
+:jbake-status: published
+:jbake-menu: arc42
+:jbake-order: 6
+:filename: /chapters/06_runtime_view.adoc
+ifndef::imagesdir[:imagesdir: ../../images]
+
+:toc:
+
+
+
+[[section-runtime-view]]
+== Runtime View
+
+The v4 runtime is significantly simpler than v3: no Gradle daemon, no build graph, no dependency resolution. Tasks are individual script invocations.
+
+=== Scenario 1: Generate HTML Documentation
+
+[plantuml,runtime-generatehtml-v4,png]
+----
+@startuml
+actor "Author" as user
+participant "dtcw" as dtcw
+participant "JVM" as jvm
+participant "generateHTML.groovy" as script
+participant "AsciiDoctor CLI" as asciidoc
+
+user -> dtcw : ./dtcw generateHTML
+activate dtcw
+dtcw -> dtcw : Detect environment\n(local/docker/sdk)
+dtcw -> dtcw : Verify Java + AsciiDoctor\nConstruct classpath from lib/
+dtcw -> jvm : java -cp lib/* groovy.ui.GroovyMain\nscripts/generateHTML.groovy
+activate jvm
+jvm -> script : Execute script
+activate script
+script -> script : Load docToolchainConfig.groovy\nvia ConfigSlurper
+script -> asciidoc : asciidoctor CLI\n(batch mode for all inputFiles)
+activate asciidoc
+asciidoc -> asciidoc : Process AsciiDoc\nRender PlantUML diagrams
+asciidoc --> script : HTML output files
+deactivate asciidoc
+script -> script : Write to build/html5/
+script --> jvm : Done
+deactivate script
+jvm --> dtcw : Exit code 0
+deactivate jvm
+dtcw --> user : HTML in build/html5/
+deactivate dtcw
+@enduml
+----
+
+**Key differences from v3**: No Gradle overhead. No JRuby initialization (AsciiDoctor runs as external CLI, ADR-6). The Groovy script orchestrates the AsciiDoctor CLI call in batch mode. Startup is JVM cold start (~1-2s) + AsciiDoctor process spawn (~0.1s).
+
+=== Scenario 2: Publish to Confluence
+
+[plantuml,runtime-confluence-v4,png]
+----
+@startuml
+actor "Author" as user
+participant "dtcw" as dtcw
+participant "publishToConfluence\n.groovy" as script
+participant "ConfluenceService" as svc
+participant "HtmlTransformer" as trans
+participant "ConfluenceClient" as client
+participant "Confluence API" as api
+
+user -> dtcw : ./dtcw publishToConfluence
+note right: User must run\ngenerateHTML first\n(no implicit dependencies)
+dtcw -> script : java -cp lib/* ... publishToConfluence.groovy
+activate script
+
+script -> script : Load config\nParse HTML from build/html5/
+script -> script : Extract page hierarchy
+
+loop for each page
+    script -> svc : Check hash
+    svc -> client : Fetch existing pages
+    client -> api : GET /pages
+    api --> client : Page list
+
+    alt Content unchanged
+        script -> script : Skip
+    else Changed or new
+        script -> trans : Transform HTML
+        trans --> script : Confluence format
+        script -> client : Create/update page
+        client -> api : POST/PUT
+        script -> client : Upload attachments
+    end
+end
+
+script --> dtcw : Done
+deactivate script
+@enduml
+----
+
+**Key difference from v3**: The user runs `generateHTML` and `publishToConfluence` as separate, explicit commands. There are no implicit task dependencies — each script is self-contained. This matches real-world usage: users rarely chain tasks automatically.
+
+=== Scenario 3: LLM Modifies Documentation via daCLI
+
+[plantuml,runtime-llm-v4,png]
+----
+@startuml
+actor "LLM Agent" as llm
+participant "daCLI\nMCP Server" as dacli
+participant "Structure Index" as idx
+participant "File System\n(src/docs/)" as fs
+
+llm -> dacli : get_structure(max_depth=1)
+activate dacli
+dacli -> idx : Query index
+idx --> dacli : Hierarchical TOC
+dacli --> llm : Section tree (~5k tokens)
+
+llm -> dacli : search("deployment")
+dacli -> idx : Full-text search
+idx --> dacli : Ranked results
+dacli --> llm : Matching sections (~2k tokens)
+
+llm -> dacli : get_section("arc42:deployment-view")
+dacli -> idx : Lookup by path
+idx -> fs : Read section content
+fs --> idx : Raw AsciiDoc
+idx --> dacli : Section content + hash
+dacli --> llm : Section content (~3k tokens)
+
+llm -> dacli : update_section("arc42:deployment-view",\nnew_content, expected_hash)
+dacli -> fs : Atomic write with backup
+fs --> dacli : Success
+dacli -> idx : Rebuild index
+dacli --> llm : Updated (new hash)
+deactivate dacli
+@enduml
+----
+
+**This is a new v4 scenario.** The LLM navigates a 50-page documentation project using ~10k tokens instead of the ~100k tokens needed to read all files. daCLI maintains an in-memory index for O(1) lookups. Optimistic locking (hash comparison) prevents concurrent modification conflicts.
+
+=== Scenario 4: Generate Microsite
+
+[plantuml,runtime-site-v4,png]
+----
+@startuml
+actor "Author" as user
+participant "dtcw" as dtcw
+participant "generateSite.groovy" as gen
+participant "AsciiDoctor CLI" as asciidoc
+participant "Groovy\nSimpleTemplate" as tmpl
+
+user -> dtcw : ./dtcw generateSite
+dtcw -> gen : java -cp lib/* ... generateSite.groovy
+activate gen
+gen -> gen : Load config\nScan src/docs/ for .adoc files
+gen -> gen : Parse jBake metadata headers\n(:jbake-title:, :jbake-type:, etc.)
+gen -> gen : Build in-memory content model\n(pages, menu, tags)
+
+loop for each page
+    gen -> asciidoc : Convert AsciiDoc to HTML fragment
+    asciidoc --> gen : HTML content
+    gen -> tmpl : Apply template (page.gsp, menu.gsp, etc.)
+    tmpl --> gen : Full HTML page
+    gen -> gen : Write to build/microsite/output/
+end
+
+gen -> gen : Copy static assets (CSS, JS, images)
+gen --> dtcw : Done
+deactivate gen
+@enduml
+----
+
+**Key difference from v3**: No jBake library, no OrientDB content database. The site generator is a Groovy script that reads files, builds an in-memory model, applies Groovy SimpleTemplate templates, and writes static HTML. Runs on all platforms including Apple Silicon (QS-10).
