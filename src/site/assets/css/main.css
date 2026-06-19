@@ -7,10 +7,8 @@
 :root {
     --dtc-primary: #2563eb;
     --dtc-primary-dark: #1d4ed8;
-    --dtc-navbar-bg: #ffffff;
-    --dtc-navbar-border: #e2e8f0;
-    --dtc-navbar-text: #334155;
-    --dtc-navbar-hover: rgba(37, 99, 235, 0.08);
+    --dtc-navbar-bg: #1e293b;
+    --dtc-navbar-hover: #334155;
     --dtc-sidebar-bg: #f8fafc;
     --dtc-sidebar-border: #e2e8f0;
     --dtc-sidebar-active: #2563eb;
@@ -21,7 +19,7 @@
     --dtc-code-bg: #f1f5f9;
     --dtc-link: #2563eb;
     --dtc-link-hover: #1d4ed8;
-    --dtc-footer-bg: #1e293b;
+    --dtc-footer-bg: #0f172a;
     --dtc-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --dtc-font-mono: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
 }
@@ -48,7 +46,7 @@ a:hover {
 .td-navbar {
     background: var(--dtc-navbar-bg);
     padding: 0.5rem 1.5rem;
-    border-bottom: 1px solid var(--dtc-navbar-border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
     position: sticky;
     top: 0;
     z-index: 1030;
@@ -56,7 +54,7 @@ a:hover {
 }
 
 .td-navbar .navbar-brand {
-    color: var(--dtc-text);
+    color: #ffffff;
     font-size: 1.15rem;
     font-weight: 600;
     letter-spacing: -0.01em;
@@ -66,7 +64,7 @@ a:hover {
 }
 
 .td-navbar .navbar-brand:hover {
-    color: var(--dtc-primary);
+    color: #ffffff;
 }
 
 span.navbar-logo {
@@ -75,13 +73,17 @@ span.navbar-logo {
     padding-right: 0.5rem;
 }
 
+span.navbar-logo img {
+    filter: brightness(0) invert(1);
+}
+
 .td-navbar-nav-scroll {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
 }
 
 .td-navbar .nav-link {
-    color: var(--dtc-navbar-text);
+    color: rgba(255, 255, 255, 0.8);
     font-size: 0.875rem;
     font-weight: 500;
     padding: 0.5rem 0.75rem;
@@ -92,14 +94,14 @@ span.navbar-logo {
 
 .td-navbar .nav-link:hover,
 .td-navbar .nav-link.active {
-    color: var(--dtc-primary);
+    color: #ffffff;
     background: var(--dtc-navbar-hover);
 }
 
 .td-search-input {
-    background: var(--dtc-sidebar-bg);
-    border: 1px solid var(--dtc-border);
-    color: var(--dtc-text);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
     font-size: 0.875rem;
     border-radius: 0.375rem;
     padding: 0.375rem 0.75rem;
@@ -108,15 +110,15 @@ span.navbar-logo {
 }
 
 .td-search-input:focus {
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.15);
     border-color: var(--dtc-primary);
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
-    color: var(--dtc-text);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3);
+    color: #ffffff;
     outline: none;
 }
 
 .td-search-input::placeholder {
-    color: var(--dtc-text-muted);
+    color: rgba(255, 255, 255, 0.5);
 }
 
 /* ── Layout (.td-outer, .td-main, .td-section) ───────────────── */
@@ -179,12 +181,6 @@ span.navbar-logo {
 }
 
 /* ── Sidebar Nav ──────────────────────────────────────────────── */
-@media (min-width: 768px) {
-    .td-sidebar-nav.collapse {
-        display: block;
-    }
-}
-
 .td-sidebar-nav {
     font-size: 0.8125rem;
     line-height: 1.4;
@@ -456,20 +452,19 @@ div.bg-light {
 
 /* ── Jumbotron / Hero (landing page) ──────────────────────────── */
 .jumbotron {
-    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-    color: var(--dtc-text);
-    border: 1px solid #bfdbfe;
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    color: #ffffff;
+    border: none;
     border-radius: 1rem;
     padding: 3rem;
 }
 
 .jumbotron h1 {
-    color: var(--dtc-text);
+    color: #ffffff;
 }
 
 .jumbotron .badge.bg-primary {
     background-color: var(--dtc-primary) !important;
-    color: #ffffff;
     font-size: 0.5em;
     vertical-align: middle;
     padding: 0.35em 0.75em;
@@ -477,19 +472,17 @@ div.bg-light {
 }
 
 .jumbotron .lead {
-    color: var(--dtc-text);
+    color: rgba(255, 255, 255, 0.9);
     font-size: 1.25rem;
-    font-weight: 500;
 }
 
 .jumbotron p {
-    color: var(--dtc-text-muted);
+    color: rgba(255, 255, 255, 0.8);
 }
 
 .jumbotron .btn-primary {
     background-color: var(--dtc-primary);
     border-color: var(--dtc-primary);
-    color: #ffffff;
     padding: 0.625rem 1.5rem;
     font-weight: 600;
     border-radius: 0.5rem;
@@ -498,6 +491,10 @@ div.bg-light {
 .jumbotron .btn-primary:hover {
     background-color: var(--dtc-primary-dark);
     border-color: var(--dtc-primary-dark);
+}
+
+.jumbotron img {
+    filter: brightness(0) invert(1);
 }
 
 /* ── Cards ────────────────────────────────────────────────────── */
