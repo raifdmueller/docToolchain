@@ -4,25 +4,13 @@ include::_config.adoc[]
 
 xref:../015_tasks/03_task_generateHTML.adoc[`generateHTML`] and xref:../015_tasks/03_task_generatePDF.adoc[`generatePDF`] render your AsciiDoc sources using AsciidoctorJ.
 
-.Linux / macOS / WSL2
-[role='primary']
---
 [source, bash]
 ----
 ./dtcw4 local generateHTML
 ./dtcw4 local generatePDF
 ----
---
 
-.Windows with Powershell
-[role='secondary']
---
-[source, powershell]
-----
-.\dtcw.ps1 generateHTML
-.\dtcw.ps1 generatePDF
-----
---
+NOTE: On Windows, use WSL2 — `dtcw4` is a Bash script.
 
 The output is written to `build/html5/` and `build/pdf/`.
 

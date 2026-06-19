@@ -49,12 +49,15 @@ After that, no build tool is involved at runtime.
 
 === 3. Download a Template (optional)
 
+First, create a config file if you don't have one yet:
+
 [source, bash]
 ----
+touch docToolchainConfig.groovy
 ./dtcw4 local downloadTemplate
 ----
 
-This interactively installs the https://arc42.org[arc42] architecture template.
+This interactively installs the https://arc42.org[arc42] architecture template and updates your config file.
 
 === 4. Generate Output
 

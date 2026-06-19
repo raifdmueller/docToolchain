@@ -5,23 +5,12 @@ include::_config.adoc[]
 The xref:../../015_tasks/03_task_generateSite.adoc[`generateSite`] task creates a full documentation website.
 It uses https://jbake.org[jBake] as a static site generator to produce a microsite with a landing page, navigation, local search, and edit links.
 
-.Linux / macOS / WSL2
-[role='primary']
---
 [source, bash]
 ----
 ./dtcw4 local generateSite
 ----
---
 
-.Windows with Powershell
-[role='secondary']
---
-[source, powershell]
-----
-.\dtcw.ps1 generateSite
-----
---
+NOTE: On Windows, use WSL2 — `dtcw4` is a Bash script.
 
 The output is written to `build/microsite/output/`.
 Open `build/microsite/output/index.html` in your browser to view the results.

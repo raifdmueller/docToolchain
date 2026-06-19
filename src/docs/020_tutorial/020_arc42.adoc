@@ -10,23 +10,12 @@ Let's fetch the https://arc42.org[arc42 template] for software architecture docu
 
 docToolchain comes with a task called xref:../015_tasks/03_task_downloadTemplate.adoc[`downloadTemplate`].
 
-.Linux / macOS / WSL2
-[role='primary']
---
 [source, bash]
 ----
 ./dtcw4 local downloadTemplate
 ----
---
 
-.Windows with Powershell
-[role='secondary']
---
-[source, powershell]
-----
-.\dtcw.ps1 downloadTemplate
-----
---
+NOTE: On Windows, use WSL2 — `dtcw4` is a Bash script.
 
 The task asks you interactively which language and variant you want.
 It downloads the template, unpacks it to `src/docs/arc42`, and adds it to your configuration file.
