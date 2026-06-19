@@ -9,8 +9,9 @@ include::../_feedback.adoc[]
 
 == Prerequisites
 
-* *Java 17* or newer — check with `java -version`
+* *Java 17* (exactly) — check with `java -version`
 * *git* — needed to clone docToolchain during installation
+* *Bash* — `dtcw4` and `dtcw` are Bash scripts (on Windows, use WSL2)
 
 == Quick Start
 
@@ -18,7 +19,7 @@ include::../_feedback.adoc[]
 
 Download `dtcw4` and `dtcw` into your project directory:
 
-.Linux / macOS / WSL2
+.Linux / macOS / WSL2 (including Windows via WSL2)
 [role='primary']
 --
 [source, bash]
@@ -28,19 +29,8 @@ curl -Lo dtcw https://doctoolchain.org/dtcw
 curl -Lo dtcw4 https://doctoolchain.org/dtcw4
 chmod +x dtcw dtcw4
 ----
---
 
-.Windows with Powershell
-[role='secondary']
---
-[source, powershell]
-----
-cd <your project>
-Invoke-WebRequest doctoolchain.org/dtcw -Outfile dtcw
-Invoke-WebRequest doctoolchain.org/dtcw.ps1 -Outfile dtcw.ps1
-----
-
-NOTE: If script execution is blocked, try: `powershell.exe -ExecutionPolicy Unrestricted`
+NOTE: On Windows, use WSL2. The v4 wrappers are Bash scripts.
 --
 
 === 2. Install docToolchain

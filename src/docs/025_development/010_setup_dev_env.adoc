@@ -10,10 +10,11 @@ This page explains how to set up a development environment to modify and test do
 
 === Using the Devcontainer
 
-The easiest way to develop docToolchain is using the devcontainer:
+The easiest way to develop docToolchain is using the multi-repo devcontainer from the workspace root (not this repo):
 
 [source, bash]
 ----
+# From the workspace root (parent of docToolchain/)
 ./start-devcontainer.sh
 ----
 
@@ -37,7 +38,13 @@ cd docToolchain
 ./gradlew packageLibs
 ----
 +
-This creates `lib/*.jar` — the v4 runtime classpath.
+This creates `build/lib/*.jar` — the v4 runtime classpath.
+Copy them to `lib/` for the wrapper to detect v4:
++
+[source, bash]
+----
+cp -r build/lib lib
+----
 
 4. Run tasks directly:
 +

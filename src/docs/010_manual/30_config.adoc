@@ -13,24 +13,16 @@ By default, docToolchain looks for `docToolchainConfig.groovy` in your project r
 
 === Overriding the Config File
 
-Via environment variable:
+Use the `DTC_CONFIG_FILE` environment variable:
 
 [source,bash]
 ----
 export DTC_CONFIG_FILE=path/to/config.groovy
 ----
 
-Via command line:
-
-[source,bash]
-----
-./dtcw4 local generateHTML --config=myConfig.groovy
-----
-
-=== Automatic Creation
-
-If the config file does not exist, docToolchain creates a default one.
-In CI/CD environments, set `DTC_HEADLESS=true` to skip the interactive prompt.
+IMPORTANT: The config file must exist before running any task.
+If it is missing, `DtcConfig.load()` will fail.
+Run `./dtcw4 local downloadTemplate` to create a default one, or create an empty `docToolchainConfig.groovy` manually.
 
 == Core Settings
 

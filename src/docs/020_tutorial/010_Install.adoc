@@ -12,12 +12,13 @@ If you encounter problems, create a https://github.com/docToolchain/docToolchain
 
 === Prerequisites
 
-* *Java 17* or newer
+* *Java 17* (exactly)
 * *git*
+* *Bash* — on Windows, use WSL2
 
 === 1. Get the Wrapper Scripts
 
-.Linux / macOS / WSL2
+.Linux / macOS / WSL2 (including Windows via WSL2)
 [role='primary']
 --
 [source, bash]
@@ -27,17 +28,8 @@ curl -Lo dtcw https://doctoolchain.org/dtcw
 curl -Lo dtcw4 https://doctoolchain.org/dtcw4
 chmod +x dtcw dtcw4
 ----
---
 
-.Windows with Powershell
-[role='secondary']
---
-[source, powershell]
-----
-cd <your project>
-Invoke-WebRequest doctoolchain.org/dtcw -Outfile dtcw
-Invoke-WebRequest doctoolchain.org/dtcw.ps1 -Outfile dtcw.ps1
-----
+NOTE: On Windows, use WSL2. The v4 wrappers (`dtcw4`, `dtcw`) are Bash scripts.
 --
 
 === 2. Install docToolchain
