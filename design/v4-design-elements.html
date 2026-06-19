@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>docToolchain v4 — Distinctive design elements</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+  :root{
+    --blue-900:#10294f;--blue-700:#1e53a0;--blue-500:#3772ff;
+    --teal-300:#5fd0c0;--teal-100:#d3f3ee;--coral:#ed6a5a;--orange:#ffa630;
+    --ink:#10141c;--muted:#5b6677;--bg:#ffffff;--bg-soft:#f5f8fc;--card:#fff;
+    --border:#e4ebf3;--blue-line:rgba(55,114,255,.10);
+    --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+    --font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --grad:linear-gradient(120deg,var(--blue-700),var(--blue-500) 55%,var(--teal-300));
+    --shadow:0 14px 40px -18px rgba(16,41,79,.30);
+  }
+  [data-theme="dark"]{
+    --ink:#eaf1fb;--muted:#9fb0c7;--bg:#0a1120;--bg-soft:#0f1a2e;--card:#111c30;
+    --border:#1e2c44;--blue-line:rgba(95,208,192,.10);--shadow:0 14px 40px -18px rgba(0,0,0,.7);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 26px}
+  .mono{font-family:var(--mono)}
+
+  /* page chrome */
+  .topbar{position:sticky;top:0;z-index:60;display:flex;align-items:center;gap:14px;height:60px;padding:0 22px;
+    background:color-mix(in srgb,var(--bg) 84%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+  .logo{width:30px;height:30px;border-radius:8px;background:var(--grad);display:grid;place-items:center;color:#fff;font-weight:900;font-size:13px}
+  .brand{font-weight:800;letter-spacing:-.02em}
+  .topbar .mono{margin-left:auto;font-size:12px;color:var(--muted)}
+  .theme-toggle{width:36px;height:36px;border-radius:9px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:15px}
+
+  /* element label */
+  .elabel{display:flex;align-items:baseline;gap:12px;margin:74px 0 22px}
+  .elabel .num{font-family:var(--mono);font-size:13px;font-weight:700;color:#fff;background:var(--ink);padding:3px 9px;border-radius:6px}
+  [data-theme="dark"] .elabel .num{background:var(--teal-300);color:#0a1120}
+  .elabel h2{font-size:23px;font-weight:850;letter-spacing:-.02em}
+  .elabel p{color:var(--muted);font-size:14px;margin-left:auto;max-width:42%;text-align:right}
+
+  section.demo{border:1px solid var(--border);border-radius:18px;background:var(--card);padding:40px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+
+  /* ===== A. THE TOOLCHAIN (connected pipeline) ===== */
+  .chain{display:flex;align-items:center;justify-content:space-between;position:relative}
+  .chain::before{content:"";position:absolute;left:42px;right:42px;top:34px;height:3px;
+    background:repeating-linear-gradient(90deg,var(--blue-500) 0 10px,transparent 10px 18px);opacity:.5;
+    animation:flow 1.4s linear infinite}
+  @keyframes flow{to{background-position:18px 0}}
+  .link{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:12px;width:120px}
+  .link .node{width:68px;height:68px;border-radius:20px;background:var(--bg);border:2px solid var(--border);
+    display:grid;place-items:center;font-size:28px;box-shadow:var(--shadow);transition:.2s}
+  .link:hover .node{border-color:var(--blue-500);transform:translateY(-5px) rotate(-3deg)}
+  .link .node.on{background:var(--grad);border-color:transparent;color:#fff}
+  .link b{font-size:14px}.link span{font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .linkglyph{position:absolute;top:24px;font-size:22px;color:var(--orange);z-index:2;transform:rotate(90deg)}
+
+  /* ===== B. BLUEPRINT panel ===== */
+  .blueprint{background:
+      linear-gradient(var(--blue-line) 1px,transparent 1px) 0 0/26px 26px,
+      linear-gradient(90deg,var(--blue-line) 1px,transparent 1px) 0 0/26px 26px,
+      var(--card);
+    border:1px solid var(--border);border-radius:16px;padding:38px;position:relative}
+  .bp-corner{position:absolute;width:14px;height:14px;border:2px solid var(--blue-500)}
+  .bp-corner.tl{top:10px;left:10px;border-right:0;border-bottom:0}
+  .bp-corner.tr{top:10px;right:10px;border-left:0;border-bottom:0}
+  .bp-corner.bl{bottom:10px;left:10px;border-right:0;border-top:0}
+  .bp-corner.br{bottom:10px;right:10px;border-left:0;border-top:0}
+  .bp-dim{position:absolute;top:14px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:11px;color:var(--blue-500);letter-spacing:.1em}
+  .bp-tag{display:inline-block;font-family:var(--mono);font-size:12px;color:var(--blue-500);border:1px dashed var(--blue-500);padding:2px 8px;border-radius:5px;margin-bottom:14px}
+  .blueprint h3{font-size:26px;font-weight:850;letter-spacing:-.02em}
+  .blueprint p{color:var(--muted);margin-top:8px;max-width:520px}
+
+  /* ===== C. arc42 chapter index ===== */
+  .arc{display:flex;gap:24px;align-items:stretch}
+  .arc-rail{display:flex;flex-direction:column;gap:4px;flex:0 0 auto}
+  .arc-rail a{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:13px;color:var(--muted);
+    padding:7px 12px;border-radius:9px;border-left:3px solid transparent;text-decoration:none}
+  .arc-rail a .n{font-weight:700;opacity:.6}
+  .arc-rail a:hover{background:var(--bg-soft);color:var(--ink)}
+  .arc-rail a.on{background:color-mix(in srgb,var(--blue-500) 12%,transparent);color:var(--blue-700);border-left-color:var(--blue-500)}
+  [data-theme="dark"] .arc-rail a.on{color:var(--teal-300)}
+  .arc-rail a.on .n{opacity:1}
+  .arc-body{flex:1;border-left:1px solid var(--border);padding-left:24px}
+  .arc-body .chip{font-family:var(--mono);font-size:11px;color:var(--orange);border:1px solid var(--orange);border-radius:5px;padding:2px 8px}
+  .arc-body h3{font-size:22px;margin:12px 0 8px;letter-spacing:-.02em}
+  .arc-body p{color:var(--muted)}
+
+  /* ===== D. docs-as-code editor frame ===== */
+  .editor{border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);font-size:0}
+  .ed-bar{display:flex;align-items:center;gap:8px;padding:11px 16px;background:var(--bg-soft);border-bottom:1px solid var(--border)}
+  .ed-bar .d{width:11px;height:11px;border-radius:50%}
+  .ed-bar .fn{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-left:8px}
+  .ed-bar .git{margin-left:auto;font-family:var(--mono);font-size:11px;color:#1aa890;display:flex;align-items:center;gap:6px}
+  .ed-body{display:grid;grid-template-columns:48px 14px 1fr;background:var(--card)}
+  .ed-ln{font-family:var(--mono);font-size:12px;color:var(--muted);text-align:right;padding:18px 10px;opacity:.5;user-select:none;line-height:1.9}
+  .ed-gut{padding:18px 0;line-height:1.9}
+  .ed-gut .add{color:#1aa890;font-family:var(--mono);font-size:12px;text-align:center}
+  .ed-content{padding:18px 22px;font-size:15px;line-height:1.9}
+  .ed-content .h{font-weight:800;font-size:18px}
+  .ed-content .add-line{background:rgba(26,168,144,.08);display:block;margin:0 -22px;padding:0 22px}
+  .ed-content code{font-family:var(--mono);font-size:13px;background:var(--bg-soft);padding:1px 6px;border-radius:5px;border:1px solid var(--border)}
+
+  /* ===== E. chain divider ===== */
+  .divider{display:flex;align-items:center;gap:0;justify-content:center;margin:8px 0;color:var(--border)}
+  .divider .seg{height:2px;flex:1;background:var(--border)}
+  .divider .lk{font-size:20px;color:var(--orange);margin:0 -2px}
+
+  /* ===== F. annotated callout (technical drawing) ===== */
+  .annot{position:relative;background:var(--bg-soft);border:1px solid var(--border);border-radius:14px;padding:26px 28px;display:flex;gap:22px;align-items:center}
+  .annot .target{width:120px;height:120px;border-radius:14px;background:var(--grad);display:grid;place-items:center;color:#fff;font-size:40px;flex:0 0 auto;position:relative}
+  .annot .pin{position:absolute;width:26px;height:26px;border-radius:50%;background:var(--card);border:2px solid var(--coral);color:var(--coral);
+    display:grid;place-items:center;font-family:var(--mono);font-weight:700;font-size:13px}
+  .annot .pin.p1{top:-12px;right:-12px}
+  .annot .leader{flex:0 0 60px;border-top:2px dashed var(--coral);position:relative}
+  .annot .note .k{font-family:var(--mono);font-size:11px;color:var(--coral);font-weight:700;letter-spacing:.08em}
+  .annot .note h4{font-size:17px;margin:4px 0}
+  .annot .note p{color:var(--muted);font-size:14px;max-width:360px}
+
+  /* ===== G. terminal command palette ===== */
+  .palette{background:#0a1426;border:1px solid #1b2c4d;border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+  .pal-in{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid #1b2c4d}
+  .pal-prompt{font-family:var(--mono);color:var(--teal-300);font-weight:700}
+  .pal-in input{flex:1;background:transparent;border:0;outline:0;color:#cdd9f0;font-family:var(--mono);font-size:15px}
+  .cursor{width:9px;height:18px;background:var(--teal-300);animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  .pal-list{padding:8px}
+  .pal-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:9px;font-family:var(--mono);font-size:13.5px;color:#9fb0c7}
+  .pal-row.on{background:rgba(55,114,255,.16);color:#cdd9f0}
+  .pal-row .tk{margin-left:auto;font-size:11px;color:#5d7aab}
+  .pal-row .ic{color:var(--orange)}
+
+  footer{padding:70px 0 50px;text-align:center;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="logo">42</span><span class="brand">docToolchain</span>
+  <span class="mono">design-lab · v4 · distinctive elements</span>
+  <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+</div>
+
+<div class="wrap">
+
+  <!-- A -->
+  <div class="elabel"><span class="num">A</span><h2>The Toolchain — animated pipeline</h2>
+    <p>The product is literally a chain. Make it the hero motif: connected tool-nodes with a flowing dashed link.</p></div>
+  <section class="demo">
+    <div class="chain">
+      <div class="link"><div class="node on">📝</div><b>Write</b><span>asciidoc</span></div>
+      <span class="linkglyph" style="left:18%">⛓</span>
+      <div class="link"><div class="node">🎨</div><b>Render</b><span>asciidoctor</span></div>
+      <span class="linkglyph" style="left:42.5%">⛓</span>
+      <div class="link"><div class="node">📐</div><b>Diagram</b><span>plantuml</span></div>
+      <span class="linkglyph" style="left:67%">⛓</span>
+      <div class="link"><div class="node">🚀</div><b>Publish</b><span>confluence</span></div>
+    </div>
+  </section>
+
+  <!-- B -->
+  <div class="elabel"><span class="num">B</span><h2>Blueprint surface</h2>
+    <p>arc42 = architecture docs. Lean into engineering-drawing language: faint grid, corner ticks, dimension labels.</p></div>
+  <section class="demo" style="padding:24px">
+    <div class="blueprint">
+      <span class="bp-corner tl"></span><span class="bp-corner tr"></span>
+      <span class="bp-corner bl"></span><span class="bp-corner br"></span>
+      <span class="bp-dim">— 1440 —</span>
+      <span class="bp-tag">§ ARCHITECTURE / OVERVIEW</span>
+      <h3>Document the system, not just the code.</h3>
+      <p>A blueprint-inspired canvas gives the whole site an "engineering schematic" identity — instantly readable as architecture documentation, not another marketing page.</p>
+    </div>
+  </section>
+
+  <!-- C -->
+  <div class="elabel"><span class="num">C</span><h2>arc42 chapter rail</h2>
+    <p>A numbered 01–12 index mirrors the arc42 template your users already think in. Navigation that feels native.</p></div>
+  <section class="demo">
+    <div class="arc">
+      <div class="arc-rail">
+        <a href="#"><span class="n">01</span> Introduction &amp; Goals</a>
+        <a href="#"><span class="n">02</span> Constraints</a>
+        <a href="#"><span class="n">03</span> Context &amp; Scope</a>
+        <a href="#" class="on"><span class="n">04</span> Solution Strategy</a>
+        <a href="#"><span class="n">05</span> Building Block View</a>
+        <a href="#"><span class="n">06</span> Runtime View</a>
+        <a href="#"><span class="n">07</span> Deployment View</a>
+      </div>
+      <div class="arc-body">
+        <span class="chip">CHAPTER 04</span>
+        <h3>Solution Strategy</h3>
+        <p>Each documentation chapter carries its arc42 number as part of its identity. The rail doubles as a progress map through the architecture — distinctive and immediately familiar to your audience.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- D -->
+  <div class="elabel"><span class="num">D</span><h2>docs-as-code editor frame</h2>
+    <p>Show that prose IS code: line-number gutter + git-diff markers wrapping rendered content. Nobody else does this.</p></div>
+  <section class="demo">
+    <div class="editor">
+      <div class="ed-bar">
+        <span class="d" style="background:#ed6a5a"></span><span class="d" style="background:#ffa630"></span><span class="d" style="background:#5fd0c0"></span>
+        <span class="fn">src/docs/04_solution_strategy.adoc</span>
+        <span class="git">● main +3 −0</span>
+      </div>
+      <div class="ed-body">
+        <div class="ed-ln">12<br>13<br>14<br>15<br>16</div>
+        <div class="ed-gut"><div class="add">+</div><div class="add">+</div><div class="add"></div><div class="add"></div><div class="add">+</div></div>
+        <div class="ed-content">
+          <span class="add-line h">== Solution Strategy</span>
+          <span class="add-line">&nbsp;</span>
+          We chose a <code>docs-as-code</code> approach so that
+          documentation lives beside the source and is reviewed
+          <span class="add-line">in pull requests — versioned, diffable, trustworthy.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- E -->
+  <div class="elabel"><span class="num">E</span><h2>Chain section divider</h2>
+    <p>Replace the generic &lt;hr&gt; with the brand's chain — small touch, strong identity thread between sections.</p></div>
+  <section class="demo">
+    <div class="divider"><span class="seg"></span><span class="lk">⛓</span><span class="lk">⛓</span><span class="lk">⛓</span><span class="seg"></span></div>
+  </section>
+
+  <!-- F -->
+  <div class="elabel"><span class="num">F</span><h2>Annotated callout</h2>
+    <p>Technical-drawing callouts: a circled number with a dashed leader line. Turns feature explainers into "schematics".</p></div>
+  <section class="demo">
+    <div class="annot">
+      <div class="target">⚙️<span class="pin p1">1</span></div>
+      <div class="leader"></div>
+      <div class="note">
+        <div class="k">CALLOUT ① — dtcw wrapper</div>
+        <h4>One entry point, three environments</h4>
+        <p>Annotations reference parts of the system like a labelled diagram — reinforcing the architecture-documentation feel across the whole site.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- G -->
+  <div class="elabel"><span class="num">G</span><h2>Command palette (terminal-native)</h2>
+    <p>Search styled as a real <code>./dtcw</code> prompt with a blinking cursor — speaks directly to a developer audience.</p></div>
+  <section class="demo">
+    <div class="palette">
+      <div class="pal-in">
+        <span class="pal-prompt">./dtcw ›</span>
+        <input value="generate" readonly>
+        <span class="cursor"></span>
+      </div>
+      <div class="pal-list">
+        <div class="pal-row on"><span class="ic">▸</span> generateSite <span class="tk">microsite</span></div>
+        <div class="pal-row"><span class="ic">▸</span> generateHTML <span class="tk">single page</span></div>
+        <div class="pal-row"><span class="ic">▸</span> generatePDF <span class="tk">print</span></div>
+        <div class="pal-row"><span class="ic">▸</span> generateDeck <span class="tk">slides</span></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>docToolchain · v4 design-lab · seven distinctive, brand-rooted elements — pick what resonates</footer>
+
+<script>
+  function toggleTheme(){
+    const r=document.documentElement;
+    const next=r.getAttribute('data-theme')==='dark'?'light':'dark';
+    r.setAttribute('data-theme',next);
+    document.querySelector('.theme-toggle').textContent=next==='dark'?'☀️':'🌙';
+  }
+</script>
+</body>
+</html>

@@ -91,3 +91,23 @@
     <script src="${content.rootpath}js/prettify.js"></script>
     <script src="${content.rootpath}js/copy-n-paste.js"></script>
     <script src="${content.rootpath}js/submenucollapse.js"></script>
+
+    <!-- docToolchain v4 — colour-scheme toggle -->
+    <script>
+        function dtcToggleTheme() {
+            var root = document.documentElement;
+            var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            root.setAttribute('data-theme', next);
+            try { localStorage.setItem('dtc-theme', next); } catch (e) {}
+            document.querySelectorAll('.dtc-theme-toggle').forEach(function (b) {
+                b.textContent = next === 'dark' ? '☀️' : '🌙';
+            });
+        }
+        // sync icon with the theme applied in <head>
+        document.addEventListener('DOMContentLoaded', function () {
+            var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+            document.querySelectorAll('.dtc-theme-toggle').forEach(function (b) {
+                b.textContent = dark ? '☀️' : '🌙';
+            });
+        });
+    </script>

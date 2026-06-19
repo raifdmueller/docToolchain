@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>docToolchain v4 — Design Proposal</title>
+<style>
+  :root{
+    --blue-900:#10294f;
+    --blue-700:#1e53a0;
+    --blue-500:#3772ff;
+    --teal-300:#5fd0c0;
+    --teal-100:#d3f3ee;
+    --coral:#ed6a5a;
+    --orange:#ffa630;
+    --ink:#10141c;
+    --muted:#5b6677;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fc;
+    --card:#ffffff;
+    --border:#e4ebf3;
+    --shadow:0 10px 30px -12px rgba(16,41,79,.18);
+    --shadow-lg:0 30px 60px -20px rgba(16,41,79,.35);
+    --radius:18px;
+    --grad:linear-gradient(120deg,var(--blue-700),var(--blue-500) 55%,var(--teal-300));
+    --font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  }
+  [data-theme="dark"]{
+    --ink:#eaf1fb;
+    --muted:#9fb0c7;
+    --bg:#0b1220;
+    --bg-soft:#0f1a2e;
+    --card:#111c30;
+    --border:#1e2c44;
+    --shadow:0 10px 30px -12px rgba(0,0,0,.6);
+    --shadow-lg:0 30px 60px -20px rgba(0,0,0,.7);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--font);color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:15px;padding:13px 22px;border-radius:12px;border:1px solid transparent;cursor:pointer;transition:transform .15s,box-shadow .2s,background .2s}
+  .btn:hover{transform:translateY(-2px)}
+  .btn-primary{background:var(--grad);color:#fff;box-shadow:0 8px 20px -6px rgba(55,114,255,.6)}
+  .btn-ghost{background:transparent;color:var(--ink);border-color:var(--border)}
+  .btn-ghost:hover{border-color:var(--blue-500)}
+  .pill{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;letter-spacing:.02em;padding:6px 14px;border-radius:999px;background:var(--teal-100);color:var(--blue-700)}
+  [data-theme="dark"] .pill{background:rgba(95,208,192,.12);color:var(--teal-300)}
+
+  /* NAV */
+  nav{position:sticky;top:0;z-index:50;backdrop-filter:saturate(180%) blur(14px);background:color-mix(in srgb,var(--bg) 80%,transparent);border-bottom:1px solid var(--border)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:68px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:19px;letter-spacing:-.02em}
+  .logo{width:34px;height:34px;border-radius:9px;background:var(--grad);display:grid;place-items:center;color:#fff;font-weight:900;font-size:15px;box-shadow:var(--shadow)}
+  .nav-links{display:flex;gap:30px;font-weight:500;font-size:15px;color:var(--muted)}
+  .nav-links a:hover{color:var(--ink)}
+  .nav-right{display:flex;align-items:center;gap:14px}
+  .theme-toggle{width:40px;height:40px;border-radius:10px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:17px;display:grid;place-items:center}
+  @media(max-width:860px){.nav-links{display:none}}
+
+  /* HERO */
+  .hero{position:relative;overflow:hidden;padding:90px 0 80px}
+  .hero::before{content:"";position:absolute;inset:0;background:
+     radial-gradient(60% 50% at 80% -10%,rgba(95,208,192,.25),transparent 60%),
+     radial-gradient(50% 50% at 10% 10%,rgba(55,114,255,.18),transparent 60%);pointer-events:none}
+  .hero-grid{position:relative;display:grid;grid-template-columns:1.05fr .95fr;gap:50px;align-items:center}
+  h1{font-size:clamp(38px,5vw,60px);line-height:1.05;letter-spacing:-.03em;font-weight:900}
+  .grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{font-size:19px;color:var(--muted);margin:22px 0 30px;max-width:520px}
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap}
+  .hero-meta{display:flex;gap:26px;margin-top:34px;flex-wrap:wrap}
+  .hero-meta div{font-size:13px;color:var(--muted)}
+  .hero-meta b{display:block;font-size:24px;color:var(--ink);font-weight:800;letter-spacing:-.02em}
+
+  /* code card */
+  .code-card{background:#0d1830;border:1px solid #1b2c4d;border-radius:var(--radius);box-shadow:var(--shadow-lg);overflow:hidden;transform:rotate(.5deg)}
+  .code-top{display:flex;align-items:center;gap:8px;padding:14px 18px;background:#0a1426;border-bottom:1px solid #1b2c4d}
+  .dot{width:12px;height:12px;border-radius:50%}
+  .code-top span:last-child{margin-left:auto;color:#6b86b8;font-size:13px;font-family:ui-monospace,monospace}
+  pre{margin:0;padding:22px;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:13.5px;line-height:1.8;color:#cdd9f0;overflow:auto}
+  .c-com{color:#5d7aab}.c-cmd{color:#5fd0c0}.c-flag{color:#ffa630}.c-str{color:#f3a0a0}.c-ok{color:#7ee0b0}
+  @media(max-width:860px){.hero-grid{grid-template-columns:1fr}.code-card{transform:none}}
+
+  /* logos strip */
+  .strip{border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg-soft)}
+  .strip-in{display:flex;align-items:center;gap:40px;justify-content:center;flex-wrap:wrap;padding:26px 0;font-weight:700;color:var(--muted);font-size:15px;opacity:.9}
+  .strip-in span{display:flex;align-items:center;gap:8px}
+
+  /* SECTION */
+  section.block{padding:96px 0}
+  .head{max-width:680px;margin:0 auto 56px;text-align:center}
+  .head h2{font-size:clamp(28px,3.4vw,40px);letter-spacing:-.025em;font-weight:850;line-height:1.12}
+  .head p{color:var(--muted);font-size:18px;margin-top:14px}
+
+  .features{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:30px;box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s,border-color .2s}
+  .card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:var(--blue-500)}
+  .ic{width:52px;height:52px;border-radius:13px;display:grid;place-items:center;font-size:24px;margin-bottom:18px;background:var(--teal-100)}
+  [data-theme="dark"] .ic{background:rgba(95,208,192,.12)}
+  .card h3{font-size:19px;letter-spacing:-.01em;margin-bottom:9px}
+  .card p{color:var(--muted);font-size:15px}
+  @media(max-width:860px){.features{grid-template-columns:1fr}}
+
+  /* ecosystem */
+  .eco{background:var(--bg-soft);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+  .eco-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .chip{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;text-align:center;font-weight:600;font-size:15px;transition:transform .18s,border-color .2s}
+  .chip:hover{transform:translateY(-4px);border-color:var(--coral)}
+  .chip .e{font-size:26px;display:block;margin-bottom:8px}
+  @media(max-width:860px){.eco-grid{grid-template-columns:repeat(2,1fr)}}
+
+  /* steps */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;counter-reset:s}
+  .step{position:relative;padding-left:8px}
+  .step::before{counter-increment:s;content:"0" counter(s);font-weight:900;font-size:40px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-.04em}
+  .step h3{margin:6px 0 8px;font-size:19px}
+  .step p{color:var(--muted);font-size:15px}
+  @media(max-width:860px){.steps{grid-template-columns:1fr}}
+
+  /* CTA */
+  .cta{position:relative;overflow:hidden;border-radius:28px;padding:64px 40px;text-align:center;background:var(--grad);color:#fff;box-shadow:var(--shadow-lg)}
+  .cta::after{content:"";position:absolute;inset:0;background:radial-gradient(40% 60% at 80% 0,rgba(255,166,48,.35),transparent 60%)}
+  .cta h2{position:relative;font-size:clamp(28px,3.5vw,42px);font-weight:900;letter-spacing:-.02em}
+  .cta p{position:relative;opacity:.92;font-size:18px;margin:14px auto 28px;max-width:560px}
+  .cta .btn-primary{background:#fff;color:var(--blue-700)}
+
+  footer{padding:54px 0 40px;color:var(--muted);font-size:14px;border-top:1px solid var(--border);margin-top:90px}
+  .foot-in{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s}
+  .reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-in">
+    <a class="brand"><span class="logo">42</span> docToolchain</a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#ecosystem">Ecosystem</a>
+      <a href="#start">Get started</a>
+      <a href="#">Docs</a>
+    </div>
+    <div class="nav-right">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌙</button>
+      <a class="btn btn-primary" href="#start">Get started</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="pill">✨ Version 4.0 — fresh release</span>
+      <h1 style="margin-top:18px">Build your dev docs the <span class="grad-text">easy way.</span></h1>
+      <p class="lead">docToolchain brings the <b>docs-as-code</b> approach to your whole team — write in AsciiDoc &amp; Markdown, generate beautiful sites &amp; PDFs, and publish to Confluence. All from one toolchain.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#start">⚡ Quick start</a>
+        <a class="btn btn-ghost" href="#features">Explore features →</a>
+      </div>
+      <div class="hero-meta">
+        <div><b>1.6k★</b> on GitHub</div>
+        <div><b>20+</b> export tasks</div>
+        <div><b>3</b> run modes</div>
+        <div><b>MIT</b> licensed</div>
+      </div>
+    </div>
+    <div class="code-card">
+      <div class="code-top">
+        <span class="dot" style="background:#ed6a5a"></span>
+        <span class="dot" style="background:#ffa630"></span>
+        <span class="dot" style="background:#5fd0c0"></span>
+        <span>~/my-project</span>
+      </div>
+<pre><span class="c-com"># install &amp; generate in one go</span>
+<span class="c-cmd">./dtcw</span> <span class="c-flag">local</span> generateSite
+
+<span class="c-com">› resolving environment …</span>  <span class="c-ok">✓</span>
+<span class="c-com">› rendering AsciiDoc …</span>     <span class="c-ok">✓</span>
+<span class="c-com">› building microsite …</span>     <span class="c-ok">✓</span>
+
+<span class="c-ok">BUILD SUCCESSFUL</span> in 11s
+<span class="c-com">→ open</span> build/microsite/output/<span class="c-str">index.html</span>
+</pre>
+    </div>
+  </div>
+</header>
+
+<div class="strip">
+  <div class="wrap strip-in">
+    <span>📄 AsciiDoc</span><span>🅼 Markdown</span><span>🌐 jBake</span><span>🧩 arc42</span>
+    <span>🔵 Confluence</span><span>🟦 Jira</span><span>📊 PlantUML</span><span>🏗 Structurizr</span>
+  </div>
+</div>
+
+<section class="block" id="features">
+  <div class="wrap">
+    <div class="head reveal">
+      <h2>Everything you need to treat docs like code</h2>
+      <p>One wrapper, zero lock-in. docToolchain orchestrates the best open-source tools so you don't have to.</p>
+    </div>
+    <div class="features">
+      <div class="card reveal"><div class="ic">📝</div><h3>Write in plain text</h3><p>Author in AsciiDoc or Markdown, version it in Git, review it in pull requests — just like your code.</p></div>
+      <div class="card reveal"><div class="ic">🎨</div><h3>Beautiful output</h3><p>Generate responsive HTML microsites, polished PDFs and DocBook from a single source.</p></div>
+      <div class="card reveal"><div class="ic">🔄</div><h3>Confluence &amp; Jira</h3><p>Publish straight to Confluence and pull live Jira issues into your documentation automatically.</p></div>
+      <div class="card reveal"><div class="ic">📐</div><h3>Diagrams as code</h3><p>PlantUML, Graphviz and Structurizr render inline — your architecture stays in sync with reality.</p></div>
+      <div class="card reveal"><div class="ic">⚙️</div><h3>Runs anywhere</h3><p>Local, Docker or SDKMAN. The <code>dtcw</code> wrapper sets up Java and dependencies for you.</p></div>
+      <div class="card reveal"><div class="ic">🚀</div><h3>CI/CD ready</h3><p>Headless mode plugs into GitHub Actions, GitLab CI and Jenkins for fully automated doc pipelines.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="block eco" id="ecosystem">
+  <div class="wrap">
+    <div class="head reveal">
+      <h2>Plays well with your whole stack</h2>
+      <p>docToolchain connects the tools your team already loves into one coherent documentation flow.</p>
+    </div>
+    <div class="eco-grid">
+      <div class="chip reveal"><span class="e">🧩</span>arc42</div>
+      <div class="chip reveal"><span class="e">🔵</span>Confluence</div>
+      <div class="chip reveal"><span class="e">🟦</span>Jira</div>
+      <div class="chip reveal"><span class="e">📊</span>PlantUML</div>
+      <div class="chip reveal"><span class="e">🏗</span>Structurizr</div>
+      <div class="chip reveal"><span class="e">📈</span>Enterprise Architect</div>
+      <div class="chip reveal"><span class="e">📑</span>Excel</div>
+      <div class="chip reveal"><span class="e">🐳</span>Docker</div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="start">
+  <div class="wrap">
+    <div class="head reveal">
+      <h2>Up and running in three steps</h2>
+      <p>No global installs, no version conflicts. Just drop the wrapper into your repo.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><h3>Grab the wrapper</h3><p>Copy <code>dtcw</code> into your project root and commit it alongside your sources.</p></div>
+      <div class="step reveal"><h3>Write your docs</h3><p>Add AsciiDoc files under <code>src/docs</code> — arc42 templates included out of the box.</p></div>
+      <div class="step reveal"><h3>Generate &amp; publish</h3><p>Run <code>./dtcw local generateSite</code> and ship a polished microsite to any host.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" style="padding-top:0">
+  <div class="wrap">
+    <div class="cta reveal">
+      <h2>Start documenting like a developer.</h2>
+      <p>Free, open-source and battle-tested in production teams around the world. Your future self will thank you.</p>
+      <a class="btn btn-primary" href="#">📘 Read the docs</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-in">
+    <div class="brand" style="font-size:16px"><span class="logo" style="width:28px;height:28px;font-size:12px">42</span> docToolchain</div>
+    <div>© 2026 docToolchain · MIT License · Design proposal v4</div>
+  </div>
+</footer>
+
+<script>
+  function toggleTheme(){
+    const r=document.documentElement;
+    const next=r.getAttribute('data-theme')==='dark'?'light':'dark';
+    r.setAttribute('data-theme',next);
+    document.querySelector('.theme-toggle').textContent=next==='dark'?'☀️':'🌙';
+  }
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.12});
+  document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(i%3*.08)+'s';io.observe(el)});
+</script>
+</body>
+</html>
