@@ -69,9 +69,11 @@ htmlFiles.each { entry ->
         .attribute('doctype', 'book')
         .build()
 
+    def safeMode = SafeMode.valueOf((config.safeMode ?: 'UNSAFE').toUpperCase())
+
     def options = Options.builder()
         .backend('html5')
-        .safe(SafeMode.UNSAFE)
+        .safe(safeMode)
         .toDir(htmlOutputDir)
         .mkDirs(true)
         .baseDir(sourceFile.parentFile)

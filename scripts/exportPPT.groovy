@@ -116,7 +116,7 @@ pptFiles.each { File pptFile ->
                     includeText.append("image::ppt/${baseName}/slide_${slideNum}.png[${title}]\n\n")
                     def notesFile = new File(slideNotesDir, "slide_${slideNum}_notes.adoc")
                     if (notesFile.exists()) {
-                        includeText.append("include::ppt/${baseName}/slide_${slideNum}_notes.adoc[]\n\n")
+                        includeText.append("include::slide_${slideNum}_notes.adoc[]\n\n")
                     }
                 }
                 includeFile.write(includeText.toString(), 'utf-8')

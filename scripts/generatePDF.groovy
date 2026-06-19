@@ -79,9 +79,11 @@ pdfFiles.each { entry ->
     if (pdfThemeDir) attrsBuilder.attribute('pdf-themesdir', pdfThemeDir)
     if (pdfFontsDir) attrsBuilder.attribute('pdf-fontsdir', pdfFontsDir)
 
+    def safeMode = SafeMode.valueOf((config.safeMode ?: 'UNSAFE').toUpperCase())
+
     def options = Options.builder()
         .backend('pdf')
-        .safe(SafeMode.UNSAFE)
+        .safe(safeMode)
         .toDir(pdfOutputDir)
         .mkDirs(true)
         .baseDir(sourceFile.parentFile)

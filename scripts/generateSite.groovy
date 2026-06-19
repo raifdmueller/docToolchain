@@ -156,6 +156,8 @@ def parseAsciiDocAttribs = { origText, jbake ->
             def parsed = (line - ":jbake-").split(": +", 2)
             if (parsed.length == 2) {
                 jbake[parsed[0]] = parsed[1]
+            } else {
+                System.err.println "Warning: malformed jbake attribute (ignored): ${line}"
             }
         } else {
             if (line.startsWith("[")) parseAttribs = false
