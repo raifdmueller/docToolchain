@@ -1,5 +1,5 @@
 [versions]
-groovy = "3.0.13"
+groovy = "4.0.22"
 # Plugins
 htmlSanityCheck = "2.0.0-rc0"
 versions = "0.46.0"
@@ -26,8 +26,8 @@ http-client = "5.3"
 guava = "33.0.0-jre"
 
 # Test
-spock = "2.3-groovy-3.0"
-spock-reports = "2.3.2-groovy-3.0"
+spock = "2.3-groovy-4.0"
+spock-reports = "2.3.2-groovy-4.0"
 junit = "5.9.3"
 byte-buddy = "1.14.4"
 
@@ -39,7 +39,7 @@ undercouch-download = { id = "de.undercouch.download", version.ref = "undercouch
 jbake-site = { id = "org.jbake.site", version.ref = "jbake"}
 
 [libraries]
-groovy-all = { module = "org.codehaus.groovy:groovy-all", version.ref = "groovy" }
+groovy-all = { module = "org.apache.groovy:groovy-all", version.ref = "groovy" }
 groovy-xml = { module = "org.codehaus.groovy:groovy-xml", version.ref = "groovy" }
 asciidoctor = { module = "org.asciidoctor:asciidoctor-gradle-jvm", version.ref = "asciidoctor-jvm" }
 asciidoctor-pdf = { module = "org.asciidoctor:asciidoctor-gradle-jvm-pdf", version.ref = "asciidoctor-jvm" }
