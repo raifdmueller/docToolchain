@@ -511,10 +511,14 @@ assert_java_version_supported() {
     java_version=$(echo "$java_version" | awk -F '"' '/version/ {print $0}' | head -1 | cut -d'"' -f2)
     major_version=$(echo "$java_version" | sed '/^1\./s///' | cut -d'.' -f1)
 
-    if [ "${major_version}" -eq 17 ]; then
-        echo "Using Java ${java_version} [${JAVA_CMD}]"
-        return
-    fi
+    # Accept any of the supported major versions (single source of truth:
+    # DTC_SUPPORTED_JAVA_VERSIONS, set near the bottom of this script).
+    for _supported in ${DTC_SUPPORTED_JAVA_VERSIONS}; do
+        if [ "${major_version}" -eq "${_supported}" ]; then
+            echo "Using Java ${java_version} [${JAVA_CMD}]"
+            return
+        fi
+    done
 
     error "unsupported Java version ${major_version} [${JAVA_CMD}]"
     java_help_and_die
@@ -522,7 +526,7 @@ assert_java_version_supported() {
 
 java_help_and_die() {
     printf "%s\n" \
-        "docToolchain supports Java version 17 only. In case that" \
+        "docToolchain supports Java version(s): ${DTC_SUPPORTED_JAVA_VERSIONS}. In case a supported" \
         "Java version is installed make sure 'java' is found with your PATH environment" \
         "variable. As alternative you may provide the location of your Java installation" \
         "with JAVA_HOME." \
@@ -536,11 +540,11 @@ java_help_and_die() {
         "Alternatively you can use SDKMAN! (https://sdkman.io) to manage your Java installations" \
         ""
     if ! is_environment_available sdk; then
-        how_to_install_sdkman "Java 17"
+        how_to_install_sdkman "Java ${DTC_JAVA_VERSION}"
     fi
-    # TODO: This will break when we change Java version
     printf "%s\n" \
-        "    $ sdk install java 17.0.14-tem" \
+        "    # pick a concrete Temurin ${DTC_JAVA_VERSION}.x build, e.g.:" \
+        "    $ sdk install java \$(sdk list java 2>/dev/null | grep -o \"${DTC_JAVA_VERSION}\\.[0-9.]*-tem\" | head -1)" \
         "" \
         "If you prefer not to install Java on your host, you can run docToolchain in a" \
         "docker container. For this case dtcw provides the 'docker' execution environment." \
@@ -558,7 +562,7 @@ how_to_install_sdkman() {
 }
 
 local_install_java() {
-    version=17
+    version="${DTC_JAVA_VERSION}"
     implementation=hotspot
     heapsize=normal
     imagetype=jdk
@@ -626,7 +630,7 @@ how_to_install_doctoolchain() {
         "    \$ sdk install doctoolchain ${version}" \
         "" \
         "Note that running docToolchain in 'local' or 'sdk' environment needs a" \
-        "Java runtime major version 17 installed on your host." \
+        "Java runtime major version ${DTC_SUPPORTED_JAVA_VERSIONS} installed on your host." \
         "" \
         "3. 'docker': pull the docToolchain image and execute docToolchain in a container environment." \
         "" \
@@ -834,5 +838,17 @@ DTC_HOME="${DTC_ROOT}/docToolchain-${DTC_VERSION}"
 
 # Directory for local Java installation
 DTC_JAVA_HOME="${DTC_ROOT}/jdk"
+
+# Java major version(s) this docToolchain release runs on (space-separated).
+# This is the single source of truth for the runtime gate, the help texts and
+# the installed JDK. The ceiling is set by the bundled runtime — Groovy 3.0.13
+# and asciidoctorj 2.5.x do NOT run on Java 21+ (Groovy 3 fails with
+# "Unsupported class file major version 65"). Raising it requires upgrading
+# Groovy (3->4), asciidoctorj (2.5->3.x / JRuby 9.4) and the build's Gradle
+# (8.1->8.5+). Override at your own risk for experiments.
+DTC_SUPPORTED_JAVA_VERSIONS="${DTC_SUPPORTED_JAVA_VERSIONS:-17}"
+
+# Major Java version installed by './dtcw local install java' (Adoptium Temurin).
+DTC_JAVA_VERSION="${DTC_JAVA_VERSION:-17}"
 
 main "$@"
