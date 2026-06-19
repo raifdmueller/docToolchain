@@ -40,7 +40,7 @@ jbake-site = { id = "org.jbake.site", version.ref = "jbake"}
 
 [libraries]
 groovy-all = { module = "org.apache.groovy:groovy-all", version.ref = "groovy" }
-groovy-xml = { module = "org.codehaus.groovy:groovy-xml", version.ref = "groovy" }
+groovy-xml = { module = "org.apache.groovy:groovy-xml", version.ref = "groovy" }
 asciidoctor = { module = "org.asciidoctor:asciidoctor-gradle-jvm", version.ref = "asciidoctor-jvm" }
 asciidoctor-pdf = { module = "org.asciidoctor:asciidoctor-gradle-jvm-pdf", version.ref = "asciidoctor-jvm" }
 asciidoctor-gems = { module = "org.asciidoctor:asciidoctor-gradle-jvm-gems", version.ref = "asciidoctor-jvm" }
