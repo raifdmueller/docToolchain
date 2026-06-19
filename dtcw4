@@ -2,11 +2,13 @@
 # SPDX-License-Identifier: MIT
 # Copyright 2024, Ralf D. Müller and the docToolchain contributors
 #
-# dtcw4 — experimental wrapper for docToolchain v4
+# dtcw4 — wrapper for docToolchain v4
 #
 # Handles v4-specific installation (git clone main-4.x + packageLibs),
-# then delegates all task execution to the standard dtcw which already
-# supports v4 via direct Groovy execution.
+# then delegates all task execution to the installed dtcw in
+# ~/.doctoolchain/docToolchain-<version>/dtcw.
+#
+# Only this script needs to live in your project directory.
 #
 # Usage:
 #   ./dtcw4 local install doctoolchain   — install v4 from source
@@ -26,8 +28,6 @@ GITHUB_PROJECT_URL=https://github.com/docToolchain/docToolchain
 
 DTC_ROOT="${HOME}/.doctoolchain"
 DTC_HOME="${DTC_ROOT}/docToolchain-${DTC_VERSION}"
-
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 has() {
     command -v "$1" 1>/dev/null 2>&1
@@ -57,7 +57,7 @@ v4_install() {
     fi
 
     if ! has java; then
-        error "Java 17 is required. Install with: ./dtcw local install java"
+        error "Java 17 is required. Install with: ./dtcw4 local install java"
         exit 1
     fi
 
@@ -110,9 +110,17 @@ case "${1:-}" in
             v4_install "${4:-}"
             exit 0
         fi
+        if [ "${2:-}" = "install" ] && [ "${3:-}" = "java" ]; then
+            if [ ! -f "${DTC_HOME}/dtcw" ]; then
+                echo "Downloading dtcw to install Java..."
+                mkdir -p "${DTC_HOME}"
+                curl -sLo "${DTC_HOME}/dtcw" https://doctoolchain.org/dtcw
+                chmod +x "${DTC_HOME}/dtcw"
+            fi
+        fi
         ;;
     --help|-h)
-        echo "dtcw4 — docToolchain v4 wrapper (experimental)"
+        echo "dtcw4 — docToolchain v4 wrapper"
         echo ""
         echo "Usage:"
         echo "  ./dtcw4 local install doctoolchain [--update]"
@@ -129,10 +137,11 @@ case "${1:-}" in
         ;;
 esac
 
-# For everything else, delegate to dtcw with v4 version pinned
-if [ ! -f "${SCRIPT_DIR}/dtcw" ]; then
-    error "dtcw not found in '${SCRIPT_DIR}'. dtcw4 must be placed alongside dtcw."
+# For everything else, delegate to the installed dtcw
+DTCW="${DTC_HOME}/dtcw"
+if [ ! -f "${DTCW}" ]; then
+    error "docToolchain v4 is not installed. Run: ./dtcw4 local install doctoolchain"
     exit 1
 fi
 
-exec "${SCRIPT_DIR}/dtcw" "$@"
+exec "${DTCW}" "$@"

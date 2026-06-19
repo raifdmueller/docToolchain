@@ -11,34 +11,29 @@ include::../_feedback.adoc[]
 
 * *Java 17* (exactly) — check with `java -version`
 * *git* — needed to clone docToolchain during installation
-* *Bash* — `dtcw4` and `dtcw` are Bash scripts (on Windows, use WSL2)
+* *Bash* — `dtcw4` is a Bash script (on Windows, use WSL2)
 
 == Quick Start
 
-=== 1. Get the Wrapper Scripts
+=== 1. Get the Wrapper Script
 
-Download `dtcw4` and `dtcw` into your project directory:
+Download `dtcw4` into your project directory:
 
-.Linux / macOS / WSL2 (including Windows via WSL2)
-[role='primary']
---
 [source, bash]
 ----
 cd <your project>
-curl -Lo dtcw https://doctoolchain.org/dtcw
 curl -Lo dtcw4 https://doctoolchain.org/dtcw4
-chmod +x dtcw dtcw4
+chmod +x dtcw4
 ----
 
-NOTE: On Windows, use WSL2. The v4 wrappers are Bash scripts.
---
+NOTE: On Windows, use WSL2. `dtcw4` is a Bash script.
 
 === 2. Install docToolchain
 
 [source, bash]
 ----
 # Install Java if needed
-./dtcw local install java
+./dtcw4 local install java
 
 # Install docToolchain v4
 ./dtcw4 local install doctoolchain
@@ -88,11 +83,10 @@ build/
 
 == How It Works
 
-docToolchain v4 consists of two parts:
+Only `dtcw4` lives in your project directory. It handles:
 
-`dtcw4`:: The installation wrapper. It clones docToolchain from GitHub and builds the runtime JARs once. After installation, it delegates to `dtcw`.
-
-`dtcw`:: The execution wrapper. It detects v4 by the presence of a `lib/` directory and runs tasks directly via the JVM — no Gradle, no daemon.
+1. *Installation*: Clones docToolchain from GitHub and builds the runtime JARs once.
+2. *Task execution*: Delegates to the installed `dtcw` in `~/.doctoolchain/docToolchain-4.0.0/`, which runs tasks directly via the JVM — no Gradle, no daemon.
 
 Runtime JARs are stored in `~/.doctoolchain/docToolchain-4.0.0/lib/`.
 Task execution uses direct JVM invocation (~2-3s startup).
@@ -103,7 +97,7 @@ docToolchain provides a container image from https://hub.docker.com/r/doctoolcha
 
 [source, bash]
 ----
-./dtcw docker generateHTML
+./dtcw4 docker generateHTML
 ----
 
 The wrapper script detects the container engine and pulls the image automatically.
@@ -112,12 +106,12 @@ The wrapper script detects the container engine and pulls the image automaticall
 
 [source, bash]
 ----
-./dtcw docker image <image_name> generateHTML
+./dtcw4 docker image <image_name> generateHTML
 ----
 
 === Environment Variables for Docker
 
-Create a file `dtcw_docker.env` next to `dtcw`:
+Create a file `dtcw_docker.env` in your project directory:
 
 [source]
 ----
