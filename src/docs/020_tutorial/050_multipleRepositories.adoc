@@ -128,22 +128,3 @@ Maybe to an artifactory instance.
 Your main repository could fetch the published artifacts and use them in the build process.
 That would be exactly what you do with code.
 
-=== Use Antora integration
-
-[NOTE]
-====
-The Antora integration is currently in beta and we are happy to get your feedback.
-====
-
-If you use https://antora.org/[Antora] to build your docs, docToolchain provides a special Antora integration. Essentially docToolchains task `downloadTemplate` is now capable to set up your project as Antora module and still leverage the various docToolchain features. This enables you to register your docToolchain project to an existing Antora playbook. The Antora integration currently supports `arc42` and `req42` templates out of the box.
-If you want to use your own template, you need to ensure the directory follows the default Antora structure. Docs are currently expected to be in `${inputPath}/modules/ROOT/`.
-
-==== Include content
-
-Antora comes along with some custom behaviour and non-standard asciidoc syntax. Read the following sections to learn how to include content.
-
-===== Images
-Images are expected to be within `assets/images`.
-
-===== Other files
-In order to include other files, you must ensure there is a symlink from the docToolchain output directory to  `${inputPath}/modules/ROOT/examples/<outputFile/folder>`.

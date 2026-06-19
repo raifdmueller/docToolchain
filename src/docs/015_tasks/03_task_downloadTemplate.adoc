@@ -15,8 +15,6 @@ This task is primarily used to bootstrap a new project. You can choose to downlo
 IMPORTANT: `downloadTemplate` requires an existing `docToolchainConfig.groovy` in your project root (or the path set via `DTC_CONFIG_FILE`).
 If the file doesn't exist yet, create an empty one: `touch docToolchainConfig.groovy`.
 
-You can choose to bootstrap your project as an Antora project or as a plain AsciiDoc project. The Antora integration is currently in beta. The Antora integration enables you to register the project seamlessly with an existing Antora playbook.
-
 === Headless Mode
 
 For unattended use (e.g., with CI/CD pipelines or LLM agents), the `downloadTemplate` task supports headless mode where no user input is required.
@@ -28,47 +26,12 @@ When `DTC_HEADLESS=true` is set, the task will use sensible defaults:
 * Template: `arc42`
 * Language: `EN`
 * Help variant: `plain` (without help text)
-* Antora setup: `n` (no Antora)
 
 [source, bash]
 ----
 export DTC_HEADLESS=true
 ./dtcw4 local downloadTemplate
 ----
-
-=== experimental Antora support
-
-* to test the Antora template
-** install antora: https://docs.antora.org/antora/latest/install/install-antora/
-** download the arc42 template as antora style `./dtcw downloadTemplate`
-** create a `playbook.yaml` within the root of your project
-** make sure that your project is a valid git repository and contains at least one commit
-** execute `antora playbook.yml`
-
-.playbook.yml
-[source, yml]
-----
-site:
-  title: Antora ARC42 Template
-  start_page: arc42-template::index.adoc
-content:
-  sources:
-  - url: ./
-    start_path: src/docs/arc42
-    branches: [HEAD]
-ui:
-  bundle:
-    url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
-    snapshot: true
-asciidoc:
-  attributes:
-    sectanchors: true
-
-output:
-  dir: build/antora
-----
-
-NOTE: To install antora, follow the instructions on https://docs.antora.org/antora/latest/install-and-run-quickstart/
 
 === Further Reading and Resources
 
