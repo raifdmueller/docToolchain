@@ -9,7 +9,7 @@ include::../_feedback.adoc[]
 
 == Prerequisites
 
-* *Java 17* (exactly) — check with `java -version`
+* *Java 17 or 21* — check with `java -version` (`./dtcw4 local install java` installs Java 17 for you)
 * *git* — needed to clone docToolchain during installation
 * *Bash* — `dtcw4` is a Bash script (on Windows, use WSL2)
 
