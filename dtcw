@@ -511,10 +511,12 @@ assert_java_version_supported() {
     java_version=$(echo "$java_version" | awk -F '"' '/version/ {print $0}' | head -1 | cut -d'"' -f2)
     major_version=$(echo "$java_version" | sed '/^1\./s///' | cut -d'.' -f1)
 
-    if [ "${major_version}" -eq 17 ]; then
-        echo "Using Java ${java_version} [${JAVA_CMD}]"
-        return
-    fi
+    case "${major_version}" in
+        17|21)
+            echo "Using Java ${java_version} [${JAVA_CMD}]"
+            return
+            ;;
+    esac
 
     error "unsupported Java version ${major_version} [${JAVA_CMD}]"
     java_help_and_die
@@ -522,7 +524,7 @@ assert_java_version_supported() {
 
 java_help_and_die() {
     printf "%s\n" \
-        "docToolchain supports Java version 17 only. In case that" \
+        "docToolchain supports Java versions 17 and 21. In case such a" \
         "Java version is installed make sure 'java' is found with your PATH environment" \
         "variable. As alternative you may provide the location of your Java installation" \
         "with JAVA_HOME." \

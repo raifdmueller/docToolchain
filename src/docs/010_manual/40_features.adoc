@@ -45,4 +45,4 @@ Bootstrap your project with architecture templates like https://arc42.org[arc42]
 === CI/CD Ready
 
 Set `DTC_HEADLESS=true` for non-interactive mode.
-Works with GitHub Actions, GitLab CI, Jenkins, and any CI system with Java 17.
+Works with GitHub Actions, GitLab CI, Jenkins, and any CI system with Java 17 or 21.
