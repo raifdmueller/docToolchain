@@ -1,8 +1,8 @@
 #!/usr/bin/env groovy
 // @task
-// v4: Generate microsite using jBake (replaces generateSite.gradle + bake plugin)
+// v4: Generate microsite using MicrositeBaker (a self-contained GSP renderer
+// that replaces jBake — and with it OrientDB and the Groovy-3 coupling).
 
-import org.jbake.app.Oven
 import groovy.io.FileType
 
 def docDir = System.getProperty('docDir', '.')
@@ -315,39 +315,16 @@ docDestDir.traverse(type: FileType.FILES) { file ->
     }
 }
 
-// --- 4. Run jBake ---
+// --- 4. Render the microsite (MicrositeBaker — our jBake replacement) ---
 
-println "Running jBake..."
+println "Rendering microsite..."
 def outputDir = new File("${targetDir}/microsite/output")
 outputDir.mkdirs()
 
 def micrositeContextPath = config.microsite?.contextPath ?: '/'
 if (!micrositeContextPath.endsWith('/')) micrositeContextPath += '/'
 
-// Load jbake.properties from site dir, then overlay with our config.
-// We use CompositeConfiguration so Map/List values (e.g. site_menu) survive as
-// rich objects — writing them to jbake.properties flattens them to strings and
-// breaks GSP templates that iterate over them.
-def jbakeProps = new File(siteDir, 'jbake.properties')
-def compositeConfig = new org.apache.commons.configuration.CompositeConfiguration()
-
-// Layer 1: project jbake.properties (lowest priority)
-if (jbakeProps.exists()) {
-    def fileConfig = new org.apache.commons.configuration.PropertiesConfiguration()
-    fileConfig.setDelimiterParsingDisabled(true)
-    fileConfig.load(jbakeProps)
-    compositeConfig.addConfiguration(fileConfig)
-}
-
-// Layer 2: jBake defaults from the JAR
-def defaultProps = new org.apache.commons.configuration.PropertiesConfiguration()
-defaultProps.setDelimiterParsingDisabled(true)
-defaultProps.load(Oven.class.getClassLoader().getResource('default.properties'))
-compositeConfig.addConfiguration(defaultProps)
-
-// Now set our overrides on the composite (setProperty writes to in-memory override layer)
-compositeConfig.setProperty('asciidoctor.option.requires', 'asciidoctor-diagram')
-
+// Asciidoctor attributes for body rendering (the same set jBake used).
 def asciidoctorAttrs = [
     "sourceDir=${targetDir}",
     'source-highlighter=prettify@',
@@ -356,25 +333,20 @@ def asciidoctorAttrs = [
     "targetDir=${targetDir}",
     "docDir=${docDir}",
     "projectRootDir=${new File(docDir).canonicalPath}@",
-]
+]*.toString()
 if (config.jbake?.asciidoctorAttributes) {
-    asciidoctorAttrs.addAll(config.jbake.asciidoctorAttributes)
-}
-compositeConfig.setProperty('asciidoctor.attributes', asciidoctorAttrs)
-
-// Pass microsite config as rich objects — Maps and Lists stay intact
-config.microsite?.each { key, value ->
-    if (key != 'siteFolder' && key != 'additionalConverters' && key != 'customConvention') {
-        compositeConfig.setProperty("site.${key}", value ?: '')
-    }
-}
-if (!compositeConfig.getProperty("site.menu")) {
-    compositeConfig.setProperty("site.menu", [:])
+    asciidoctorAttrs.addAll(config.jbake.asciidoctorAttributes*.toString())
 }
 
-def oven = new Oven(siteDir, outputDir, compositeConfig, false)
-oven.setupPaths()
-oven.bake()
+def Baker = new GroovyClassLoader(this.class.classLoader)
+        .parseClass(new File(scriptDir, 'lib/MicrositeBaker.groovy'))
+def baker = Baker.newInstance()
+baker.siteDir = siteDir
+baker.outputDir = outputDir
+baker.rawConfig = config
+baker.asciidoctorAttributes = asciidoctorAttrs
+baker.version = System.getProperty('dtc_version', '4.0')
+baker.bake()
 
 // --- 5. Copy images ---
 
