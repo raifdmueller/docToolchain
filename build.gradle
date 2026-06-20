@@ -1,21 +1,10 @@
 import java.util.zip.ZipFile
 
-// fix versions for #1200
 buildscript {
-    configurations.all {
-        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-            if (details.requested.group == 'org.ysb33r.gradle' && details.requested.name == 'grolifant' && details.requested.version == '0.12.1') {
-                details.useVersion '0.16.1'
-                details.because 'jcenter redirect'
-                System.out.println ">>>>>>>>> fix grolifant"
-            }
-        }
-    }
     dependencies {
         classpath libs.html.sanity.check
     }
 }
-// /fix versions for #1200
 
 /*
  * This build file is part of the docToolchain
