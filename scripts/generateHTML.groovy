@@ -45,6 +45,9 @@ if (!htmlFiles) {
 def imageDirs = config.imageDirs ?: ['images']
 def asciidoctor = Asciidoctor.Factory.create()
 asciidoctor.requireLibrary('asciidoctor-diagram')
+def diagramHints = new GroovyClassLoader(this.class.classLoader)
+    .parseClass(new File(scriptDir, 'lib/DiagramToolHints.groovy')).newInstance()
+diagramHints.register(asciidoctor)
 println "AsciidoctorJ ${Asciidoctor.class.package.implementationVersion ?: '2.5.x'} ready (with diagram support)"
 
 def failed = false
@@ -90,6 +93,7 @@ htmlFiles.each { entry ->
     }
 }
 
+diagramHints.printHints()
 asciidoctor.close()
 println ""
 if (failed) {
