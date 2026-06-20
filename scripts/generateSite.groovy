@@ -369,4 +369,9 @@ resourceDirs.each { resource ->
 
 println ""
 println "Microsite generated at: ${outputDir.absolutePath}"
-println "Open ${outputDir.absolutePath}/index.html in your browser."
+if (new File(outputDir, 'index.html').exists()) {
+    println "Open ${outputDir.absolutePath}/index.html in your browser."
+} else {
+    println "No landing page (index.html) was generated."
+    println "Configure microsite.landingPage to add one, or browse the pages under ${outputDir.absolutePath}/."
+}

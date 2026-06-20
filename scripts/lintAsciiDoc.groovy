@@ -58,7 +58,7 @@ def linterPresent = {
 
 if (!linterPresent) {
     System.err.println color('red', "The 'asciidoc-linter' command is not on your PATH.")
-    System.err.println "Install it (a Python tool) with uv, then re-run './dtcw lintAsciiDoc':"
+    System.err.println "Install it (a Python tool) with uv, then re-run './dtcw4 lintAsciiDoc':"
     System.err.println "  uv tool install git+https://github.com/docToolchain/asciidoc-linter"
     System.err.println "  (uv: https://docs.astral.sh/uv/ — or 'pip install' from the same repo)"
     System.exit(1)
