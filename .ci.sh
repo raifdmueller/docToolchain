@@ -164,6 +164,9 @@ publish_doc () {
       mkdir -p v4.0.x
       rm -rf v4.0.x/*
       cp -Rf "${BUILD_DIR}"/build/microsite/output/* v4.0.x/.
+      # inject deploy-only analytics into the published copy (no-op when
+      # GOATCOUNTER_ENDPOINT is unset, e.g. on forks)
+      "${BUILD_DIR}"/scripts/injectAnalytics.sh v4.0.x
     fi
 
     #add, commit and push files
