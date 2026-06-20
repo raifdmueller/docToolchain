@@ -39,6 +39,10 @@ Export results are typically stored under version control because the source too
 
 These tasks publish your documentation to external systems (currently Confluence).
 
+==== installX
+
+These tasks install a companion tool from the docToolchain ecosystem and — when the project has an `AGENTS.md` or `CLAUDE.md` — add a short, conditional hint so LLM agents know when to reach for it.
+
 === Available Tasks
 
 [cols="1,2"]
@@ -68,4 +72,16 @@ These tasks publish your documentation to external systems (currently Confluence
 
 | xref:03_task_copyThemes.adoc[copyThemes]
 | Copy a built-in theme (jBakeTheme or pdfTheme) into your project for customization
+
+| xref:03_task_lintAsciiDoc.adoc[lintAsciiDoc]
+| Lint your AsciiDoc sources with the docToolchain AsciiDoc Linter
+
+| xref:03_task_generateCICD.adoc[generateCICD]
+| Scaffold a dtcw4-based CI/CD pipeline (GitHub Actions or GitLab CI)
+
+| xref:03_task_installBausteinsicht.adoc[installBausteinsicht]
+| Install the Bausteinsicht architecture-as-code tool and hint agents to use it
+
+| xref:03_task_installDacli.adoc[installDacli]
+| Install the daCLI docs-as-code CLI / MCP server and hint agents to use it
 |===

@@ -121,6 +121,12 @@ if (updated) {
 def path = System.getenv('PATH') ?: ''
 if (!(path.split(File.pathSeparator) as List).contains(binDir.absolutePath)) {
     println ""
-    println "${color('cyan', 'Add the install directory to your PATH:')}"
-    println "  export PATH=\"${binDir.absolutePath}:\$PATH\""
+    println "${color('cyan', "'${binDir.absolutePath}' is not on your PATH.")}"
+    println "To call 'bausteinsicht' directly, add it — e.g.:"
+    if (os == 'windows') {
+        println "  setx PATH \"${binDir.absolutePath};%PATH%\""
+    } else {
+        println "  export PATH=\"${binDir.absolutePath}:\$PATH\"   # add to ~/.bashrc or ~/.zshrc to persist"
+    }
 }
+
