@@ -2,7 +2,7 @@
 groovy = "5.0.6"
 # Plugins
 htmlSanityCheck = "2.0.0-rc0"
-versions = "0.46.0"
+versions = "0.54.0"
 openapi = "6.6.0"
 undercouch-download = "5.4.0"
 jbake = "5.5.0"

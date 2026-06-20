@@ -32,13 +32,15 @@ dependencies {
     implementation((libs.poi.ooxml))
     implementation((libs.guava))
 
-    testImplementation(libs.spock.reports) {
-        exclude group: 'org.apache.groovy', module: 'groovy-xml'
-    }
+    // spock-reports is intentionally omitted: the only Groovy-5 build
+    // (2.6.0-groovy-5.0) is compiled for Java 25 and breaks the Java-17 CI with
+    // an UnsupportedClassVersionError. It is a reporting-only extension.
     testImplementation(
         (libs.junit),
+        (libs.spock.core),
         (libs.groovy.all),
     )
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 test {
