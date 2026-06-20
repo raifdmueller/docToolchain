@@ -1,6 +1,6 @@
 === ADR-3: Remove Gradle — Direct Groovy Script Execution
 
-* **Status**: Decided for v4
+* **Status**: Accepted (for v4)
 * **Context**: Gradle has been the task orchestration framework since docToolchain's inception. Over time it has caused significant problems:
 ** Slow startup (~95 seconds first run, 10-15 seconds subsequent runs)
 ** Complex configuration hard for contributors to understand
@@ -57,4 +57,4 @@
 ** Supports **QS-1 (Extensibility)**: Adding a feature requires no build system knowledge.
 ** Supports **QS-3 (Usability)**: Simpler mental model for contributors.
 ** Risk on **QS-14 (v3 compatibility)**: v3 projects using `./gradlew` directly will need to switch to `./dtcw`. The `dtcw` interface remains stable.
-* **Consequences**: `build.gradle`, `settings.gradle`, `gradle.properties`, `libs.versions.toml`, and the `gradle/` wrapper directory are removed. The `core/` module is dissolved back into scripts. Dependencies are managed as JARs in a `lib/` directory or downloaded on demand.
+* **Consequences**: `build.gradle`, `settings.gradle`, `gradle.properties`, `libs.versions.toml`, and the `gradle/` wrapper directory are removed. The `core/` module is dissolved back into scripts. Dependencies are managed as JARs in a `lib/` directory or downloaded on demand. This decision creates risk *R-002 (v3 migration path)* — Gradle-based workflows break — and *R-003 (script loading and classpath conflicts)* now that Gradle no longer resolves dependencies; both are tracked in <<section-technical-risks>>.

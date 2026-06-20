@@ -169,3 +169,40 @@ deactivate gen
 ----
 
 **Key difference from v3**: No jBake library, no OrientDB content database. The site generator is a Groovy script that reads files, builds an in-memory model, applies Groovy SimpleTemplate templates, and writes static HTML. Runs on all platforms including Apple Silicon (QS-10).
+
+=== Scenario 5: Error and Recovery — Publish Fails with HTTP 401 / Locked File
+
+This scenario exercises the error-handling path, not the happy path. It shows how the `DtcException` hierarchy (ADR-8, Chapter 8.5 Error Handling) turns a failure into an actionable message and a differentiated exit code (QS-17).
+
+[plantuml,runtime-error-recovery-v4,png]
+----
+@startuml
+actor "Author" as user
+participant "dtcw" as dtcw
+participant "publishToConfluence\n.groovy" as script
+participant "ConfluenceService" as svc
+participant "Confluence API" as api
+
+user -> dtcw : ./dtcw publishToConfluence
+dtcw -> script : java -cp lib/* ... publishToConfluence.groovy
+activate script
+script -> script : Load config\nParse HTML from build/html5/
+
+alt PDF/HTML output file locked
+    script -> script : outputFile.canWrite() == false
+    script -> script : throw DtcException\n("Datei gesperrt — bitte schließen\nund erneut ausführen")
+else Confluence returns HTTP 401
+    script -> svc : Create/update page
+    svc -> api : POST/PUT /pages
+    api --> svc : 401 Unauthorized
+    svc -> script : throw DtcApiException\n("Confluence-Auth fehlgeschlagen —\nprüfe confluence.credentials")
+end
+
+script --> dtcw : exception propagates
+deactivate script
+dtcw -> dtcw : top-level handler\nprint guidance only (no stack trace)
+dtcw --> user : "→ <guidance>"  (exit 1)\nor "🌐 <guidance>" (exit 3)
+@enduml
+----
+
+**Recovery behaviour**: A locked output file raises a `DtcException` (exit code 1); an HTTP 401 raises a `DtcApiException` (exit code 3). In both cases the top-level handler prints only the guidance message — what the user must do (close the file, fix the credentials) — and suppresses the stack trace. CI/CD distinguishes a config/credential problem (exit 3) from a user-fixable local issue (exit 1) without parsing logs. This realises quality goal #4 (Actionable error guidance, QS-17) and the Chapter 8.5 Error Handling concept; the exception hierarchy and exit-code table are defined in ADR-8.

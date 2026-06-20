@@ -1,6 +1,6 @@
 === ADR-10: Risk-Based Quality Assurance (Vibe-Coding Risk Radar)
 
-* **Status**: Decided
+* **Status**: Accepted
 * **Context**: docToolchain v4 uses AI-assisted development (Claude Code). AI-generated code carries risks that depend on code type, language safety, deployment context, data sensitivity, and blast radius. Without a systematic framework, mitigation measures are applied inconsistently — some areas are over-tested while critical gaps remain.
 +
 The Vibe-Coding Risk Radar provides a dimension-based risk assessment model that maps code to one of four tiers, each with cumulative mitigation requirements.

@@ -38,6 +38,8 @@ The core functional requirements are:
 
 === Quality Goals
 
+These are the top five quality goals that *drive* the architecture decisions in this document. Further quality characteristics (LLM friendliness, LLM-managed configuration, modern UI, v3 backward compatibility, script-first maintainability, minimal repository footprint, clean uninstallation) are elaborated as derived requirements in the Chapter 10 quality tree, each cross-linked to its quality scenario.
+
 [options="header",cols="1,2,3"]
 |===
 |Priority |Quality Goal |Scenario
@@ -61,34 +63,6 @@ The core functional requirements are:
 |5
 |Ease of adoption
 |A developer generates HTML documentation in under 5 minutes using only `dtcw`, including automatic Java and docToolchain installation. (QS-3, QS-6)
-
-|6
-|Minimal repository footprint
-|Only `dtcw` and `docToolchainConfig.groovy` live in the project repository. Everything else is installed in `$HOME/.doctoolchain/`. (QS-18)
-
-|7
-|Clean uninstallation
-|`rm -rf $HOME/.doctoolchain/` removes everything. No modified shell profiles, no orphaned PATH entries, no system-level side effects. (QS-19)
-
-|8
-|LLM Friendliness
-|LLMs navigate and modify documentation via daCLI MCP server with at most 3 tool calls to locate any section. Token usage under 10% of full-file reading. (QS-12)
-
-|9
-|LLM-managed configuration
-|The config file contains only deviations from defaults. An LLM can read, explain, and modify `docToolchainConfig.groovy` correctly. No boilerplate, no commented-out defaults. (QS-15)
-
-|10
-|Modern documentation UI
-|Generated microsites have a modern, responsive design with dark mode, fast search, and clean navigation. (QS-13)
-
-|11
-|v3 backward compatibility
-|Existing `docToolchainConfig.groovy` files work without changes. Deprecated features emit warnings but do not fail. (QS-14)
-
-|12
-|Script-first Maintainability
-|A new feature is added by creating one Groovy script in `scripts/`. No compilation, no JAR rebuild. Change-to-test cycle under 5 seconds. (QS-11)
 |===
 
 === Stakeholders

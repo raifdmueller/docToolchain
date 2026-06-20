@@ -17,6 +17,66 @@ All architecture decisions are evaluated against the quality scenarios defined i
 docToolchain v4 represents a fundamental shift: from a Gradle-based build tool to an LLM-native docs-as-code platform.
 v3 is the current production version.
 
+The ADRs themselves live in the register at `src/docs/arc42/adrs/` and are included below.
+Statuses follow Nygard values (Proposed / Accepted / Superseded / Deprecated). `Accepted (inferred)` marks decisions whose rationale was reconstructed from the codebase (carried forward from v3).
+
+[options="header",cols="1,3,1"]
+|===
+|ADR |Title |Status
+
+|ADR-1
+|Use Groovy as Primary Scripting Language
+|Accepted (inferred)
+
+|ADR-2
+|Separate Core Logic from Gradle
+|Superseded by ADR-3
+
+|ADR-3
+|Remove Gradle — Direct Groovy Script Execution
+|Accepted
+
+|ADR-4
+|Replace jBake for Static Site Generation
+|Accepted
+
+|ADR-5
+|LLM-Native Architecture
+|Accepted
+
+|ADR-6
+|AsciiDoctor as External Tool with Versioned Auto-Installation
+|Accepted
+
+|ADR-7
+|`lib/` Directory for Remaining Java Dependencies
+|Accepted
+
+|ADR-8
+|Actionable Error Guidance
+|Accepted
+
+|ADR-9
+|Server-Based Diagram Rendering via Kroki-Compatible API
+|Accepted
+
+|ADR-10
+|Risk-Based Quality Assurance (Vibe-Coding Risk Radar)
+|Accepted
+
+|ADR-11
+|Tier 2 Mitigation Implementation
+|Accepted
+
+|ADR-TBD-1
+|Confluence API Version Strategy
+|Proposed
+
+|ADR-TBD-2
+|Jira Cloud vs. Server Client Architecture
+|Proposed
+|===
+
 include::../adrs/adr-01-groovy-scripting-language.adoc[]
 
 include::../adrs/adr-02-separate-core-logic.adoc[]

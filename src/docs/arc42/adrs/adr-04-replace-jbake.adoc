@@ -1,6 +1,6 @@
 === ADR-4: Replace jBake for Static Site Generation
 
-* **Status**: Decided for v4 — implemented in v4.0 as `MicrositeBaker` (`scripts/lib/MicrositeBaker.groovy`, see Chapter 8)
+* **Status**: Accepted (for v4) — implemented in v4.0 as `MicrositeBaker` (`scripts/lib/MicrositeBaker.groovy`, see Chapter 8)
 * **Context**: jBake is the current static site generator for docToolchain's microsite feature. Critical problems:
 ** **Unmaintained**: Governance crisis (Issue #785). PRs not reviewed. v2.7.0 not published to Maven Central.
 ** **Apple Silicon**: Does not run on modern Macs without workarounds (OrientDB JNI issue #709). Fix exists but is not released.
@@ -63,4 +63,4 @@ NOTE: With AsciiDoctor externalized (ADR-6), the custom SSG only needs to handle
 ** Supports **QS-11 (Script-first)**: Generator is a Groovy script, not a compiled plugin.
 ** Risk on **QS-8 (Performance)**: Must match jBake generation speed (~5s for typical sites).
 ** Risk on **QS-14 (v3 compatibility)**: Must support jBake metadata headers (`:jbake-title:`, `:jbake-type:`) for backward compatibility.
-* **Consequences**: Existing 23 Groovy SimpleTemplate files can be reused with minimal changes. The custom SSG parses AsciiDoc metadata (`:jbake-*:` attributes) itself — a simple regex pass over file headers (~20 LOC, reused from v3's `generateSite.gradle`). AsciiDoctor CLI handles HTML rendering (ADR-6). No database — in-memory content model. Modern UI theme replaces Docsy (Phase 1: modern look; Phase 2: LLM-augmented UI in future version).
+* **Consequences**: Existing 23 Groovy SimpleTemplate files can be reused with minimal changes. The custom SSG parses AsciiDoc metadata (`:jbake-*:` attributes) itself — a simple regex pass over file headers (~20 LOC, reused from v3's `generateSite.gradle`). AsciiDoctor CLI handles HTML rendering (ADR-6). No database — in-memory content model. Modern UI theme replaces Docsy (Phase 1: modern look; Phase 2: LLM-augmented UI in future version). This decision creates risk *R-001 (custom site generator maturity)* — feature-parity and regression risk — tracked in <<section-technical-risks>>.

@@ -1,4 +1,4 @@
 === ADR-TBD-2: Jira Cloud vs. Server Client Architecture
 
-* **Status**: Deferred — decide when Jira integration is reworked
+* **Status**: Proposed (deferred — decide when Jira integration is reworked)
 * **Context**: Only `JiraServerClient` exists. Lower priority — LLMs can query Jira directly via MCP tools, reducing the need for batch export scripts.

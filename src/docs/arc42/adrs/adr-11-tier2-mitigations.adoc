@@ -1,6 +1,6 @@
 === ADR-11: Tier 2 Mitigation Implementation
 
-* **Status**: Decided
+* **Status**: Accepted
 * **Context**: ADR-10 assessed docToolchain as Tier 2 (Extended Assurance) with only 5 of 10 required mitigations in place. Four gaps needed to be closed: pre-commit hooks, dependency checking, type checking/static analysis, and AI code review. Property-based tests were identified as the tenth measure but deferred.
 * **Decision**: Implement the four missing mitigations using free, open-source tools that work independently of Gradle (preparing for the v4 transition per ADR-3).
 +

@@ -14,50 +14,71 @@ ifndef::imagesdir[:imagesdir: ../../images]
 == Risks and Technical Debts
 
 Risks for v4 differ significantly from v3. Some v3 risks are resolved (Gradle coupling, jBake maintenance), while new risks arise from the migration.
+This chapter separates *Risks* (uncertain future events) from *Technical Debt* (known compromises already in the code). Risks carry stable IDs (`R-NNN`) referenced from the ADR Consequences in <<section-design-decisions>>.
 
-[options="header",cols="1,1,3,2"]
+=== 11.1 Risks
+
+Probability and Impact are rated Low / Medium / High. Priority is derived from the two (High×High ⇒ HIGH, etc.) and matches the original assessment. Rows are ordered by Priority, highest first. Each Mitigation references a Chapter 8 concept or a quality scenario.
+
+[options="header",cols="1,2,1,1,1,3"]
 |===
-|Priority |Risk / Debt |Description |Affected Quality Scenarios
+|R-ID |Risk |Probability |Impact |Priority |Mitigation
 
+|R-001
+|*Custom site generator maturity.* Replacing jBake with the custom Groovy SSG (`MicrositeBaker`) is a significant effort. Feature parity must cover content types, metadata, pagination, tags, menu generation, search, and theming. Risk of incomplete implementation or regressions (QS-13, QS-14, QS-8).
+|High
+|High
+|HIGH
+|Ch8 *Test* concept — integration tests for `generateSite`; QS-8/QS-13 acceptance scenarios gate releases (ADR-4).
+
+|R-002
+|*v3 migration path.* Users upgrading from v3 lose Gradle-based workflows. Projects using `./gradlew` directly, custom Gradle tasks, or Gradle plugins will break (QS-14, QS-3).
+|High
+|High
+|HIGH
+|Ch8 *Error Handling* concept — deprecation warnings via `DtcException` guidance; migration guide (ADR-3).
+
+|R-003
+|*Script loading and classpath conflicts.* Without Gradle's dependency resolution, scripts depending on external libraries (POI, jsoup, HttpClient) need a reliable classpath; class conflicts between scripts are possible (QS-1, QS-4).
+|Medium
+|High
+|MEDIUM
+|`lib/` directory with pinned JARs (ADR-7); Ch8 *Test* concept verifies script loading.
+
+|R-004
+|*Residual inconsistent error handling.* Carried forward from v3. Until every script adopts `DtcException`, a mix of exceptions and `println` remains, weakening actionable guidance (QS-4, QS-3, QS-17).
+|Medium
+|Medium
+|MEDIUM
+|Ch8 *Error Handling* concept (ADR-8) — `DtcException` hierarchy; tracked rollout across scripts. QS-17.
+
+|R-005
+|*Release-time dependency resolution.* AsciiDoctor is externalized (ADR-6); ~30 JARs ship in `lib/` (ADR-7). The release process must resolve transitive dependencies and a tampered/vulnerable JAR (T-006) would reach every user (QS-4).
+|Low
+|Medium
 |LOW
-|Dependency management at release time
-|AsciiDoctor is externalized (ADR-6), remaining ~30 JARs are shipped in `lib/` (ADR-7). The release process must resolve transitive dependencies and package them. This is a one-time build step, not a runtime concern.
-|QS-4 (Determinism)
+|Ch8 *Security* concept — Trivy CVE scan of `lib/*.jar` (ADR-11); pinned, reproducible resolution (ADR-7).
+|===
 
-|HIGH
-|Custom site generator maturity
-|Replacing jBake with a custom Groovy SSG is a significant development effort. Feature parity must cover: content types, metadata, pagination, tags, menu generation, search, theme support. Risk of incomplete implementation or regressions.
-|QS-13 (Modern UI), QS-14 (v3 compatibility), QS-8 (Performance)
+=== 11.2 Technical Debt
 
-|HIGH
-|v3 migration path
-|Users upgrading from v3 to v4 lose Gradle-based workflows. Projects using `./gradlew` directly, custom Gradle tasks, or Gradle plugins will break. A clear migration guide and deprecation warnings are needed.
-|QS-14 (v3 compatibility), QS-3 (Usability)
+Each item names the specific Chapter 5 building block it burdens.
 
-|MEDIUM
-|Script loading and classpath
-|Without Gradle's dependency resolution, scripts that depend on external libraries (Apache POI for Excel, jsoup for HTML parsing, HttpClient for REST) need a reliable classpath mechanism. Class conflicts between scripts are possible.
-|QS-1 (Extensibility), QS-4 (Reliability)
+[options="header",cols="2,1,3"]
+|===
+|Technical Debt |Affected Building Block (Ch5) |Description
 
-|MEDIUM
-|Inconsistent error handling
-|Carried forward from v3. With Gradle removed, `GradleException` is no longer available. A new error handling strategy is needed (ADR-TBD-3). Scripts currently use a mix of exceptions and println.
-|QS-4 (Reliability), QS-3 (Usability)
-
-|MEDIUM
 |Confluence API dual client
-|Carried forward from v3 (ADR-TBD-1). Two client implementations must be maintained. Atlassian is deprecating v1 for Cloud.
-|QS-4 (Reliability), QS-1 (Extensibility)
+|Atlassian Integration scripts (`publishToConfluence.groovy`, `ConfluenceClientV1`/`ConfluenceClientV2`)
+|Two parallel client implementations (V1 Server, V2 Cloud) must be maintained. Atlassian is deprecating v1 for Cloud. Decision deferred to ADR-TBD-1.
 
-|LOW
 |No Jira Cloud client
-|Carried forward from v3 (ADR-TBD-2). Only `JiraServerClient` exists.
-|QS-2 (Portability)
+|Atlassian Integration scripts (`exportJiraIssues.groovy`, `JiraServerClient`)
+|Only `JiraServerClient` exists; Jira Cloud is not natively supported. Burdens QS-2. Decision deferred to ADR-TBD-2.
 
-|LOW
-|Windows-only features
-|EA, PPT, Visio export remain Windows-only (VBScript). No fallback on other platforms.
-|QS-2 (Portability)
+|Windows-only export features
+|External Tool Export scripts (`exportEA.groovy`, `exportPPT.groovy`, `exportVisio.groovy`)
+|EA, PowerPoint, and Visio export remain Windows-only (VBScript COM automation). No fallback on Linux/macOS, burdening cross-platform portability (QS-2).
 |===
 
 === Resolved v3 Risks
