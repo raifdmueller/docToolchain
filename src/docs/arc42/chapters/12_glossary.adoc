@@ -51,7 +51,7 @@ ifndef::imagesdir[:imagesdir: ../../images]
 |Software Development Kit Manager. A tool for managing parallel versions of multiple SDKs. One of three supported installation methods for docToolchain (`sdk install doctoolchain`).
 
 |ADR
-|Architecture Decision Record. A lightweight document capturing a significant architecture decision, its context, rationale, and consequences. Follows Nygard's format. Stored in `src/docs/050_ADRs/`.
+|Architecture Decision Record. A lightweight document capturing a significant architecture decision, its context, rationale, and consequences. Follows Nygard's format. Stored in `src/docs/arc42/adrs/` and included from Chapter 9.
 
 |Confluence Storage Format
 |The XHTML-based markup language used by Atlassian Confluence to store page content. Includes Confluence-specific macros (`<ac:structured-macro>`) and resource identifiers (`<ri:attachment>`). The `HtmlTransformer` converts AsciiDoctor HTML5 output into this format.

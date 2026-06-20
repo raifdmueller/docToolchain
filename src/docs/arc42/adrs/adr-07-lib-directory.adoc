@@ -1,6 +1,6 @@
 === ADR-7: lib/ Directory for Remaining Java Dependencies
 
-* **Status**: Decided for v4
+* **Status**: Accepted (for v4)
 * **Context**: With AsciiDoctor externalized (ADR-6), the remaining Java dependencies are:
 ** Groovy runtime (~15 JARs, ~10 MB)
 ** jsoup 1.18.1 (1 JAR, 0.5 MB) — HTML parsing for Confluence publishing
@@ -9,12 +9,48 @@
 ** Total: ~30 JARs, ~23 MB
 * **Decision**: Ship all remaining JARs in a `lib/` directory. `dtcw` sets the classpath via `java -cp lib/*`. No runtime resolution, no Grape, no downloads.
 * **Rationale**: 23 MB is small enough to bundle. Zero resolution overhead supports QS-9. Fully offline-capable. Deterministic — every user gets the same JARs. The simplest possible solution.
+* **Alternatives considered**:
+
+[cols="1,1,1,1", options="header"]
+|===
+|Criterion |Bundled `lib/` |Grape (`@Grab`) |Maven resolve at runtime
+
+|Startup overhead (QS-9)
+|+1 (one classpath glob)
+|0 (cache hit fast, first run slow)
+|–1 (resolution every run)
+
+|Offline capability (QS-2)
+|+1 (no network)
+|0 (offline after first grab)
+|–1 (needs network)
+
+|Determinism (QS-4)
+|+1 (pinned at release)
+|0 (cache can drift)
+|–1 (resolves latest unless locked)
+
+|Distribution size (QS-6)
+|0 (+23 MB)
+|+1 (download on demand)
+|+1 (download on demand)
+
+|Simplicity / debuggability
+|+1 (just files)
+|0 (Grape config)
+|–1 (resolver config)
+
+|**Total**
+|**+4**
+|**+1**
+|**–3**
+|===
 * **Quality Tradeoffs**:
 ** Supports **QS-9 (Startup + Throughput)**: Zero dependency resolution overhead. Classpath construction is one glob: `lib/*`.
 ** Supports **QS-4 (Determinism)**: Exact JARs pinned at release time.
 ** Supports **QS-2 (Offline)**: Works without internet after installation.
 ** Neutral on **QS-6 (Distribution size)**: 23 MB is acceptable (v3 with Gradle is ~50 MB).
-* **Consequences**: Release process must resolve all transitive dependencies and package them into `lib/`. A simple shell script or one-time Gradle/Maven call at release time handles this. POI JARs could be made optional in a future optimization (load only when `saveExcel=true`).
+* **Consequences**: Release process must resolve all transitive dependencies and package them into `lib/`. A simple shell script or one-time Gradle/Maven call at release time handles this. POI JARs could be made optional in a future optimization (load only when `saveExcel=true`). This decision creates risk *R-005 (release-time dependency resolution)* — a tampered or vulnerable JAR (threat T-006) would reach every user — and contributes to *R-003 (script loading and classpath conflicts)*; both are tracked in <<section-technical-risks>>.
 ** Affects **QS-2 (Portability)**: All options work cross-platform. Docker image can pre-bundle JARs.
 ** Affects **QS-3 (Usability)**: lib/ is simplest to understand. Grape is most Groovy-idiomatic.
 ** Affects **QS-6 (Installability)**: Download-on-demand keeps the initial download small.

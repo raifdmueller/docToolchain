@@ -1,6 +1,6 @@
 === ADR-8: Actionable Error Guidance
 
-* **Status**: Decided for v4
+* **Status**: Accepted (for v4)
 * **Context**: v3 error handling is inconsistent: `RuntimeException` in core, `GradleException` in scripts, `println` + silent continuation in some scripts. With Gradle removed, `GradleException` is gone. More importantly, the fundamental problem is not *how* errors are thrown, but *what* the user sees. v3 shows stack traces and technical error messages. Users cannot determine what to do next.
 +
 Real example from v3: PDF generation fails with a cryptic `IOException: Access denied` when the output PDF is still open in Adobe Acrobat. Users who know the tool recognize this — new users are stuck.
@@ -101,4 +101,4 @@ Stack traces are shown **only** for exit code 99 (bugs). All other errors show o
 ** Supports **QS-4 (Reliability)**: No more silent `println` + continue. Every error is thrown and caught at the top level.
 ** Supports **QS-5 (CI/CD)**: Differentiated exit codes (2=config, 3=API, 99=bug) enable targeted CI/CD responses.
 ** Neutral on **QS-11 (Script-first)**: One import per script (`import DtcException`). ~25 LOC in a shared file.
-* **Consequences**: Every script must use `DtcException` (or subclass) instead of `println` for errors. Existing `RequestFailedException` is replaced by `DtcApiException`. A catalog of common error scenarios with guidance messages should be maintained (see examples in Risks section). The guidance messages should be in English (matching the codebase language), with the tone of a helpful colleague, not a system log.
+* **Consequences**: Every script must use `DtcException` (or subclass) instead of `println` for errors. Existing `RequestFailedException` is replaced by `DtcApiException`. A catalog of common error scenarios with guidance messages should be maintained (see examples in Risks section). The guidance messages should be in English (matching the codebase language), with the tone of a helpful colleague, not a system log. This decision *mitigates* risk *R-004 (residual inconsistent error handling)* in <<section-technical-risks>>: until every script adopts `DtcException`, the mixed-error-handling risk remains tracked.

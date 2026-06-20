@@ -1,6 +1,6 @@
 === ADR-5: LLM-Native Architecture
 
-* **Status**: Decided for v4
+* **Status**: Accepted (for v4)
 * **Context**: The GenAI era changes how documentation is created and consumed. Traditional export scripts (EA, PPT, Visio, Excel) address a workflow where humans manually extract data from tools. LLMs can handle these transformations directly. Meanwhile, LLMs need structured document access (daCLI) and benefit from Skills, Prompts, and Semantic Anchors.
 * **Decision**: Shift docToolchain's strategic focus toward LLM-native tooling:
 ** **daCLI integration**: MCP server for structured document access (10 tools, already operational)

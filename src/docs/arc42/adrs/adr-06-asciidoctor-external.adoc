@@ -1,6 +1,6 @@
 === ADR-6: AsciiDoctor as External Tool with Versioned Auto-Installation
 
-* **Status**: Decided for v4
+* **Status**: Accepted (for v4)
 * **Context**: In v3, AsciiDoctor is embedded as `asciidoctorj` — a Java wrapper that bundles JRuby (~30 MB). Together with transitive dependencies, this adds ~25 JARs and ~45 MB to the classpath. JRuby initialization adds 2-3 seconds to every startup. AsciiDoctor also exists as a standalone CLI tool installable via `gem`, `brew`, or `apt`.
 * **Decision**: Use AsciiDoctor as an external tool, auto-installed by `dtcw` in a pinned version. This follows the same pattern as Java auto-installation. AsciiDoctor CLI supports batch processing (`asciidoctor *.adoc`), so 50 files are handled in one process invocation.
 * **Alternatives considered**:

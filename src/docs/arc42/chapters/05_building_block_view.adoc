@@ -42,14 +42,22 @@ System_Boundary(ecosystem, "Ecosystem") {
 }
 
 System_Ext(asciidoctor, "AsciiDoctor CLI", "Document processor\n(external tool, auto-installed)")
+System_Ext(kroki, "Diagram Backend", "Kroki-compatible server\n(local Docker by default, ADR-9)")
 System_Ext(confluence, "Atlassian Confluence", "REST API v1/v2")
 System_Ext(jira, "Atlassian Jira", "REST API v3")
+System_Ext(ea, "Enterprise Architect", "COM (Windows)")
+System_Ext(git, "Git Repository", "Local CLI")
+System_Ext(structurizr, "Structurizr", "DSL files")
 
 Rel(user, wrapper, "Invokes tasks via CLI")
 Rel(wrapper, scripts, "Invokes Groovy scripts\nvia java/groovy runtime")
 Rel(scripts, asciidoctor, "Renders AsciiDoc")
+Rel(scripts, kroki, "Renders diagrams")
 Rel(scripts, confluence, "Publishes pages")
 Rel(scripts, jira, "Exports issues")
+Rel(scripts, ea, "Extracts diagrams")
+Rel(scripts, git, "Reads changelog")
+Rel(scripts, structurizr, "Renders models")
 
 Rel(llm, dacli, "MCP tool calls")
 Rel(dacli, scripts, "Reads/writes\ndoc sources")
@@ -61,30 +69,42 @@ Rel(llm, prompts, "Uses prompts")
 Motivation::
 v4 simplifies from four layers (Wrapper -> Gradle -> Script Plugins -> Core Module) to two layers (Wrapper -> Scripts). The Gradle orchestration layer and the compiled Core Module are eliminated. Business logic returns to scripts. Companion tools (daCLI, Bausteinsicht, LLM-Prompts) handle LLM integration as an ecosystem rather than embedding it into docToolchain itself.
 
+[NOTE]
+====
+This Level-1 view is a *container zoom*: it shows the two internal building blocks (Wrapper, Groovy Scripts) and the external systems they call *at runtime* — AsciiDoctor, Confluence, Jira, and the diagram rendering backend (Kroki, ADR-9). The remaining Chapter 3 context actors (Enterprise Architect, Git, Structurizr) are reached through the same `Groovy Scripts` building block (the `export*` scripts) and are elided here only to keep the container diagram readable; they are not a different system boundary.
+
+The ecosystem tools differ in lifecycle: **daCLI is exercised at runtime** (the LLM-edit scenario S3 in Chapter 6 calls it). **Bausteinsicht and LLM-Prompts are design-time companion tools** — they are used by authors/LLMs while *writing* documentation; docToolchain core never invokes them at runtime. They are shown for ecosystem context only.
+====
+
 Contained Building Blocks::
 
-[options="header",cols="1,2,2"]
+[options="header",cols="1,2,2,2"]
 |===
-|Building Block |Responsibility |Location
+|Building Block |Responsibility |Interface |Location
 
 |Wrapper Layer
 |Cross-platform CLI entry point. Constructs classpath from `lib/` directory (or resolves via Grape). Manages Java installation. Invokes Groovy scripts directly — no build framework intermediary. Detects execution environment (local/Docker/SDKMAN).
+|CLI: `./dtcw [env] <task> [args]`; differentiated exit codes (0/1/2/3/99, ADR-8). See the wrapper function map in <<wrapper-function-map>>.
 |`dtcw`, `dtcw.ps1`, `dtcw.bat`
 
 |Groovy Scripts
 |All task logic: document generation (AsciiDoctor invocation), site generation (custom SSG), Confluence publishing, Jira export, changelog extraction, and all other features. Each script is a self-contained unit that runs without compilation.
+|Task entry points: one `<taskName>.groovy` per task, invoked as `groovy.ui.GroovyMain scripts/<taskName>.groovy`; config via `ConfigSlurper`.
 |`scripts/*.groovy`
 
-|daCLI (Ecosystem)
+|daCLI (Ecosystem, runtime)
 |MCP server providing 10 tools for structured document access: navigation, search, section-level read/write, validation. Separate Python process communicating via stdio.
+|MCP over stdio (`get_structure`, `get_section`, `search`, `update_section`, …) and a CLI.
 |Separate repository (`dacli/`)
 
-|Bausteinsicht (Ecosystem)
-|Architecture-as-code tool. JSONC models with bidirectional draw.io sync. Exports PlantUML/PNG for embedding in AsciiDoc. CLI with `--format json` for LLM interaction.
+|Bausteinsicht (Ecosystem, design-time only)
+|Architecture-as-code tool. JSONC models with bidirectional draw.io sync. Exports PlantUML/PNG for embedding in AsciiDoc. *Used by authors/LLMs at design time; not invoked by docToolchain core at runtime.*
+|CLI with `--format json`; produces PlantUML/PNG artifacts consumed as AsciiDoc includes.
 |Separate repository (`Bausteinsicht/`)
 
-|LLM-Prompts (Ecosystem)
-|Reusable prompt collection for arc42 documentation: chapter generation, ADR creation, quality scenarios, risk assessment, stakeholder analysis.
+|LLM-Prompts (Ecosystem, design-time only)
+|Reusable prompt collection for arc42 documentation: chapter generation, ADR creation, quality scenarios, risk assessment, stakeholder analysis. *Used by authors/LLMs at design time; not invoked by docToolchain core at runtime.*
+|Prompt text (AsciiDoc) consumed by an LLM; no runtime API.
 |Separate repository (`LLM-Prompts/`)
 |===
 
@@ -124,6 +144,13 @@ The scripts are organized into functional groups. Unlike v3 (where scripts were 
 |`config.groovy` (or loaded inline)
 |Loads `docToolchainConfig.groovy` via Groovy `ConfigSlurper`. Provides config access to all scripts.
 |===
+
+[[wrapper-function-map]]
+==== Wrapper Function Map
+
+The Wrapper Layer is itself a structured set of shell functions. The following map of `dtcw` functions documents its internal decomposition — environment detection, installation, and command building — and is the component view of the Wrapper building block referenced in the Level-1 table above.
+
+plantuml::../../027_arc42/dtcw.puml[format=png,id=dtcw-function-map]
 
 === Level 3: Whitebox Atlassian Integration
 

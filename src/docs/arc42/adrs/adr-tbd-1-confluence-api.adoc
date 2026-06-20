@@ -1,4 +1,4 @@
 === ADR-TBD-1: Confluence API Version Strategy
 
-* **Status**: Deferred — decide when Confluence publishing is reworked
+* **Status**: Proposed (deferred — decide when Confluence publishing is reworked)
 * **Context**: Two parallel Confluence client implementations (V1 for Server, V2 for Cloud). Lower priority in the LLM era — documentation increasingly consumed via daCLI/MCP rather than pushed to Confluence.

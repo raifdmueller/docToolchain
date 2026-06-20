@@ -1,12 +1,49 @@
 === ADR-1: Use Groovy as Primary Scripting Language
 
-* **Status**: In effect (carried forward to v4)
+* **Status**: Accepted (inferred) — carried forward from v3, rationale reconstructed from the codebase
 * **Context**: docToolchain uses scripts in multiple languages. The team needed a consistent primary language for maintainability.
 * **Decision**: Use Groovy for all scripting tasks. Exception: Visual Basic for Windows COM automation (Enterprise Architect, PowerPoint export) where no Java library exists.
+* **Alternatives considered**:
+
+[cols="1,1,1,1", options="header"]
+|===
+|Criterion |Groovy |Kotlin (script) |Plain Java
+
+|No compilation step (QS-11)
+|+1 (runs as script)
+|0 (kotlinc startup is slow)
+|–1 (requires compile)
+
+|Java interop / ecosystem reuse
+|+1 (seamless)
+|+1 (seamless)
+|+1 (native)
+
+|Contributor friendliness (QS-1)
+|+1 (forgiving, dynamic)
+|0 (stricter, less known here)
+|–1 (verbose, ceremony)
+
+|Config DSL (`ConfigSlurper`)
+|+1 (built-in)
+|–1 (no equivalent)
+|–1 (none)
+
+|Existing codebase fit
+|+1 (already Groovy)
+|–1 (full rewrite)
+|0 (partial)
+
+|**Total**
+|**+5**
+|**–1**
+|**–3**
+|===
+
 * **Quality Tradeoffs**:
 ** Supports **QS-1 (Extensibility)**: Contributors need only one language to extend the system.
 ** Supports **QS-2 (Portability)**: Groovy runs on the JVM, same bytecode on all platforms.
 ** Supports **QS-11 (Script-first)**: Groovy scripts run without compilation.
 ** Compromises **QS-2 (Portability)** partially: VBScript exceptions limit some features to Windows.
 
-// Source: src/docs/050_ADRs/ADR-1-Scripting-Languages.adoc
+// Derived from v3 source ADR: src/docs/050_ADRs/ADR-1-Scripting-Languages.adoc. This v4 ADR lives in src/docs/arc42/adrs/.

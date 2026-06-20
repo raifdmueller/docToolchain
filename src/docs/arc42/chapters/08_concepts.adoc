@@ -13,6 +13,106 @@ ifndef::imagesdir[:imagesdir: ../../images]
 [[section-concepts]]
 == Cross-cutting Concepts
 
+This chapter leads with the five mandated baseline crosscutting concepts (Threat Model, Security, Test, Observability, Error Handling), then documents the docToolchain-specific concepts (Configuration Management, Script Execution Model, LLM Integration, Content Transformation Pipeline, Custom Site Generator).
+
+=== Threat Model (STRIDE)
+
+docToolchain is a local CLI document generator. It reads local files, runs Groovy scripts and Groovy config, calls external REST APIs (Confluence, Jira), optionally calls LLM providers (via the daCLI ecosystem), optionally renders diagrams through a Kroki-compatible server (local Docker by default, ADR-9), and downloads Java, AsciiDoctor, templates, and themes over the network on first use.
+The following STRIDE analysis enumerates the concrete threats this attack surface creates. Each threat carries a stable ID (`T-NNN`) referenced by the mitigations in the Security concept below and by the risks in <<section-technical-risks>>.
+
+[options="header",cols="1,1,3,1"]
+|===
+|T-ID |STRIDE Category |Threat |Affected Building Block (Ch5)
+
+|T-001
+|Tampering / Spoofing
+|A man-in-the-middle or spoofed mirror serves a tampered AsciiDoctor install, template, theme, or JDK during `dtcw` auto-bootstrapping. The user runs attacker-controlled code without noticing.
+|Wrapper Layer (`dtcw`)
+
+|T-002
+|Information Disclosure
+|API tokens and credentials leak into console output, build logs, or generated CI snippets — for example a stack trace that echoes `confluence.credentials`, or a token printed by a verbose script.
+|Groovy Scripts (`publishToConfluence.groovy`, `exportJiraIssues.groovy`)
+
+|T-003
+|Tampering / Elevation of Privilege
+|A malicious `include::` directive or crafted file path performs path traversal on export, writing outside the intended `outputPath` (zip-slip / `../` escape) or reading files outside the project.
+|Groovy Scripts (`generateSite.groovy`, `collectIncludes.groovy`)
+
+|T-004
+|Information Disclosure / Tampering (SSRF)
+|A configured `diagramServer`, `confluence.api`, or `jira.api` URL points at an internal address. docToolchain is coerced into requesting internal-only endpoints (SSRF), or diagram source text is exfiltrated to a third-party Kroki host.
+|Groovy Scripts + Wrapper (diagram rendering, REST clients)
+
+|T-005
+|Elevation of Privilege
+|Untrusted `docToolchainConfig.groovy` or a downloaded Groovy script executes arbitrary code. Groovy config is executable code, not data — opening a hostile project and running `dtcw` runs whatever the config author wrote.
+|Wrapper Layer + Groovy Scripts (`ConfigSlurper` evaluation)
+
+|T-006
+|Tampering / Elevation of Privilege
+|A tampered or vulnerable dependency JAR in `lib/` (ADR-7) executes with full user privileges. A poisoned transitive dependency resolved at release time ships to every user.
+|Groovy Scripts (`lib/*.jar` classpath)
+|===
+
+=== Security
+
+Each mitigation below references the `T-IDs` it closes. Mitigations marked "already in code" exist today; the rest are decided concepts to be enforced as the v4 scripts mature.
+
+[options="header",cols="2,3,1"]
+|===
+|Mitigation |Description |Closes
+
+|HTTPS for all downloads and APIs
+|`dtcw` and the REST clients use HTTPS for JDK/AsciiDoctor/template/theme downloads and for Confluence/Jira calls. Pinned versions (ADR-6) reduce the window for a swapped artifact.
+|T-001, T-004
+
+|Secrets via environment, never config
+|Credentials are supplied through CLI arguments or environment variables, never stored in `docToolchainConfig.groovy`. Properties whose names contain `credential`, `token`, or `secret` are masked in all output (see the Configuration Management concept below). Stack traces are suppressed for user-recoverable errors (ADR-8), so tokens are not echoed.
+|T-002
+
+|Zip-slip / path-traversal guard
+|The custom site generator already guards against zip-slip when unpacking templates (carried into `generateSite`). Export paths are resolved against and constrained to `outputPath`; `include::` resolution is confined to the project tree.
+|T-003
+
+|Local-default diagram rendering
+|The default `diagramServer = 'docker'` (ADR-9) keeps diagram source text on the machine. Any external URL triggers a per-run warning (QS-16) so SSRF/exfiltration via a third-party host is an explicit, informed choice, not a silent default.
+|T-004
+
+|Treat config and scripts as trusted code
+|Documentation states plainly that `docToolchainConfig.groovy` and project scripts are executed, not parsed — users must trust a project before running `dtcw` in it, exactly as with any build tool. CodeNarc static analysis (ADR-11) and gitleaks pre-commit hooks reduce the chance of introducing unsafe patterns.
+|T-005
+
+|Dependency CVE scanning
+|Trivy scans `lib/*.jar` for known CVEs on every PR and weekly (ADR-11), with results in the GitHub Security tab. Release-time dependency resolution is reproducible and pinned (ADR-7).
+|T-006
+|===
+
+=== Test
+
+Testing follows a pyramid, broad at the base:
+
+* **Unit (Spock)** — the largest layer. Spock specifications in `core/` cover the Atlassian client/converter logic, configuration handling, and HTML transformation. These trace to the business rules they enforce (e.g. idempotent Confluence publishing — QS-4 — is unit-tested via MD5 hash comparison).
+* **Wrapper (BATS)** — `test/*.bats` exercise `dtcw` across local/Docker/SDKMAN environments (QS-2, QS-6). They trace to the cross-platform and installability use cases.
+* **Integration** — end-to-end `./dtcw local generateHTML` / `generatePDF` / `generateSite` runs verify the full pipeline against real AsciiDoctor (QS-8). Environment-dependent tests skip gracefully (QS-7).
+
+CodeNarc static analysis (ADR-11) sits alongside the pyramid as a non-execution gate. Property-based tests are deferred until the v4 Groovy scripts carry business logic (ADR-11).
+
+=== Observability
+
+docToolchain is a short-lived CLI process, so observability is console- and artifact-based rather than service telemetry:
+
+* **Console output** — progress and warnings stream to stdout/stderr. The privacy warning (QS-16) and actionable error guidance (ADR-8) are the primary user-facing signals.
+* **Build artifacts** — generated HTML/PDF/microsite under `build/`, plus the HTML sanity-check report, are the durable evidence of a run.
+* **Exit codes** — differentiated exit codes (0 success, 1 user-fixable, 2 config, 3 API/network, 99 bug) make runs observable to CI/CD without log scraping (ADR-8, QS-5).
+* **LLM trace / cost (planned)** — for LLM-assisted workflows via the ecosystem, an optional `llm-trace` and per-run token/cost summary are envisioned so LLM interactions are auditable. Not yet implemented.
+
+=== Error Handling
+
+Error handling is governed by ADR-8 (Actionable Error Guidance). Every user-recoverable error is thrown as a `DtcException` (or `DtcConfigException` / `DtcApiException`) carrying a mandatory `guidance` field — what the user should *do*, not what went wrong. A top-level handler maps each exception type to a differentiated exit code and prints only the guidance message; stack traces appear only for genuine bugs (exit code 99).
+
+This is a recovery-first, fail-fast strategy: there is no silent `println`-and-continue. Network and API failures surface as `DtcApiException` with a remediation step (e.g. "check `confluence.credentials`"). See ADR-8 for the exception hierarchy, exit-code table, and the runtime error scenario in <<section-runtime-view>>.
+
 === Configuration Management
 
 Unchanged from v3 in principle, simplified in implementation.
@@ -54,9 +154,9 @@ v4 replaces Gradle's task model with direct script invocation:
 
 Tasks are independent. There are no implicit dependencies. Users call them in the order they need: `./dtcw generateHTML` then `./dtcw publishToConfluence`. This matches real-world usage patterns.
 
-=== Authentication and Security
+=== Authentication Mechanisms
 
-Unchanged from v3:
+The concrete authentication details behind the Security concept above (mitigation for T-002). Unchanged from v3:
 
 * **Basic Auth**: Username + API token, encoded as Base64 for `Authorization` header.
 * **Bearer Token**: OAuth or personal access token.
