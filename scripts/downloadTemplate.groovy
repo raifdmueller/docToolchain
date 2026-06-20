@@ -46,7 +46,27 @@ def templateArg = args.find { !it.startsWith('-') }
 def langArg = args.find { it.startsWith('--lang=') }?.split('=', 2)?.getAt(1)
 def helpArg = args.find { it.startsWith('--help=') }?.split('=', 2)?.getAt(1)
 
-def template = templateArg ?: 'arc42'
+def template
+if (templateArg) {
+    template = templateArg
+} else if (isHeadless) {
+    template = 'arc42'
+    println "${color('green', "Headless mode: using default template 'arc42'.")}"
+} else {
+    def keys = templates.keySet() as List
+    def reader = System.console() ?: new BufferedReader(new InputStreamReader(System.in))
+    println "${color('green', 'Which template do you want to install?')}"
+    keys.eachWithIndex { name, i -> println "  ${i + 1}) ${name}" }
+    print "${color('green', "Choice [1-${keys.size()}] or name (default: 1 = ${keys[0]}): ")}"
+    def input = (reader instanceof Console ? reader.readLine() : reader.readLine())?.trim()
+    if (!input) {
+        template = keys[0]
+    } else if (input.isInteger() && (input as int) in (1..keys.size())) {
+        template = keys[(input as int) - 1]
+    } else {
+        template = input
+    }
+}
 if (!templates.containsKey(template)) {
     System.err.println "Unknown template '${template}'. Available: ${templates.keySet().join(', ')}"
     System.exit(1)
