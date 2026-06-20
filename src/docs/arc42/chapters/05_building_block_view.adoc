@@ -101,8 +101,8 @@ The scripts are organized into functional groups. Unlike v3 (where scripts were 
 |Core document generation. Calls AsciiDoctor CLI (external tool, ADR-6) for rendering. Replaces the `AsciiDocBasics.gradle` approach.
 
 |Site Generation
-|`generateSite.groovy`, `copyThemes.groovy`
-|Custom Groovy-based static site generator replacing jBake (ADR-4). Groovy SimpleTemplate engine, in-memory content model, modern HTML output. Reads jBake-compatible metadata headers.
+|`generateSite.groovy`, `lib/MicrositeBaker.groovy`, `copyThemes.groovy`
+|Custom Groovy-based static site generator (`MicrositeBaker`, `scripts/lib/MicrositeBaker.groovy`) replacing jBake (ADR-4). Groovy SimpleTemplate engine, in-memory content model, modern HTML output. Reads jBake-compatible metadata headers.
 
 |Atlassian Integration
 |`publishToConfluence.groovy`, `exportJiraIssues.groovy`, `exportJiraSprintChangelog.groovy`, `exportConfluence.groovy`

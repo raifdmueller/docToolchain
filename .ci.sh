@@ -47,7 +47,9 @@ dependency_info() {
   echo "#        Check for dependency updates      #"
   echo "#                                          #"
   echo "############################################"
-  ./gradlew -b init.gradle dependencyUpdates
+  # Note: Gradle 9 removed the '-b/--build-file' option, so init.gradle can no
+  # longer be checked via 'gradlew -b init.gradle'. The main project's update
+  # report below covers the shared plugins (versions, download).
   ./gradlew dependencyUpdates
 }
 

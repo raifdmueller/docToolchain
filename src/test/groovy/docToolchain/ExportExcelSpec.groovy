@@ -1,6 +1,7 @@
 package docToolchain
 
 import org.gradle.testkit.runner.GradleRunner
+import spock.lang.Ignore
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Stepwise
@@ -8,6 +9,9 @@ import spock.lang.Unroll
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
+// v4: this spec drives the v3 Gradle 'exportExcel' task (broken on Gradle 9).
+// The v4 direct-JVM equivalent scripts/exportExcel.groovy is verified separately.
+@Ignore('v4: v3 Gradle-task path (project.exec{} removed in Gradle 9); v4 uses scripts/exportExcel.groovy (#49)')
 @Stepwise
 class ExportExcelSpec extends Specification {
 

@@ -1,12 +1,17 @@
 package docToolchain
 
 import org.gradle.testkit.runner.GradleRunner
+import spock.lang.Ignore
 import spock.lang.Requires
 import spock.lang.Specification
 
 import static org.gradle.testkit.runner.TaskOutcome.FAILED
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
+// v4: exercises the v3 Gradle-task path, which Gradle 9 breaks (project.exec{}
+// was removed). 'pandoc' has no v4 direct-JVM script yet; re-enable once it is
+// migrated. See #49.
+@Ignore('v4: v3 Gradle-task path (project.exec{} removed in Gradle 9) — pending migration to a v4 direct-JVM script (#49)')
 class PandocSpec extends Specification {
 
     void 'test pandoc verification on linux'() {

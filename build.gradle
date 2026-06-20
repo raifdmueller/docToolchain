@@ -2,11 +2,6 @@ import java.util.zip.ZipFile
 
 // fix versions for #1200
 buildscript {
-    configurations {
-        jbake {
-            exclude group: 'org.eclipse.jetty'
-        }
-    }
     configurations.all {
         resolutionStrategy.eachDependency { DependencyResolveDetails details ->
             if (details.requested.group == 'org.ysb33r.gradle' && details.requested.name == 'grolifant' && details.requested.version == '0.12.1') {
@@ -47,11 +42,11 @@ dependencies {
         }
     }
 
-    // Root-project tests run on Gradle's bundled Groovy 3 (via gradleTestKit),
-    // so they use the Groovy-3 Spock build. core/ and the v4 runtime use Groovy 4.
-    testImplementation(libs.spock.g3.reports) {
-        exclude group: 'org.codehaus.groovy', module: 'groovy-xml'
-    }
+    // Root-project tests run on Gradle's bundled Groovy (Gradle 9 ships Groovy 4)
+    // via gradleTestKit, so they use the Groovy-4 Spock build. core/ and the v4
+    // runtime use Groovy 5. The spock-reports add-on is intentionally omitted
+    // here: it is a reporting-only extension and its global initializer is not
+    // compatible with this gradleTestKit/Groovy-4 setup.
     testImplementation(
             (libs.junit),
             (libs.spock.g3.core),
@@ -64,6 +59,7 @@ dependencies {
         testImplementation("org.docToolchain:core")
     }
     testRuntimeOnly(libs.byte.buddy)
+    testRuntimeOnly(libs.junit.platform.launcher)
     compileClasspath((libs.http.client))
 }
 test {
