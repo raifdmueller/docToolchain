@@ -9,7 +9,8 @@ include::../_feedback.adoc[]
 === About This Task
 
 When your documentation grows beyond a single document, a microsite bundles everything into a navigable website with landing page, blog, and search.
-The `generateSite` task uses https://jbake.org[jBake] to create a static site from your AsciiDoc sources.
+The `generateSite` task renders a static site from your AsciiDoc sources using docToolchain's built-in site generator.
+(Up to v3 this was https://jbake.org[jBake]; v4 replaced it with a self-contained generator while keeping the same `jbake-`-prefixed page metadata.)
 
 [source,bash]
 ----
@@ -21,7 +22,7 @@ Output is written to `build/microsite/output/`.
 === Pages
 
 The microsite is page-oriented: each AsciiDoc file becomes a page.
-Add jBake metadata to include a page in the site:
+Add page metadata to include a page in the site (the `jbake-` prefix is kept for backwards compatibility):
 
 .page metadata
 [source, asciidoc]
@@ -105,7 +106,7 @@ In the right column, links are controlled by values in `docToolchainConfig.groov
 
 === Templates and Style
 
-The jBake templates use https://getbootstrap.com/[Bootstrap 5] as their CSS framework.
+The bundled templates use https://getbootstrap.com/[Bootstrap 5] as their CSS framework.
 Templates and styles are bundled with docToolchain.
 
 === Landing Page

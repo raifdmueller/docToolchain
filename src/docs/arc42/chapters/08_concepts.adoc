@@ -124,9 +124,9 @@ Unchanged from v3 for Confluence publishing:
 4. LinkTransformer rewrites cross-references
 5. CodeBlockTransformer formats code blocks as Confluence macros
 
-=== Custom Site Generator (replacing jBake)
+=== Custom Site Generator: MicrositeBaker (replacing jBake)
 
-New in v4. The site generator is a Groovy script implementing:
+New in v4. The site generator (`MicrositeBaker`, `scripts/lib/MicrositeBaker.groovy`, driven by `generateSite.groovy`) is a Groovy class implementing:
 
 1. **Content scanning**: Recursively scan `src/docs/` for `.adoc` files
 2. **Metadata extraction**: Parse jBake-compatible headers (`:jbake-title:`, `:jbake-type:`, `:jbake-menu:`, `:jbake-order:`)

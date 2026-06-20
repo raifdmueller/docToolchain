@@ -1,6 +1,6 @@
 === ADR-4: Replace jBake for Static Site Generation
 
-* **Status**: Decided for v4
+* **Status**: Decided for v4 — implemented in v4.0 as `MicrositeBaker` (`scripts/lib/MicrositeBaker.groovy`, see Chapter 8)
 * **Context**: jBake is the current static site generator for docToolchain's microsite feature. Critical problems:
 ** **Unmaintained**: Governance crisis (Issue #785). PRs not reviewed. v2.7.0 not published to Maven Central.
 ** **Apple Silicon**: Does not run on modern Macs without workarounds (OrientDB JNI issue #709). Fix exists but is not released.
