@@ -208,16 +208,35 @@ new File(outputDir, '.asciidoctorconfig.adoc').write(':imagesdir: ../images\n\n'
 
 // Update project config file
 def configFileObj = new File(docDir, configFile)
+def inputFileEntry = "[file: '${template}/${template}.adoc', formats: ['html','pdf']]"
 if (configFileObj.exists()) {
     def configText = configFileObj.text
-    configText = configText
-        .replaceAll('[, \\t\\r\\n]+/[*]{2} inputFiles [*]{2}/',
-            ",\n\t[file: '${template}/${template}.adoc', formats: ['html','pdf']],\n\t/** inputFiles **/")
-        .replaceAll('[, \\t\\r\\n]+/[*]{2} imageDirs [*]{2}/',
-            ",\n\t'images/.',\n\t/** imageDirs **/")
-        .replaceAll("\\[,", "[")
-    configFileObj.write(configText, 'utf-8')
-    println "Updated ${configFile}"
+    if (configText.contains('/** inputFiles **/')) {
+        // Scaffolded config (from template_config): inject into the markers.
+        configText = configText
+            .replaceAll('[, \\t\\r\\n]+/[*]{2} inputFiles [*]{2}/',
+                ",\n\t${inputFileEntry},\n\t/** inputFiles **/")
+            .replaceAll('[, \\t\\r\\n]+/[*]{2} imageDirs [*]{2}/',
+                ",\n\t'images/.',\n\t/** imageDirs **/")
+            .replaceAll("\\[,", "[")
+        configFileObj.write(configText, 'utf-8')
+        println "Updated ${configFile}"
+    } else if (!(configText =~ /(?m)^\s*inputFiles\s*=/)) {
+        // No marker and no inputFiles yet (e.g. an empty 'touch'-ed config):
+        // append a working default so generateHTML/PDF/Site run out of the box.
+        def addition = new StringBuilder()
+        if (configText && !configText.endsWith('\n')) addition << '\n'
+        addition << "\ninputFiles = [\n\t${inputFileEntry},\n]\n"
+        if (!(configText =~ /(?m)^\s*imageDirs\s*=/)) {
+            addition << "\nimageDirs = [\n\t'images/.',\n]\n"
+        }
+        configFileObj.append(addition.toString(), 'utf-8')
+        println "Updated ${configFile} (added inputFiles for ${template})"
+    } else {
+        // Config already declares inputFiles but has no marker — don't clobber it.
+        println "Note: ${configFile} already defines inputFiles; not modifying it."
+        println "      Add this entry yourself if needed: ${inputFileEntry}"
+    }
 }
 
 println ""
