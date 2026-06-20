@@ -19,6 +19,6 @@ docToolchain builds the result theme from three locations (in order of priority)
 To customize the theme, create your own files in `src/site/` in your project.
 The internal theme files are in the docToolchain repository under `src/site/`.
 
-For more information about the theme structure, see the https://jbake.org/docs/2.6.7/#project_structure[jBake documentation].
+A theme follows this structure: `templates/` (the GSP templates), `doc/` (the landing page and any static content), and `assets/` (CSS, JS, images copied verbatim into the site). The `~~~~~~`-delimited `jbake.properties` in the theme root configures template-to-type mappings and Markdown extensions.
 
 The template uses https://getbootstrap.com/[Bootstrap 5] as its CSS framework.

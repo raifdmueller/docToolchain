@@ -399,9 +399,15 @@ class MicrositeBaker {
     // ===================================================================
 
     void renderSpecialPages() {
-        // master index
-        renderSpecial('masterindex', 'index.html', [type: 'masterindex', uri: 'index.html',
-                                                     sourceuri: null, rootpath: null])
+        // master index — needs a landing page (index.gsp includes doc/<landingPage>)
+        if (!config.site_landingPage) {
+            System.err.println "MicrositeBaker: no 'microsite.landingPage' configured in " +
+                    "docToolchainConfig.groovy — skipping the landing page (index.html). " +
+                    "Set e.g. microsite.landingPage = 'landingpage.gsp' and add that file to your theme's doc/ folder."
+        } else {
+            renderSpecial('masterindex', 'index.html', [type: 'masterindex', uri: 'index.html',
+                                                         sourceuri: null, rootpath: null])
+        }
         // archive (jBake default render.archive=true)
         if (boolProp('render_archive', true)) {
             renderSpecial('archive', 'archive.html', [type: 'archive', uri: 'archive.html',

@@ -41,7 +41,7 @@ Refer to https://github.com/docToolchain/multi-markup-demo/blob/main/src/docs/de
 
 === restructuredText (.rst)
 
-Since jBake doesn't support restructuredText, docToolchain uses a different mechanism:
+Since the built-in generator doesn't render reStructuredText directly, docToolchain uses a different mechanism:
 
 ifndef::projectRootDir[:projectRootDir: ../../..]
 
@@ -54,8 +54,8 @@ include::{projectRootDir}/template_config/Config.groovy[tags=additionalConverter
 Once an additional converter is configured, docToolchain will traverse all doc-files, check the extension, and invoke the configured script if the extension matches.
 
 
-The script's task is to convert the file to a markup format recognised by jBake (AsciiDoc, Markdown, or HTML).
-Afterwards, jBake will process everything as usual.
+The script's task is to convert the file to a markup format the site generator recognises (AsciiDoc, Markdown, or HTML).
+Afterwards, the built-in generator processes everything as usual.
 
 In this case, the Python docutils will convert restructuredText to HTML.
 
