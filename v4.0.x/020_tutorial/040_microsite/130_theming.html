@@ -510,7 +510,7 @@ searching issues...
 <div class="sectionbody">
 <div class="paragraph">
 <p>The goal of docToolchain is to provide an environment where you can focus on documentation, not worry about theming.
-That&#8217;s why both the jBake templates and CSS are bundled with docToolchain.</p>
+That&#8217;s why both the GSP templates and CSS are bundled with docToolchain.</p>
 </div>
 <div class="sect2">
 <h3 id="_how_theming_works">How theming works</h3>
@@ -538,7 +538,7 @@ That&#8217;s why both the jBake templates and CSS are bundled with docToolchain.
 The internal theme files are in the docToolchain repository under <code>src/site/</code>.</p>
 </div>
 <div class="paragraph">
-<p>For more information about the theme structure, see the <a href="https://jbake.org/docs/2.6.7/#project_structure">jBake documentation</a>.</p>
+<p>A theme follows this structure: <code>templates/</code> (the GSP templates), <code>doc/</code> (the landing page and any static content), and <code>assets/</code> (CSS, JS, images copied verbatim into the site). The <code><sub>~</sub><sub>~</sub></code>-delimited <code>jbake.properties</code> in the theme root configures template-to-type mappings and Markdown extensions.</p>
 </div>
 <div class="paragraph">
 <p>The template uses <a href="https://getbootstrap.com/">Bootstrap 5</a> as its CSS framework.</p>
@@ -633,7 +633,7 @@ The internal theme files are in the docToolchain repository under <code>src/site
 	
     <!--footer class="footer mt-auto py-3 bg-light">
         <div class="container">
-            <span class="text-muted">&copy; 2020 | based on <a href="https://arc42.org">arc42 7.0</a> | mixed with <a href="http://getbootstrap.com/">Bootstrap v5.0.0-beta</a> | Baked with <a href="http://jbake.org">JBake v2.6.7</a></span>
+            <span class="text-muted">&copy; 2020 | based on <a href="https://arc42.org">arc42 7.0</a> | mixed with <a href="http://getbootstrap.com/">Bootstrap v5.0.0-beta</a> | Baked with <a href="http://jbake.org">JBake 4.0</a></span>
         </div>
     </footer-->
 
