@@ -7,10 +7,21 @@ docToolchain uses Spock as Test-Framework. See http://spockframework.org/ for de
 
 === Execute Tests
 
+The core test suite must always pass:
+
+[source,bash]
+----
+./gradlew core:test
+----
+
+To run the full suite, use:
+
 [source,bash]
 ----
 rm -r build && ./gradlew test --info
 ----
+
+Note that the full `./gradlew test` run has known, expected failures (typically caused by missing external tools), so use `./gradlew core:test` as the must-pass suite.
 
 The `rm` command ensures that you have a clean test running. This is vital because if artifacts of an older test run still exist, Gradle will skip steps (‘Up-to-date’) and you might get false positives.
 

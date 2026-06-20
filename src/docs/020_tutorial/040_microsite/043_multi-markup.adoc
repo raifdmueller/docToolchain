@@ -64,7 +64,7 @@ In this case, the Python docutils will convert restructuredText to HTML.
 You can integrate additional markup languages in the same way as you added restructuredText.
 The only difference is that you will configure the script to render your files as a reference to your converter script, rather than using the internal script.
 
-You can find an example of the internal script for restructured text here: https://github.com/docToolchain/docToolchain/blob/ng/scripts/rstToHtml.py.
+You can find an example of the internal script for restructured text here: https://github.com/docToolchain/docToolchain/blob/main-4.x/scripts/rstToHtml.py.
 
 === Special Cases
 

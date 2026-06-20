@@ -16,7 +16,7 @@ Formulas are evaluated and exported statically.
 ./dtcw4 local exportExcel
 ----
 
-Output is written to `src/excel/[filename]/[worksheet].(adoc|csv)`.
+Output is written to `<inputPath>/excel/[filename]/[worksheet].(adoc|csv)` (by default `src/docs/excel/...`).
 The `src` folder is used (not `build`) to preserve change history in version control.
 
 === Including Exported Data

@@ -13,7 +13,7 @@ The docToolchain website is build with docToolchain itself.
 So, the code of docToolchain and the documentation reside both in the same repository.
 (The way as it should be with the docs-as-code approach!)
 
-Navigate to https://github.com/docToolchain/docToolchain/tree/ng/src/docs/020_tutorial to find the source of the already existing tutorials.
+Navigate to https://github.com/docToolchain/docToolchain/tree/main-4.x/src/docs/020_tutorial to find the source of the already existing tutorials.
 
 As you can see, the files are numbered in steps of 10.
 The numbers are the order of appearance within the left navigation.
