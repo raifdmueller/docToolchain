@@ -1,0 +1,65 @@
+:filename: 015_tasks/03_task_generateCICD.adoc
+include::_config.adoc[]
+
+[[task_generateCICD]]
+== generateCICD
+
+include::../_feedback.adoc[]
+
+=== About This Task
+
+This task scaffolds a ready-to-use CI/CD pipeline that builds your documentation with `dtcw4` and publishes it.
+The generated pipeline reflects the v4 architecture — it bootstraps docToolchain with the `dtcw4` wrapper, with no Gradle and no legacy Docker image.
+
+Two providers are supported:
+
+[cols="1,1,2"]
+|===
+| Provider | File written | Publishes to
+
+| `github` (default)
+| `.github/workflows/docs.yml`
+| GitHub Pages
+
+| `gitlab`
+| `.gitlab-ci.yml`
+| GitLab Pages
+|===
+
+=== Setup and Configuration
+
+[source,bash]
+----
+# GitHub Actions (default)
+./dtcw4 local generateCICD
+
+# or explicitly choose a provider
+./dtcw4 local generateCICD --provider gitlab
+----
+
+The task refuses to overwrite an existing pipeline file. Pass `--force` to replace it:
+
+[source,bash]
+----
+./dtcw4 local generateCICD --provider github --force
+----
+
+The generated pipeline:
+
+* installs Temurin Java 25,
+* caches `~/.doctoolchain` between runs,
+* downloads `dtcw4`, installs docToolchain, and runs `generateSite`,
+* uploads the microsite from `build/microsite/output` to Pages.
+
+=== After Generating
+
+[loweralpha]
+. Commit the generated file.
+. *GitHub:* enable Pages under _Settings &gt; Pages &gt; Source: GitHub Actions_.
+. *GitLab:* the `pages` job publishes automatically on the default branch.
+
+=== Further Reading and Resources
+
+* xref:03_task_generateSite.adoc[generateSite] — the task the pipeline runs
+* https://docs.github.com/en/pages[GitHub Pages]
+* https://docs.gitlab.com/ee/user/project/pages/[GitLab Pages]

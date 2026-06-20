@@ -1,0 +1,68 @@
+:filename: 015_tasks/03_task_lintAsciiDoc.adoc
+include::_config.adoc[]
+
+[[task_lintAsciiDoc]]
+== lintAsciiDoc
+
+include::../_feedback.adoc[]
+
+=== About This Task
+
+This task runs the https://github.com/docToolchain/asciidoc-linter[docToolchain AsciiDoc Linter] over your AsciiDoc sources to keep them clean and consistent.
+It checks rules for heading structure, formatting, whitespace and image usage, and reports any problems it finds.
+
+=== Setup and Configuration
+
+The linter is a Python tool. If the `asciidoc-linter` command is not on your `PATH`, the task prints how to install it (with `uv` or `pip`) and stops — no stack trace:
+
+[source,bash]
+----
+uv tool install git+https://github.com/docToolchain/asciidoc-linter
+----
+
+Then run the task:
+
+[source,bash]
+----
+./dtcw4 local lintAsciiDoc
+----
+
+By default the task lints the AsciiDoc entries from your `inputFiles`.
+You can configure it in `docToolchainConfig.groovy`:
+
+[source,groovy]
+----
+lintAsciiDoc = [
+    // Fail the build when the linter reports problems (default: false — warn only)
+    failOnError : false,
+    // Output format: 'console' (default, human-readable) or 'json'
+    format      : 'console',
+    // Optional: explicit files/paths to lint (relative to inputPath).
+    // When set, these replace the inputFiles selection.
+    files       : ['arc42/arc42.adoc'],
+]
+----
+
+=== Exit Behaviour
+
+[cols="1,2"]
+|===
+| Situation | Result
+
+| No problems found
+| Task succeeds (exit 0)
+
+| Problems found, `failOnError` is `false` (default)
+| Problems are printed, task still succeeds — safe to add to an existing pipeline first
+
+| Problems found, `failOnError` is `true`
+| Task fails (non-zero exit) so CI blocks the change
+
+| Linter not installed
+| Actionable install hint, task exits non-zero
+|===
+
+=== Further Reading and Resources
+
+* https://doctoolchain.org/asciidoc-linter[AsciiDoc Linter documentation]
+* https://github.com/docToolchain/asciidoc-linter[AsciiDoc Linter on GitHub]
