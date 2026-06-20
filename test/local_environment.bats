@@ -92,6 +92,8 @@ teardown() {
     PATH="${minimal_system}" run -0 ./dtcw tasks --group doctoolchain
 
     assert_line "Available docToolchain environments: local docker"
-    assert_line "Environments with docToolchain [${DTC_VERSION}]: local docker"
+    # v4 has no published docker image yet, so docker is not claimed as an
+    # environment that already has docToolchain (only 'local' here).
+    assert_line "Environments with docToolchain [${DTC_VERSION}]: local"
     assert_line "Using environment: local"
 }

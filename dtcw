@@ -258,8 +258,10 @@ get_dtc_installations() {
         installations+=" sdk"
     fi
 
-    if [[ "${envs}" =~ docker ]]; then
-        # Having docker installed means docToolchain is available
+    if [[ "${envs}" =~ docker ]] && ! is_v4_installation; then
+        # v3: the docToolchain image is published on Docker Hub, so having
+        # docker installed means docToolchain is available there. v4 does not
+        # have a published image yet, so don't claim it for v4.
         installations+=" docker"
     fi
     [ -z "${installations}" ] && installations=" none"
