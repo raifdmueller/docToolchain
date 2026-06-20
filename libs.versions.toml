@@ -1,5 +1,5 @@
 [versions]
-groovy = "4.0.22"
+groovy = "5.0.6"
 # Plugins
 htmlSanityCheck = "2.0.0-rc0"
 versions = "0.46.0"
@@ -27,13 +27,15 @@ http-client = "5.3"
 guava = "33.0.0-jre"
 
 # Test
-spock = "2.3-groovy-4.0"
-spock-reports = "2.5.1-groovy-4.0"
-# Groovy-3 Spock for the root project's tests: they use gradleTestKit(), which
-# pins Gradle's bundled Groovy 3, so they can't run the Groovy-4 Spock compiler.
-spockG3 = "2.3-groovy-3.0"
-spockReportsG3 = "2.3.2-groovy-3.0"
+spock = "2.4-groovy-5.0"
+spock-reports = "2.6.0-groovy-5.0"
+# Spock for the root project's tests: they use gradleTestKit(), which pins
+# Gradle's bundled Groovy (Gradle 9 ships Groovy 4), so they need the Groovy-4
+# Spock build, not the Groovy-5 one used by core/ and the v4 runtime.
+spockG3 = "2.4-groovy-4.0"
+spockReportsG3 = "2.5.1-groovy-4.0"
 junit = "5.9.3"
+junit-platform-launcher = "1.9.3"
 byte-buddy = "1.14.4"
 
 [plugins]
@@ -78,4 +80,6 @@ spock-reports = { module = "com.athaydes:spock-reports", version.ref = "spock-re
 spock-g3-core = { module = "org.spockframework:spock-core", version.ref = "spockG3" }
 spock-g3-reports = { module = "com.athaydes:spock-reports", version.ref = "spockReportsG3" }
 junit = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
+# Gradle 9 no longer puts the JUnit Platform launcher on the test runtime classpath
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platform-launcher" }
 byte-buddy = { module = "net.bytebuddy:byte-buddy", version.ref = "byte-buddy" }
