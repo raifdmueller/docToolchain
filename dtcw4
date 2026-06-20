@@ -57,7 +57,7 @@ v4_install() {
     fi
 
     if ! has java; then
-        error "Java 17 is required. Install with: ./dtcw4 local install java"
+        error "Java 17 or 21 is required. Install with: ./dtcw4 local install java"
         exit 1
     fi
 

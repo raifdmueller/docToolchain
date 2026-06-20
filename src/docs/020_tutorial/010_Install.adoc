@@ -12,7 +12,7 @@ If you encounter problems, create a https://github.com/docToolchain/docToolchain
 
 === Prerequisites
 
-* *Java 17* (exactly)
+* *Java 17 or 21*
 * *git*
 * *Bash* — on Windows, use WSL2
 
