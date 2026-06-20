@@ -11,7 +11,7 @@ This lets you use the https://www.writethedocs.org/guide/docs-as-code/[docs-as-c
 
 [NOTE]
 ====
-From the 01.01.2024 on, Atlassian turns off API V1 for Confluence Cloud, if there is a V2 equivalent. docToolchain versions from 3.1 on support API V2. If you are using an older version of docToolchain, you'll need to upgrade to a newer version.
+Since 01.01.2024, Atlassian has been turning off API V1 for Confluence Cloud wherever a V2 equivalent exists. docToolchain versions from 3.1 on support API V2. If you are using an older version of docToolchain, you'll need to upgrade to a newer version.
 To *enable API V2*, set `useV1Api` to `false` in the Confluence section of the docToolchain configuration file.
 ====
 
@@ -93,7 +93,7 @@ If you use Confluence Server, you may need to set a context, depending on your C
 [NOTE]
 If you set this to `false`, ensure the `api` config is set to `https://[yourCloudDomain]`. (Mind no _context_ given here)
 
-If you are using Confluence Cloud, you can set this to `false` to use the new API V2. If you are using Confluence Server, you can set this to `true` to use the old API V1. If you are using Confluence Cloud and set this to `false`, you will get an error message, once Atlassian turns off API V1 (starting 01.01.2024).
+If you are using Confluence Cloud, you can set this to `false` to use the new API V2. If you are using Confluence Server, you can set this to `true` to use the old API V1. If you are using Confluence Cloud and set this to `true`, you will get an error message, as Atlassian has been turning off API V1 since 01.01.2024.
 
 *enforceNewEditor*
 
@@ -151,7 +151,7 @@ To authenticate with username and password, use:
 
 You can also set your username, password of apitoken as an environment variable. You then do the following:
 1. Open the file that contains the environment variables:
-    a. On a Mac, go to your Home folder and open the file .zpfrofile.
+    a. On a Mac, go to your Home folder and open the file .zprofile.
 2. ....
 
 

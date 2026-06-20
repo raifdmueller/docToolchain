@@ -10,13 +10,12 @@ Things not working as you expected? Here are some tips that might help you.
 To get the best out of docToolchain, we recommend that you set up a development environment.
 This way you get to see the inner workings and you also get to add extra debug output to the tasks that you want to inspect.
 
-=== Gradle
+=== Task Output and Config
 
-You get more hints about what is going on with Gradle when you add the `--info` flag to your `./dtcw generateSite` command:
+docToolchain v4 runs on the JVM and no longer uses Gradle, so there is no `--info` flag.
+To find out what is going on, run the task with `./dtcw4 generateSite` and inspect the task output it prints to the console, together with your `docToolchainConfig.groovy` settings.
 
-`./dtcw generateSite --info`
-
-This outputs all config settings as seen by docToolchain along with many other internal settings.
+This shows the config settings as seen by docToolchain along with many other internal details.
 
 === Site Templates (GSP)
 
@@ -30,4 +29,5 @@ Check the `build/microsite/tmp` folder to see the folder that is fed into the si
 
 === Script Execution Debugging
 
+In docToolchain v4 the entry point is the `dtcw4` wrapper (the v3 launcher was `bin/doctoolchain`).
 The execution of the link:../../../bin/doctoolchain[] bash script may be traced by setting the environment variable `DTC_BASH_OPTS` to, e.g., `-vx`.

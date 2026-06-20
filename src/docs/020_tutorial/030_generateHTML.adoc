@@ -48,7 +48,7 @@ This lets you specify which files should be converted to which formats.
 
 ==== Working with the PDF style
 
-Copy the example theme from `src/docs/pdfTheme/custom-theme.yml` to your project, then reference it from your AsciiDoc file:
+Run `./dtcw4 local copyThemes pdfTheme` to copy the bundled `pdfTheme` (including the example `template_config/pdfTheme/custom-theme.yml`) into your project, then reference it from your AsciiDoc file:
 
 [source, asciidoc]
 ----

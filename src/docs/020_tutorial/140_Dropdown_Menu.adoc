@@ -38,7 +38,7 @@ but this is not technically required, it just helps us to stay on top of things.
 ----
 .
 ├── docToolchainConfig.groovy
-├── dtcw
+├── dtcw4
 └── src
    └── docs
        ├── general_arc42
@@ -93,7 +93,7 @@ The last entry "blog" will create a regular menu item with no dropdown.
 === Menu Generation
 
 To make docToolchain create the dropdown for us, we need to apply some changes to the default theme.
-So, if not done already, we need to download the `site` folder with `dtcw` xref:130_theming.adoc[`copyThemes`].
+So, if not done already, we need to download the `site` folder with `dtcw4` xref:130_theming.adoc[`copyThemes`].
 
 .default menu generation
 [source, gsp]

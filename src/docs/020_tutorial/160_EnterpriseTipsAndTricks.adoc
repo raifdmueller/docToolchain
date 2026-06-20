@@ -29,5 +29,5 @@ Run your build pipeline directly on this image — `dtcw` detects it and uses th
 
 [source, bash]
 ----
-./dtcw docker generateSite
+./dtcw4 docker generateSite
 ----
