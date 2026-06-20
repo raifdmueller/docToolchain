@@ -1,10 +1,12 @@
 package docToolchain
 
 import org.gradle.testkit.runner.GradleRunner
+import spock.lang.Ignore
 import spock.lang.Specification
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
+@Ignore('v4: v3 Gradle-task path (project.exec{} removed in Gradle 9) — pending migration to a v4 direct-JVM script (#49)')
 class ExportConfluenceSpec extends Specification {
 
     public static final File exportedConfluenceDir = new File('./src/test/build/exportConfluenceSpec')
