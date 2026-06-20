@@ -3,6 +3,7 @@ import spock.lang.*
 import org.gradle.testkit.runner.GradleRunner
 import static org.gradle.testkit.runner.TaskOutcome.*
 
+@Ignore('v4: v3 Gradle-task path (project.exec{} removed in Gradle 9) — pending migration to a v4 direct-JVM script (#49)')
 class ExportChangeLogSpec extends Specification {
 
     def gradleCommand

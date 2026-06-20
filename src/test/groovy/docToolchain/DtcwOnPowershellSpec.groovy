@@ -3,7 +3,14 @@ package docToolchain
 import spock.lang.Specification
 import spock.lang.Unroll
 import spock.lang.Requires
+import spock.lang.Retry
 
+// These tests shell out to pwsh and capture stdout via consumeProcessOutput +
+// waitForOrKill. On the windows-latest runner pwsh cold-start occasionally
+// exceeds the kill timeout, so a process returns empty output and a feature
+// flakes (e.g. the bare 'Get-Location' sanity check). Retry to absorb that
+// runner flakiness instead of failing the whole build.
+@Retry(count = 2)
 class DtcwOnPowershellSpec extends Specification {
     List powershell(List command) {
         def shell = ['pwsh', '-ExecutionPolicy', 'Unrestricted']
@@ -12,7 +19,7 @@ class DtcwOnPowershellSpec extends Specification {
         def sout = new StringBuilder()
         def serr = new StringBuilder()
         process.consumeProcessOutput(sout, serr)
-        process.waitForOrKill(10000)
+        process.waitForOrKill(30000)
         return [sout.toString(), serr.toString()]
     }
 

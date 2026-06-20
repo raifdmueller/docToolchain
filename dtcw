@@ -512,7 +512,7 @@ assert_java_version_supported() {
     major_version=$(echo "$java_version" | sed '/^1\./s///' | cut -d'.' -f1)
 
     case "${major_version}" in
-        17|21)
+        17|21|25)
             echo "Using Java ${java_version} [${JAVA_CMD}]"
             return
             ;;
@@ -524,7 +524,7 @@ assert_java_version_supported() {
 
 java_help_and_die() {
     printf "%s\n" \
-        "docToolchain supports Java versions 17 and 21. In case such a" \
+        "docToolchain supports Java versions 17, 21 and 25. In case such a" \
         "Java version is installed make sure 'java' is found with your PATH environment" \
         "variable. As alternative you may provide the location of your Java installation" \
         "with JAVA_HOME." \

@@ -460,7 +460,7 @@ function assert_java_version_supported() {
 
     Write-Output "Java Version $javaversion"
 
-    if ([int]$javaversion -ne 17 -and [int]$javaversion -ne 21 ) {
+    if ([int]$javaversion -ne 17 -and [int]$javaversion -ne 21 -and [int]$javaversion -ne 25 ) {
         Write-Warning @"
 unsupported Java version ${javaversion} [$JAVA_CMD]
 "@
@@ -472,7 +472,7 @@ unsupported Java version ${javaversion} [$JAVA_CMD]
 
 function java_help_and_die() {
     Write-Host @"
-docToolchain supports Java versions 17 and 21. In case such a
+docToolchain supports Java versions 17, 21 and 25. In case such a
 Java version is installed make sure 'java' is found with your PATH environment
 variable. As alternative you may provide the location of your Java installation
 with JAVA_HOME.
