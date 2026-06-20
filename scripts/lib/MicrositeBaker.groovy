@@ -106,6 +106,8 @@ class MicrositeBaker {
 
         asciidoctor = Asciidoctor.Factory.create()
         asciidoctor.requireLibrary('asciidoctor-diagram')
+        def diagramHints = loadDiagramHints()
+        diagramHints?.register(asciidoctor)
 
         crawl()
         buildModelLists()
@@ -113,8 +115,20 @@ class MicrositeBaker {
         renderSpecialPages()
         copyAssets()
 
+        diagramHints?.printHints()
         asciidoctor.close()
         println "MicrositeBaker: rendered ${allContent.size()} content pages."
+    }
+
+    // Load the DiagramToolHints helper from the same scripts/lib directory.
+    private Object loadDiagramHints() {
+        try {
+            def libDir = new File(getClass().protectionDomain.codeSource.location.toURI()).parentFile
+            return new GroovyClassLoader(getClass().classLoader)
+                    .parseClass(new File(libDir, 'DiagramToolHints.groovy')).newInstance()
+        } catch (Throwable ignored) {
+            return null
+        }
     }
 
     // --- config model (site_*, sourceFolder, contentFolder, jbake props) ---

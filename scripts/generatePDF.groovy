@@ -48,6 +48,9 @@ def asciidoctor = Asciidoctor.Factory.create()
 // Register PDF converter by requiring the gem
 asciidoctor.requireLibrary('asciidoctor-pdf')
 asciidoctor.requireLibrary('asciidoctor-diagram')
+def diagramHints = new GroovyClassLoader(this.class.classLoader)
+    .parseClass(new File(scriptDir, 'lib/DiagramToolHints.groovy')).newInstance()
+diagramHints.register(asciidoctor)
 println "AsciidoctorJ PDF ready (with diagram support)"
 
 def failed = false
@@ -103,6 +106,7 @@ pdfFiles.each { entry ->
     }
 }
 
+diagramHints.printHints()
 asciidoctor.close()
 println ""
 if (failed) {
