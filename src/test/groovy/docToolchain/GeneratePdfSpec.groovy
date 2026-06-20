@@ -33,7 +33,13 @@ class GeneratePdfSpecWithDefaultTheme extends Specification {
             // the output will contain some dependencies with "error" in the path name
             // so let's first remove this and then check for other errors
             // Downloading https://plugins.gradle.org/m2/com/google/errorprone/error_prone_annotations/2.3.4/error_prone_annotations-2.3.4.jar to /tmp/gradle_download4302981685249827904bin
-            result.output.toLowerCase().replaceAll("/error","").contains('error') == false
+            // Gradle 8.4+ also logs "Transforming error_prone_annotations-X.jar (com.google.errorprone:...)"
+            // at --info level when instrumenting dependencies, so strip that noise too.
+            result.output.toLowerCase()
+                    .replaceAll("/error","")
+                    .replaceAll("error_prone","")
+                    .replaceAll("errorprone","")
+                    .contains('error') == false
     }
 
 }
@@ -67,7 +73,13 @@ class GeneratePdfSpecWithSpecificTheme extends Specification {
             // the output will contain some dependencies with "error" in the path name
             // so let's first remove this and then check for other errors
             // Downloading https://plugins.gradle.org/m2/com/google/errorprone/error_prone_annotations/2.3.4/error_prone_annotations-2.3.4.jar to /tmp/gradle_download4302981685249827904bin
-            result.output.toLowerCase().replaceAll("/error","").contains('error') == false
+            // Gradle 8.4+ also logs "Transforming error_prone_annotations-X.jar (com.google.errorprone:...)"
+            // at --info level when instrumenting dependencies, so strip that noise too.
+            result.output.toLowerCase()
+                    .replaceAll("/error","")
+                    .replaceAll("error_prone","")
+                    .replaceAll("errorprone","")
+                    .contains('error') == false
     }
 
 }

@@ -47,12 +47,14 @@ dependencies {
         }
     }
 
-    testImplementation(libs.spock.reports) {
+    // Root-project tests run on Gradle's bundled Groovy 3 (via gradleTestKit),
+    // so they use the Groovy-3 Spock build. core/ and the v4 runtime use Groovy 4.
+    testImplementation(libs.spock.g3.reports) {
         exclude group: 'org.codehaus.groovy', module: 'groovy-xml'
     }
     testImplementation(
             (libs.junit),
-            (libs.spock.core),
+            (libs.spock.g3.core),
             gradleTestKit(),
             (libs.jsoup),
     )
@@ -225,8 +227,15 @@ configurations {
         canBeConsumed = false
     }
 }
+// The v4 runtime no longer depends on jBake: MicrositeBaker (scripts/lib)
+// renders the microsite directly via Groovy's SimpleTemplateEngine. Dropping
+// jBake removes its OrientDB content store (the Apple-Silicon pain) and its
+// Groovy-3 (org.codehaus.groovy) transitive dependency — so the previous
+// Groovy-4 force-substitution is no longer needed, and the runtime is free to
+// move to Groovy 5 / Java 25.
 dependencies {
     v4Runtime(libs.groovy.all)
+    v4Runtime(libs.groovy.dateutil)
     v4Runtime(libs.asciidoctorj)
     v4Runtime(libs.asciidoctorj.pdf)
     v4Runtime(libs.asciidoctorj.diagram)
@@ -235,8 +244,7 @@ dependencies {
     v4Runtime(libs.poi.ooxml)
     v4Runtime(libs.guava)
     v4Runtime(libs.markdown.to.asciidoc)
-    v4Runtime(libs.jbake.core)
-    v4Runtime(libs.pebble)
+    v4Runtime(libs.flexmark.all)
 }
 task packageLibs(type: Copy) {
     group = 'docToolchain'

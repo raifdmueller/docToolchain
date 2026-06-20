@@ -67,17 +67,20 @@ pdfFiles.each { entry ->
         pdfThemeDir = new File(docDir, pdfThemeDir).canonicalPath
     }
     def pdfTheme = config.pdfTheme ?: null
-    def pdfFontsDir = config.pdfFontsDir ?: (pdfThemeDir ? "${pdfThemeDir}/fonts" : null)
+    def pdfFontsDir = config.pdfFontsDir ?: (pdfThemeDir ? "${pdfThemeDir}/fonts".toString() : null)
 
+    // Coerce values to plain String: asciidoctor-pdf (JRuby) calls Ruby String
+    // methods (e.g. .sub) on attribute values; a Groovy GString has no such
+    // method and fails with a NoMethodError (notably under Groovy 4).
     def attrsBuilder = Attributes.builder()
-        .imagesDir(imageDirs[0])
-        .sourceHighlighter(config.sourceHighlighter ?: 'rouge')
-        .attribute('icons', config.icons ?: 'font')
+        .imagesDir(imageDirs[0] as String)
+        .sourceHighlighter((config.sourceHighlighter ?: 'rouge') as String)
+        .attribute('icons', (config.icons ?: 'font') as String)
         .attribute('doctype', 'book')
 
-    if (pdfTheme) attrsBuilder.attribute('pdf-theme', pdfTheme)
-    if (pdfThemeDir) attrsBuilder.attribute('pdf-themesdir', pdfThemeDir)
-    if (pdfFontsDir) attrsBuilder.attribute('pdf-fontsdir', pdfFontsDir)
+    if (pdfTheme) attrsBuilder.attribute('pdf-theme', pdfTheme as String)
+    if (pdfThemeDir) attrsBuilder.attribute('pdf-themesdir', pdfThemeDir as String)
+    if (pdfFontsDir) attrsBuilder.attribute('pdf-fontsdir', pdfFontsDir as String)
 
     def safeMode = SafeMode.valueOf((config.safeMode ?: 'UNSAFE').toUpperCase())
 

@@ -221,41 +221,12 @@ asciidoctorj {
         jiraBaseUrl = "${url.protocol}://${url.host}${portPart}"
     }
 
-    docExtensions {
-        inline_macro (name: "jira") {
-            parent, target, attributes ->
-                def options = [
-                    "type": ":link",
-                    "target": "${jiraBaseUrl}/browse/${target}".toString(),
-                    "id": "${target}"
-                ]
-                if(!jiraBaseUrl ){
-                    println(">>> WARN: No Jira API URL found in config, the Jira extension may not work as expected.")
-                }
+    // Pass the Jira base URL to the (file-based) extension as a document attribute.
+    attributes('jira-base-url': (jiraBaseUrl ?: ''))
 
-                // Create the link to the issue.
-                createPhraseNode(parent, "anchor", target, attributes, options).render()
-        }
-        // We need an extension to be able to convert Asciidoc if we are not in the context of Antora but we have
-        // enabled the Antora integration.
-        include_processor (filter: {it.contains("example\$")}) {
-            document, reader, target, attributes ->
-                def baseDir =  new File(reader.getDir()).parentFile
-                def rawContent = new File(reader.getFile()).text.replace("example\$", "${baseDir}/examples/")
-
-                Matcher matcher = (rawContent =~ /include::[^\[]+/)
-
-                if(matcher.find()) {
-                    def content = matcher.group().replace("example\$", "${baseDir}/examples/") + "[]"
-                    reader.pushInclude(
-                        content,
-                        target,
-                        target,
-                        1,
-                        attributes)
-                }
-        }
-    }
+    // Extensions are loaded from a separate file: Gradle 8.4+ instrumentation
+    // rejects inline closures defined in the build script itself.
+    docExtensions(file("${projectDir}/scripts/asciidoctorExtensions.groovy").text)
 }
 //tag::AsciidoctorTask[]
 
