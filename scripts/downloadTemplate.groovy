@@ -46,7 +46,27 @@ def templateArg = args.find { !it.startsWith('-') }
 def langArg = args.find { it.startsWith('--lang=') }?.split('=', 2)?.getAt(1)
 def helpArg = args.find { it.startsWith('--help=') }?.split('=', 2)?.getAt(1)
 
-def template = templateArg ?: 'arc42'
+def template
+if (templateArg) {
+    template = templateArg
+} else if (isHeadless) {
+    template = 'arc42'
+    println "${color('green', "Headless mode: using default template 'arc42'.")}"
+} else {
+    def keys = templates.keySet() as List
+    def reader = System.console() ?: new BufferedReader(new InputStreamReader(System.in))
+    println "${color('green', 'Which template do you want to install?')}"
+    keys.eachWithIndex { name, i -> println "  ${i + 1}) ${name}" }
+    print "${color('green', "Choice [1-${keys.size()}] or name (default: 1 = ${keys[0]}): ")}"
+    def input = (reader instanceof Console ? reader.readLine() : reader.readLine())?.trim()
+    if (!input) {
+        template = keys[0]
+    } else if (input.isInteger() && (input as int) in (1..keys.size())) {
+        template = keys[(input as int) - 1]
+    } else {
+        template = input
+    }
+}
 if (!templates.containsKey(template)) {
     System.err.println "Unknown template '${template}'. Available: ${templates.keySet().join(', ')}"
     System.exit(1)
@@ -127,6 +147,16 @@ if (srcDir.exists()) {
 
 if (chaptersDir.exists()) {
     chaptersDir.eachFileRecurse { file ->
+        // Guard hard `:imagesdir:` lines in non-chapter includes (e.g. config.adoc).
+        // A hard setting there overrides the imagesdir the build provides, so the
+        // combined document and the microsite would resolve images against the
+        // wrong folder (./images relative to the page instead of the shared
+        // images/ directory). ifndef makes it a fallback for editor preview only.
+        if (file.name.endsWith('.adoc') && !(file.name ==~ /[0-9]+_.*/)) {
+            def text = file.getText('utf-8')
+            def guarded = text.replaceAll(/(?m)^:imagesdir: (.+)$/, 'ifndef::imagesdir[:imagesdir: $1]')
+            if (guarded != text) file.write(guarded, 'utf-8')
+        }
         if (file.name.endsWith('.adoc') && file.name ==~ /[0-9]+_.*/) {
             def text = file.getText('utf-8')
             def title = ""
@@ -158,7 +188,16 @@ def mainSource = template == "arc42" ? "${template}-template.adoc" : "${template
 def mainFile = new File(outputDir, mainSource)
 def targetFile = new File(outputDir, "${template}.adoc")
 if (mainFile.exists()) {
-    def mainText = ":imagesdir: ../images\n:jbake-menu: -\n" + mainFile.text.replaceAll('src/', 'chapters/')
+    def rawMain = mainFile.text.replaceAll('src/', 'chapters/')
+    // Drop the arc42 help-style include: common/styles/ exists only in the
+    // arc42-template git repository, not in the distributed asciidoc zip, so the
+    // include always resolves to "file not found" (a SEVERE) without it.
+    rawMain = rawMain.readLines()
+        .findAll { !(it =~ /include::.*common\/styles\/arc42-help-style\.adoc/) }
+        .join('\n') + '\n'
+    // ifndef so the build (generateSite/HTML/PDF) can set imagesdir to the right
+    // folder; the ../images fallback is for editor preview of this file alone.
+    def mainText = "ifndef::imagesdir[:imagesdir: ../images]\n:jbake-menu: -\n" + rawMain
     targetFile.write(mainText, 'utf-8')
     if (mainFile != targetFile) mainFile.delete()
 }
@@ -174,8 +213,6 @@ if (configFileObj.exists()) {
     configText = configText
         .replaceAll('[, \\t\\r\\n]+/[*]{2} inputFiles [*]{2}/',
             ",\n\t[file: '${template}/${template}.adoc', formats: ['html','pdf']],\n\t/** inputFiles **/")
-        .replaceAll('/[*]{2} imageDirs [*]{2}/',
-            "'images/.',\n\t/** imageDirs **/")
         .replaceAll('[, \\t\\r\\n]+/[*]{2} imageDirs [*]{2}/',
             ",\n\t'images/.',\n\t/** imageDirs **/")
         .replaceAll("\\[,", "[")
