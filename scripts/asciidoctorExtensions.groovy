@@ -23,8 +23,7 @@ inline_macro(name: 'jira') { parent, target, attributes ->
 // Antora integration enabled.
 include_processor(filter: { it.contains('example$') }) { document, reader, target, attributes ->
     def baseDir = new File(reader.getDir()).parentFile
-    def rawContent = new File(reader.getFile()).text.replace('example$', "${baseDir}/examples/")
-
+    def rawContent = new File(reader.getFile()).getText('UTF-8').replace('example$', "${baseDir}/examples/")
     java.util.regex.Matcher matcher = (rawContent =~ /include::[^\[]+/)
 
     if (matcher.find()) {
