@@ -6,19 +6,19 @@ include::_config.adoc[]
 The xref:../015_tasks/03_task_generateSite.adoc[`generateSite`] task is often used to convert AsciiDoc to HTML.
 AsciiDoc is the default (and preferred) markup language for documentation written in docToolchain.
 
-But because docToolchain is designed to be used by larger teams and organisations, it also leverages jBake, which is capable of rendering AsciiDoc, Markdown, and plain HTML.
+But because docToolchain is designed to be used by larger teams and organisations, its built-in site generator can render AsciiDoc, Markdown, and plain HTML.
 
 === Meta-Data Header
 
 In AsciiDoc, metadata is defined as attributes beginning with `jbake-`, such as `:jbake-header:`.
 For other markup languages, the metadata is defined in a block at the beginning of the document, delimited by `~~~~~~` [footnote: this can be configured in the `jbake.properties` file of the theme, and will be available in `docToolchainConfig.groovy` in the next version].
-Refer to the https://jbake.org/docs/2.6.7/#metadata_header[Metadata Header] section in the jBake documentation for more information.
+This `jbake-`-prefixed metadata format is kept for backwards compatibility — docToolchain's built-in generator reads the same headers.
 
 === Markdown
 
-==== jBake
+==== Out of the Box
 
-Since jBake directly supports Markdown, you can use it without any additional configuration.
+docToolchain renders Markdown out of the box, so you can use it without any additional configuration.
 As illustrated by this https://github.com/docToolchain/multi-markup-demo/blob/main/src/docs/demo/markdown.md[sample repository], docToolchain utilises the convention-over-configuration principle to determine the menu (`jbake-menu`), the location within the menu (`jbake-order`), and the title entry of the menu (`jbake-title`) from the folder structure and the document's first headline.
 
 If you wish to override these defaults, you can use a metadata header.
@@ -27,11 +27,11 @@ If you wish to override these defaults, you can use a metadata header.
 
 Here, the Markdown standard is relatively limited.
 For extended features, you'll need to specify the flavour you want to use.
-jBake employs flexmark to render Markdown, and flexmark supports various flavours.
+docToolchain employs https://github.com/vsch/flexmark-java[flexmark] to render Markdown, and flexmark supports various flavours.
 These can be configured within the `jbake.properties` file within the theme.
-The default is `markdown.extensions=GITHUB,EXTRA,TABLES,TOC,FENCED_CODE_BLOCKS`.
+The default is `markdown.extensions=GITHUB,EXTRA,TABLES,TOC,FENCED_CODE_BLOCKS` (the names follow flexmark's pegdown profile).
 
-See also https://jbake.org/docs/2.6.7/#markdown_extensions for more details.
+See the https://github.com/vsch/flexmark-java/wiki/Pegdown-Migration[flexmark pegdown profile] for the available extensions.
 
 === HTML
 

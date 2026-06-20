@@ -4,7 +4,7 @@ include::_config.adoc[]
 == How to change the default theme for `generateSite`
 
 The goal of docToolchain is to provide an environment where you can focus on documentation, not worry about theming.
-That's why both the jBake templates and CSS are bundled with docToolchain.
+That's why both the GSP templates and CSS are bundled with docToolchain.
 
 === How theming works
 
