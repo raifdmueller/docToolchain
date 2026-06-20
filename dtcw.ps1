@@ -497,7 +497,7 @@ function how_to_install_sdkman() {
 }
 
 function local_install_java() {
-    $version = "17"
+    $version = "25"
     $implementation = "hotspot"
     $heapsize = "normal"
     $imagetype = "jdk"
@@ -560,7 +560,7 @@ following docToolchain environments:
     > ./dtcw.ps1 local install doctoolchain
 
 Note that running docToolchain in 'local' environment needs a
-Java runtime major version 17 installed on your host.
+Java runtime major version 17, 21 or 25 installed on your host.
 
 2. 'docker': pull the docToolchain image and execute docToolchain in a container environment.
 

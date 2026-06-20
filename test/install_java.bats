@@ -45,12 +45,12 @@ teardown() {
     # Execute
     PATH="${minimal_system}" run -0 ./dtcw local install java
 
-    assert_equal "$(mock_get_call_args "${mock_curl}")" "--fail --location --output ${DTC_ROOT}/jdk/jdk.tar.gz https://api.adoptium.net/v3/binary/latest/17/ga/linux/x64/jdk/hotspot/normal/eclipse?project=jdk"
+    assert_equal "$(mock_get_call_args "${mock_curl}")" "--fail --location --output ${DTC_ROOT}/jdk/jdk.tar.gz https://api.adoptium.net/v3/binary/latest/25/ga/linux/x64/jdk/hotspot/normal/eclipse?project=jdk"
 
     assert_line "Environments with docToolchain [${DTC_VERSION}]: none"
     assert_line "Using environment: local"
 
-    assert_line "Downloading JDK Temurin 17 [linux/x64] from Adoptium to ${DTC_ROOT}/jdk/jdk.tar.gz"
+    assert_line "Downloading JDK Temurin 25 [linux/x64] from Adoptium to ${DTC_ROOT}/jdk/jdk.tar.gz"
     assert_line "Extracting JDK from archive file."
     assert_line "Successfully installed Java in '${DTC_ROOT}/jdk'."
 
@@ -81,12 +81,12 @@ teardown() {
     # Execute
     PATH="${minimal_system}" run -0 ./dtcw local install java
 
-    assert_equal "$(mock_get_call_args "${mock_curl}")" "--fail --location --output ${DTC_ROOT}/jdk/jdk.tar.gz https://api.adoptium.net/v3/binary/latest/17/ga/linux/x64/jdk/hotspot/normal/eclipse?project=jdk"
+    assert_equal "$(mock_get_call_args "${mock_curl}")" "--fail --location --output ${DTC_ROOT}/jdk/jdk.tar.gz https://api.adoptium.net/v3/binary/latest/25/ga/linux/x64/jdk/hotspot/normal/eclipse?project=jdk"
 
     assert_line "Environments with docToolchain [${DTC_VERSION}]: local"
     assert_line "Using environment: local"
 
-    assert_line "Downloading JDK Temurin 17 [linux/x64] from Adoptium to ${DTC_ROOT}/jdk/jdk.tar.gz"
+    assert_line "Downloading JDK Temurin 25 [linux/x64] from Adoptium to ${DTC_ROOT}/jdk/jdk.tar.gz"
     assert_line "Extracting JDK from archive file."
     assert_line "Successfully installed Java in '${DTC_ROOT}/jdk'."
 

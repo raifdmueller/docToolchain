@@ -538,11 +538,11 @@ java_help_and_die() {
         "Alternatively you can use SDKMAN! (https://sdkman.io) to manage your Java installations" \
         ""
     if ! is_environment_available sdk; then
-        how_to_install_sdkman "Java 17"
+        how_to_install_sdkman "Java 25"
     fi
     # TODO: This will break when we change Java version
     printf "%s\n" \
-        "    $ sdk install java 17.0.14-tem" \
+        "    $ sdk install java 25.0.3-tem" \
         "" \
         "If you prefer not to install Java on your host, you can run docToolchain in a" \
         "docker container. For this case dtcw provides the 'docker' execution environment." \
@@ -560,7 +560,7 @@ how_to_install_sdkman() {
 }
 
 local_install_java() {
-    version=17
+    version=25
     implementation=hotspot
     heapsize=normal
     imagetype=jdk
@@ -628,7 +628,7 @@ how_to_install_doctoolchain() {
         "    \$ sdk install doctoolchain ${version}" \
         "" \
         "Note that running docToolchain in 'local' or 'sdk' environment needs a" \
-        "Java runtime major version 17 installed on your host." \
+        "Java runtime major version 17, 21 or 25 installed on your host." \
         "" \
         "3. 'docker': pull the docToolchain image and execute docToolchain in a container environment." \
         "" \
