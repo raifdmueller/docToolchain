@@ -52,6 +52,13 @@ Probability and Impact are rated Low / Medium / High. Priority is derived from t
 |MEDIUM
 |Ch8 *Error Handling* concept (ADR-8) — `DtcException` hierarchy; tracked rollout across scripts. QS-17.
 
+|R-006
+|*publishToConfluence port regression.* Porting the 823-LOC `Asciidoc2ConfluenceTask` to a standalone script (ADR-12) re-implements the most complex task (page tree, attachments, new-editor handling, rate limiting) and risks behavioural regressions in Confluence publishing.
+|Medium
+|Medium
+|MEDIUM
+|Service-level tests around the new script before the core module is dropped (ADR-12).
+
 |R-005
 |*Release-time dependency resolution.* AsciiDoctor is externalized (ADR-6); ~30 JARs ship in `lib/` (ADR-7). The release process must resolve transitive dependencies and a tampered/vulnerable JAR (T-006) would reach every user (QS-4).
 |Low

@@ -1,0 +1,48 @@
+=== ADR-12: Tasks Are Self-Contained Groovy Scripts — No Compiled Core Module at Runtime
+
+* **Status**: Accepted (port of `publishToConfluence` pending)
+* **Context**: ADR-3 decided to remove Gradle and stated as a consequence that "the `core/` module is dissolved back into scripts." Eleven of the twelve v4 tasks honour this — they are standalone `scripts/*.groovy` files that use only the `scripts/lib/` helpers and third-party JARs. **One task does not**: `scripts/publishToConfluence.groovy:10` imports `org.docToolchain.tasks.Asciidoc2ConfluenceTask`, an 823-LOC class in the compiled `core/` module that pulls in six further core classes. Because `packageLibs` does not ship the core module's own JAR, that class is not on the task classpath and `publishToConfluence` fails to load at all (#1626). The compiled core module therefore survives solely for this one task, contradicting ADR-3 and keeping a build-and-package step alive that the rest of v4 has shed.
+* **Decision**: Make "a task is a self-contained Groovy script with no compiled `core/` dependency" an explicit, enforced architectural rule. Port `Asciidoc2ConfluenceTask` (and the core classes it needs) into a standalone `scripts/publishToConfluence.groovy` built on the `lib/` helpers (`DtcRestClient`, `DtcConfig`). Once that is the last consumer, drop the compiled `core/` module from the runtime classpath entirely.
+* **Alternatives considered**:
+
+[cols="2,1,1,1", options="header"]
+|===
+|Criterion |Keep compiled core JAR |Port to Groovy script |Hybrid (core for this task only)
+
+|Consistency with ADR-1/ADR-3 (script-per-task)
+|–1
+|+1
+|–1
+
+|Runtime/build simplicity (no core module to package)
+|0
+|+1
+|–1
+
+|Type safety & testability (existing Spock tests)
+|+1
+|–1
+|+1
+
+|Contributor friendliness (no compile step)
+|–1
+|+1
+|0
+
+|Cleanly removes the dead-task root cause
+|–1
+|+1
+|0
+
+|**Total**
+|**–2**
+|**+3**
+|**–2**
+|===
+
+* **Quality Tradeoffs**:
+** Supports **QS-11 (Script-first)**: every task becomes a plain script artifact; no compilation, no `core/` build.
+** Supports **QS-1 (Extensibility)** and **QS-3 (Usability)**: one uniform task model — contributors learn a single pattern.
+** Supports **QS-9 (Fast startup)** and footprint goals: the `core/` module and its build output leave the runtime.
+** Cost on **type safety / testability**: porting an 823-LOC typed class to an untyped Groovy script gives up compile-time checking and the existing Spock unit tests. This is the standard v4 tradeoff (dynamically-typed, script-first) and must be offset by service-level tests around the new script.
+* **Consequences**: `publishToConfluence` is rewritten as a standalone script; the `core/tasks/Asciidoc2ConfluenceTask` logic and its required helpers move into `scripts/`/`scripts/lib/`. After the port, the compiled `core/` module is dropped from the packaged classpath, completing ADR-3's "core dissolved into scripts." This decision creates risk *R-006 (publishToConfluence port regression)* — re-implementing the most complex task (page tree, attachments, new-editor handling, rate limiting) risks behavioural regressions in Confluence publishing — tracked in <<section-technical-risks>>. Until the port lands, `publishToConfluence` remains non-functional (#1626); the ADR Status stays "Accepted (port pending)" and flips to "Accepted" when the script ships and the core module is removed.

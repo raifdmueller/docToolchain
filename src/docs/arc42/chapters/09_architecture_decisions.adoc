@@ -68,6 +68,10 @@ Statuses follow Nygard values (Proposed / Accepted / Superseded / Deprecated). `
 |Tier 2 Mitigation Implementation
 |Accepted
 
+|ADR-12
+|Tasks Are Self-Contained Groovy Scripts — No Compiled Core Module at Runtime
+|Accepted (port pending)
+
 |ADR-TBD-1
 |Confluence API Version Strategy
 |Proposed
@@ -98,6 +102,8 @@ include::../adrs/adr-09-kroki-diagram-server.adoc[]
 include::../adrs/adr-10-risk-based-qa.adoc[]
 
 include::../adrs/adr-11-tier2-mitigations.adoc[]
+
+include::../adrs/adr-12-tasks-as-groovy-scripts.adoc[]
 
 include::../adrs/adr-tbd-1-confluence-api.adoc[]
 
