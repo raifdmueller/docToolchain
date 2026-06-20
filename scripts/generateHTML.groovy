@@ -43,6 +43,26 @@ if (!htmlFiles) {
 }
 
 def imageDirs = config.imageDirs ?: ['images']
+
+// Copy the configured image folders into <output>/images so the relative
+// `images/...` references in the generated HTML actually resolve — without this
+// the HTML points at images that were never placed next to it.
+def copyImages = { File destImagesDir ->
+    imageDirs.each { imageDir ->
+        def src = new File(inputPath, imageDir as String)
+        if (src.exists() && src.isDirectory()) {
+            src.eachFileRecurse { f ->
+                if (!f.isFile()) return
+                def rel = src.toPath().relativize(f.toPath()).toString()
+                def to = new File(destImagesDir, rel)
+                to.parentFile.mkdirs()
+                to.bytes = f.bytes
+            }
+        }
+    }
+}
+copyImages(new File(htmlOutputDir, 'images'))
+
 def asciidoctor = Asciidoctor.Factory.create()
 asciidoctor.requireLibrary('asciidoctor-diagram')
 def diagramHints = new GroovyClassLoader(this.class.classLoader)
@@ -63,7 +83,7 @@ htmlFiles.each { entry ->
     println "Processing: ${entry.file}"
 
     def attrs = Attributes.builder()
-        .imagesDir(imageDirs[0])
+        .imagesDir('images')
         .sourceHighlighter(config.sourceHighlighter ?: 'rouge')
         .tableOfContents(true)
         .attribute('toc', config.toc ?: 'left')

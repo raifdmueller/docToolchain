@@ -1,0 +1,50 @@
+:filename: 015_tasks/03_task_installBausteinsicht.adoc
+include::_config.adoc[]
+
+[[task_installBausteinsicht]]
+== installBausteinsicht
+
+include::../_feedback.adoc[]
+
+=== About This Task
+
+https://doctoolchain.org/Bausteinsicht/[Bausteinsicht] is an _architecture-as-code_ tool from the docToolchain ecosystem.
+You describe your building blocks in a JSON model and Bausteinsicht keeps diagrams in sync — with bidirectional https://www.drawio.com/[draw.io] editing — and exports them as C4-PlantUML, Mermaid, DOT, D2, Structurizr DSL, AsciiDoc/Markdown tables and PNG/SVG for embedding in your documentation.
+Every command supports `--format json`, so LLM agents can read and write the model too.
+
+This task does two things:
+
+. It downloads the matching Bausteinsicht release binary into `$HOME/.doctoolchain/bin`.
+. If the project has an `AGENTS.md` or `CLAUDE.md`, it adds a short, conditional hint so LLM agents know to use Bausteinsicht when they work on diagrams (see <<_agent_hint>>).
+
+=== Setup and Configuration
+
+The task needs internet access to download the release from GitHub.
+
+[source,bash]
+----
+./dtcw4 local installBausteinsicht
+----
+
+By default the latest release is installed. To pin a specific version, set `DTC_BAUSTEINSICHT_VERSION`:
+
+[source,bash]
+----
+DTC_BAUSTEINSICHT_VERSION=1.1.0 ./dtcw4 local installBausteinsicht
+----
+
+The binary is installed to `$HOME/.doctoolchain/bin`.
+If that directory is not on your `PATH`, the task prints the exact command to add it so you can call `bausteinsicht` directly.
+
+[[_agent_hint]]
+=== Agent Hint
+
+When an `AGENTS.md` or `CLAUDE.md` exists in the project root, the task upserts a short Markdown section into it (anchored on its heading, so re-running replaces it in place rather than duplicating it).
+The hint is deliberately _conditional_ — it tells the agent to reach for Bausteinsicht **only when creating or changing architecture diagrams**, and to run `bausteinsicht --help` first so the guidance never goes stale.
+
+If neither file exists, the task installs the tool and skips the hint (it never creates an agent file you did not ask for).
+
+=== Further Reading and Resources
+
+* https://doctoolchain.org/Bausteinsicht/[Bausteinsicht documentation]
+* https://github.com/docToolchain/Bausteinsicht[Bausteinsicht on GitHub]

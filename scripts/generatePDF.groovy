@@ -43,6 +43,27 @@ if (!pdfFiles) {
 }
 
 def imageDirs = config.imageDirs ?: ['images']
+
+// asciidoctor-pdf embeds images, so imagesdir must point at the actual files.
+// The configured imageDirs are relative to inputPath, but the document baseDir
+// is the source file's folder (e.g. the arc42 subfolder) — so a path like
+// 'images/.' resolves to the wrong place and the images silently drop out.
+// Consolidate every imageDir into <output>/pdf/images and point imagesdir at
+// that absolute path, which resolves regardless of how deep the source sits.
+def imagesOutDir = new File(pdfOutputDir, 'images')
+imageDirs.each { imageDir ->
+    def src = new File(inputPath, imageDir as String)
+    if (src.exists() && src.isDirectory()) {
+        src.eachFileRecurse { f ->
+            if (!f.isFile()) return
+            def rel = src.toPath().relativize(f.toPath()).toString()
+            def to = new File(imagesOutDir, rel)
+            to.parentFile.mkdirs()
+            to.bytes = f.bytes
+        }
+    }
+}
+
 def asciidoctor = Asciidoctor.Factory.create()
 
 // Register PDF converter by requiring the gem
@@ -76,7 +97,7 @@ pdfFiles.each { entry ->
     // methods (e.g. .sub) on attribute values; a Groovy GString has no such
     // method and fails with a NoMethodError (notably under Groovy 4).
     def attrsBuilder = Attributes.builder()
-        .imagesDir(imageDirs[0] as String)
+        .imagesDir(imagesOutDir.canonicalPath as String)
         .sourceHighlighter((config.sourceHighlighter ?: 'rouge') as String)
         .attribute('icons', (config.icons ?: 'font') as String)
         .attribute('doctype', 'book')

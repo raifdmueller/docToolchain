@@ -1,0 +1,61 @@
+:filename: 015_tasks/03_task_installDacli.adoc
+include::_config.adoc[]
+
+[[task_installDacli]]
+== installDacli
+
+include::../_feedback.adoc[]
+
+=== About This Task
+
+https://doctoolchain.org/dacli[daCLI] ("docs-as-code CLI") gives LLM agents structured access to your AsciiDoc and Markdown documentation — they can read the document structure, fetch a section, search, and edit content instead of grepping files by hand.
+It works in two modes:
+
+* a *CLI* (`dacli`) for agents with shell access, and
+* an *MCP server* (`dacli-mcp`) for MCP-capable clients (Claude Code, IDEs, …).
+
+This task installs daCLI and, if the project has an `AGENTS.md` or `CLAUDE.md`, adds a short conditional hint so agents know to use it (see <<_agent_hint_dacli>>).
+
+=== Setup and Configuration
+
+daCLI is a Python tool installed with https://docs.astral.sh/uv/[uv].
+If `uv` is not on your `PATH`, the task prints how to install it and stops — it does not fail with a stack trace.
+
+[source,bash]
+----
+./dtcw4 local installDacli
+----
+
+NOTE: daCLI is installed straight from its Git repository (`uv tool install git+https://github.com/docToolchain/dacli`).
+This is intentional — the PyPI package named `dacli` is an unrelated project.
+
+To pin a specific ref (tag, branch or commit), set `DTC_DACLI_VERSION`:
+
+[source,bash]
+----
+DTC_DACLI_VERSION=v1.0.0 ./dtcw4 local installDacli
+----
+
+=== Running the MCP Server
+
+After installation you can start the MCP server scoped to this project's documentation (the task prints the exact command, using your configured `inputPath`):
+
+[source,bash]
+----
+dacli-mcp --docs-root src/docs
+----
+
+Register that command with your MCP client to let it navigate and edit the docs.
+
+[[_agent_hint_dacli]]
+=== Agent Hint
+
+When an `AGENTS.md` or `CLAUDE.md` exists, the task upserts a short, heading-anchored section into it (idempotent on re-run).
+The hint is _conditional_: it points the agent at daCLI **only when reading or editing the documentation**, references your `inputPath`, and tells it to run `dacli --help` first.
+If neither file exists, the hint is skipped and no agent file is created.
+
+=== Further Reading and Resources
+
+* https://doctoolchain.org/dacli[daCLI documentation]
+* https://github.com/docToolchain/dacli[daCLI on GitHub]
+* https://docs.astral.sh/uv/[uv — the Python tool installer]
