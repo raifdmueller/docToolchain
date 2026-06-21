@@ -1,0 +1,38 @@
+=== ADR-14: Task Discovery via `// @task` Marker
+
+* **Status**: Accepted (inferred) — reconstructed from `dtcw`; no prior written decision.
+* **Context**: v4 tasks are plain Groovy files in `scripts/`. That same directory also holds *non-task* code: `scripts/lib/` helpers (`DtcConfig.groovy`, `MicrositeBaker.groovy`, `DtcRestClient.groovy`, …) that are loaded by tasks but must never be invoked as tasks themselves. The wrapper needs a reliable way to answer two questions — "which scripts may a user run?" (for `dtcw tasks`) and "is this name a real task?" (for `dtcw <name>`) — without a central registry that every new task has to be added to.
+* **Decision**: A script is a runnable task **iff** it carries the line marker `// @task` within its first 5 lines. `dtcw` discovers tasks by scanning `scripts/*.groovy` and grepping the file head for that marker (`dtcw` lines 685 and 702); listing and validation use the same check. Adding a task is therefore a one-file operation: drop a `scripts/<name>.groovy` with `// @task` near the top — no edit to any registry, build file, or the wrapper.
+* **Alternatives considered**:
+
+[cols="1,1,1,1", options="header"]
+|===
+|Criterion |A: Central task registry/list |B: `// @task` marker (chosen) |C: Every `scripts/*.groovy` is a task
+
+|Adding a task (no central edit)
+|–1 (must edit a registry too)
+|+1 (drop one marked file)
+|+1 (drop one file)
+
+|Excludes `lib/` helpers from being run
+|+1 (only listed names run)
+|+1 (helpers lack the marker / live in `lib/`)
+|–1 (helpers would be runnable, dangerous)
+
+|Self-documenting / greppable
+|0 (registry is separate from code)
+|+1 (marker sits in the script it describes)
+|0
+
+|Implementation simplicity (wrapper)
+|0 (parse a registry)
+|+1 (one `grep` over the file head)
+|+1
+
+|**Total**
+|**–1**
+|**+4**
+|**+1**
+|===
+
+* **Consequences**: The marker is the single source of truth for "is this a task", so the task list never drifts from the files on disk. Helper code stays safe simply by living in `scripts/lib/` and omitting the marker. The cost is a convention contributors must know: a new task silently fails to appear if the `// @task` line is missing or pushed past the first 5 lines — a documentation/onboarding concern rather than a runtime risk. The marker is intentionally a comment, so it costs nothing at execution time and survives any Groovy tooling that ignores comments.

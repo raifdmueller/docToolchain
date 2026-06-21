@@ -30,7 +30,7 @@ The core functional requirements are:
 * **Jira integration**: Export Jira issues and sprint changelogs to AsciiDoc or Excel format for inclusion in documentation
 * **External tool import**: Extract diagrams from Enterprise Architect, Structurizr, Visio, and PowerPoint; import tables from Excel; convert Markdown to AsciiDoc
 * **Git metadata extraction**: Generate changelogs and contributor lists from Git history
-* **Cross-platform CLI**: Provide a single command-line interface (`dtcw`) that works on Linux, macOS (including Apple Silicon), and Windows
+* **Cross-platform CLI**: Provide a single command-line interface (`dtcw`) that works on Linux, macOS (including Apple Silicon), and Windows. _v4 scope:_ Linux and macOS run natively; **Windows is supported via WSL2** in v4 — the native `dtcw.ps1`/`dtcw.bat` v4 execution path is not yet implemented (Chapter 11 debt).
 * **Multiple execution environments**: Support local installation, Docker containers, and SDKMAN-based installation
 * **Zero-configuration start**: Enable first-time users to generate documentation with minimal setup
 * **LLM-native document access**: Provide structured document navigation and modification via MCP server (daCLI), supporting Skills, Prompts, and Semantic Anchors
@@ -54,7 +54,7 @@ These are the top five quality goals that *drive* the architecture decisions in 
 
 |3
 |Cross-platform portability
-|Identical output on Linux, macOS (including Apple Silicon), and Windows across local, Docker, and SDKMAN environments. (QS-2, QS-10)
+|Identical output on Linux, macOS (including Apple Silicon), and Windows across local, Docker, and SDKMAN environments. In v4, Windows is covered via WSL2; a native Windows wrapper path is planned (Chapter 11 debt). (QS-2, QS-10)
 
 |4
 |Actionable error guidance

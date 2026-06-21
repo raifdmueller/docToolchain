@@ -59,12 +59,26 @@ Probability and Impact are rated Low / Medium / High. Priority is derived from t
 |MEDIUM
 |Service-level tests around the new script before the core module is dropped (ADR-12).
 
+|R-007
+|*Diagram-privacy control not implemented.* ADR-9's `diagramServer` key, local-Kroki default, and per-run external-URL warning (QS-16) do not exist in code; `DiagramToolHints` points users at public `kroki.io` without a warning. Quality Goal #1 (no implicit cloud processing) is met today only because the default render path happens to be local.
+|Medium
+|Medium
+|MEDIUM
+|Implement ADR-9 (`diagramServer` switch + QS-16 warning); until then, document the local-default behaviour. Closes T-004.
+
 |R-005
-|*Release-time dependency resolution.* AsciiDoctor is externalized (ADR-6); ~30 JARs ship in `lib/` (ADR-7). The release process must resolve transitive dependencies and a tampered/vulnerable JAR (T-006) would reach every user (QS-4).
+|*Release-time dependency resolution.* AsciiDoctor is embedded (ADR-6, revised); **177 JARs (~126 MB)** ship in `lib/` (ADR-7). The release process must resolve transitive dependencies and a tampered/vulnerable JAR (T-006) would reach every user (QS-4).
 |Low
 |Medium
 |LOW
 |Ch8 *Security* concept — Trivy CVE scan of `lib/*.jar` (ADR-11); pinned, reproducible resolution (ADR-7).
+
+|R-008
+|*No secret redaction in output.* No code masks `credential`/`token`/`secret`-shaped values, and `DtcRestClient` rethrows raw exceptions. Harmless under the local-trust model, but a credential can leak into a public CI / PR build log.
+|Low
+|Medium
+|LOW
+|Ch8 *Security* concept — redact secret-shaped keys before any `println config` / error output; gated on the ADR-8 `DtcException` carrier (R-004). Closes T-002.
 |===
 
 === 11.2 Technical Debt
@@ -86,6 +100,14 @@ Each item names the specific Chapter 5 building block it burdens.
 |Windows-only export features
 |External Tool Export scripts (`exportEA.groovy`, `exportPPT.groovy`, `exportVisio.groovy`)
 |EA, PowerPoint, and Visio export remain Windows-only (VBScript COM automation). No fallback on Linux/macOS, burdening cross-platform portability (QS-2).
+
+|`lib/` footprint (~126 MB)
+|Wrapper Layer / `lib/` (ADR-7)
+|Embedding AsciidoctorJ + JRuby (ADR-6, revised) makes `lib/` 177 JARs / ~126 MB — larger than v3's ~50 MB. Making POI and AsciidoctorJ/JRuby optional or lazily loaded would cut typical-run footprint substantially (QS-6).
+
+|No v4 Windows wrapper path
+|Wrapper Layer (`dtcw.ps1`, `dtcw.bat`)
+|The v4 `GroovyMain` execution path exists only in the Bash `dtcw`; `dtcw.ps1`/`dtcw.bat` carry no v4 path. Windows v4 works only via WSL2 today (see Chapter 1 goal scope). Burdens cross-platform portability (QS-2, Goal #3).
 |===
 
 === Resolved v3 Risks
@@ -107,5 +129,5 @@ Each item names the specific Chapter 5 building block it burdens.
 |Resolved by ADR-3. No Gradle at all. Startup under 3 seconds.
 
 |Heavy dependency footprint (60-80 JARs)
-|Resolved by ADR-6 + ADR-7. AsciiDoctor externalized (–45 MB, –25 JARs). Remaining ~30 JARs (~23 MB) shipped in `lib/`.
+|*Not resolved — reversed.* The plan to externalize AsciiDoctor (ADR-6) was dropped; v4 embeds AsciidoctorJ + JRuby, so `lib/` is 177 JARs / ~126 MB — larger than v3. Reclassified as technical debt above, not a resolved risk.
 |===
