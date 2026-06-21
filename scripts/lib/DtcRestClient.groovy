@@ -30,7 +30,7 @@ class DtcRequestFailedException extends RuntimeException {
 
     private static String buildMessage(HttpResponse response, Exception reason) {
         String responseLog = response != null ? "${response.code} ${response.reasonPhrase}" : "<none>"
-        String reasonLog = reason != null ? reason.message : "<none>"
+        String reasonLog = reason != null ? Secrets.redact(reason.message) : "<none>"
         String possibleSolution
 
         switch (response?.code) {
@@ -83,14 +83,36 @@ class DtcRestClient {
         try (CloseableHttpClient httpClient = httpClientBuilder.build()) {
             return Optional.ofNullable(httpClient.execute(targetHost, httpRequest, responseHandler))
         } catch (IOException e) {
-            System.err.println("HTTP request failed: ${httpRequest.method} ${httpRequest.uri}")
-            System.err.println("Target: ${targetHost.toURI()}")
-            System.err.println("Reason: ${e.message}")
+            System.err.println("HTTP request failed: ${httpRequest.method} ${Secrets.redact(httpRequest.uri.toString())}")
+            System.err.println("Target: ${Secrets.redact(targetHost.toURI().toString())}")
+            System.err.println("Reason: ${Secrets.redact(e.message)}")
             throw new RuntimeException(e)
         }
     }
 
     protected getHttpClientBuilder() {
         return httpClientBuilder
+    }
+}
+
+/**
+ * Masks secret-shaped values before they reach console output or CI logs
+ * (T-002 / R-008). Intentionally duplicates the logic in DtcError.redact()
+ * (scripts/lib/DtcException.groovy): DtcRestClient is loaded independently and
+ * must redact whether or not the DtcException carrier is on the classloader.
+ */
+class Secrets {
+    static String redact(String text) {
+        if (text == null) return text
+        String out = text
+        // Authorization header values: "Bearer <token>" / "Basic <base64>"
+        out = out.replaceAll(/(?i)\b(Bearer|Basic)\s+[A-Za-z0-9._=\/+-]{6,}/, '$1 ***')
+        // userinfo in a URL: scheme://user:secret@host
+        out = out.replaceAll(/(?i)(\b[a-z][a-z0-9+.-]*:\/\/[^\/\s:@]+):[^\/\s@]+@/, '$1:***@')
+        // key=value / key: value where the key name looks like a secret
+        out = out.replaceAll(
+            /(?i)\b(pass(?:word)?|token|credentials?|secret|api[_-]?key|bearer[_-]?token)\b(\s*[:=]\s*)\S+/,
+            '$1$2***')
+        return out
     }
 }
