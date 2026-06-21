@@ -46,7 +46,7 @@ Probability and Impact are rated Low / Medium / High. Priority is derived from t
 |`lib/` directory with pinned JARs (ADR-7); Ch8 *Test* concept verifies script loading.
 
 |R-004
-|*Residual inconsistent error handling.* The `DtcException` carrier now exists (`scripts/lib/DtcException.groovy`, ADR-8) and `generateHTML`, `generatePDF`, and `publishToConfluence` are migrated, but the remaining task scripts still mix thrown exceptions and `System.exit`/`println` until the rollout completes (QS-4, QS-3, QS-17).
+|*Residual inconsistent error handling.* The `DtcException` carrier now exists (`scripts/lib/DtcException.groovy`, ADR-8) and five tasks are migrated (`generateHTML`, `generatePDF`, `publishToConfluence`, `copyThemes`, `lintAsciiDoc`), but the remaining task scripts still mix thrown exceptions and `System.exit`/`println` until the rollout completes (QS-4, QS-3, QS-17).
 |Medium
 |Low
 |LOW
