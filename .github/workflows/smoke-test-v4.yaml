@@ -1,0 +1,71 @@
+name: Smoke Test (v4 render)
+
+# Renders documentation from THIS PR's sources on every pull request, so a
+# fatal render break (e.g. an `include::`/`plantuml::` to a file outside the
+# rendered tree) is caught at PR time — not after merge on the gh-pages deploy.
+# Unlike `.ci.sh create_doc` (which only renders on the main-4.x branch and uses
+# the installed release), this builds lib/ from the PR and runs the PR's scripts,
+# so it guards both doc changes and script/engine changes.
+
+on:
+  pull_request:
+    branches: [ main-4.x ]
+    paths:
+      - 'core/**'
+      - 'scripts/**'
+      - 'src/**'
+      - 'build.gradle'
+      - 'libs.versions.toml'
+      - '.github/workflows/smoke-test-v4.yaml'
+      - '!**/README.*'
+  workflow_dispatch: {}
+
+jobs:
+  smoke:
+    name: Render smoke test (generateHTML + generateSite)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install diagram tools
+        run: sudo apt-get install -y graphviz
+
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: adopt
+          java-version: 17
+          cache: 'gradle'
+
+      - name: Build v4 lib/ from this PR's sources
+        run: |
+          set -euo pipefail
+          ./gradlew packageLibs --no-daemon
+          mkdir -p lib
+          cp build/lib/*.jar lib/
+          echo "lib/ contains $(ls lib/*.jar | wc -l) JARs"
+
+      - name: generateHTML smoke (minimal fixture)
+        run: |
+          set -euo pipefail
+          mkdir -p .smoke/src/docs
+          cat > .smoke/docToolchainConfig.groovy <<'EOF'
+          outputPath = 'build'
+          inputPath  = 'src/docs'
+          inputFiles = [[file: 'smoke.adoc', formats: ['html']]]
+          imageDirs  = []
+          EOF
+          printf '= Smoke Test\n\nHello *world*.\n\n== Section\n\nSome text.\n' > .smoke/src/docs/smoke.adoc
+          java -cp "lib/*" -DdocDir="$PWD/.smoke" groovy.ui.GroovyMain scripts/generateHTML.groovy
+          test -s .smoke/build/html5/smoke.html
+
+      - name: generateSite smoke (this repo's docs)
+        # Renders the full microsite from the PR's docs through the microsite
+        # tmp-tree copy — the path that exposes file-outside-tree includes. A
+        # fatal AsciidoctorCoreException aborts the build and fails the job;
+        # non-fatal warnings (missing diagram tools, optional includes) do not.
+        run: |
+          set -euo pipefail
+          java -cp "lib/*" -DdocDir="$PWD" groovy.ui.GroovyMain scripts/generateSite.groovy
+          test -s build/microsite/output/index.html
