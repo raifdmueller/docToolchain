@@ -3,11 +3,20 @@
 // v4: Scaffold a docToolchain CI/CD pipeline (dtcw4-based) for GitHub or GitLab
 
 def docDir = System.getProperty('docDir', '.')
+def scriptDir = new File(getClass().protectionDomain.codeSource.location.toURI()).parentFile
+def gcl = new GroovyClassLoader(this.class.classLoader)
+gcl.parseClass(new File(scriptDir, 'lib/DtcException.groovy'))
+def DtcError = gcl.loadClass('DtcError')
+def DtcException = gcl.loadClass('DtcException')
 
 def color = { c, text ->
     def colors = [red: 31, green: 32, yellow: 33, cyan: 36]
     return new String((char) 27) + "[${colors[c]}m${text}" + new String((char) 27) + "[0m"
 }
+
+// Single top-level handler (ADR-8): the body throws DtcException with guidance.
+// Body kept un-indented to minimise the diff (Groovy is not whitespace-sensitive).
+try {
 
 println "docToolchain v4 — generateCICD"
 
@@ -117,15 +126,13 @@ def targets = [
 
 def target = targets[provider]
 if (!target) {
-    System.err.println color('red', "Unknown provider '${provider}'. Use one of: ${targets.keySet().join(', ')}")
-    System.exit(1)
+    throw DtcException.newInstance("Unknown provider '${provider}'. Use one of: ${targets.keySet().join(', ')}")
 }
 
 def outFile = new File(docDir, target.path)
 if (outFile.exists() && !force) {
-    System.err.println color('yellow', "${target.path} already exists — refusing to overwrite.")
-    System.err.println "Re-run with --force to replace it."
-    System.exit(1)
+    throw DtcException.newInstance(
+        "${target.path} already exists — refusing to overwrite. Re-run with --force to replace it.")
 }
 
 outFile.parentFile?.mkdirs()
@@ -139,4 +146,8 @@ if (provider == 'github') {
 } else {
     println "  - Commit ${target.path}"
     println "  - The 'pages' job publishes to GitLab Pages on the default branch"
+}
+
+} catch (Throwable t) {
+    System.exit(DtcError.report(t))
 }

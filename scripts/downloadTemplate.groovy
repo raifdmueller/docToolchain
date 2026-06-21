@@ -11,7 +11,12 @@ def configFile = System.getProperty('mainConfigFile', 'docToolchainConfig.groovy
 def isHeadless = System.getProperty('DTC_HEADLESS', System.getenv('DTC_HEADLESS') ?: 'false') == 'true'
 
 def scriptDir = new File(getClass().protectionDomain.codeSource.location.toURI()).parentFile
-def DtcConfig = new GroovyClassLoader(this.class.classLoader).parseClass(new File(scriptDir, 'lib/DtcConfig.groovy'))
+def gcl = new GroovyClassLoader(this.class.classLoader)
+def DtcConfig = gcl.parseClass(new File(scriptDir, 'lib/DtcConfig.groovy'))
+gcl.parseClass(new File(scriptDir, 'lib/DtcException.groovy'))
+def DtcError = gcl.loadClass('DtcError')
+def DtcConfigException = gcl.loadClass('DtcConfigException')
+def DtcApiException = gcl.loadClass('DtcApiException')
 def dtcConfig = DtcConfig.load(docDir, configFile)
 def config = dtcConfig.getRaw()
 def inputPath = config.inputPath ?: 'src/docs'
@@ -21,6 +26,8 @@ def color = { c, text ->
     return new String((char) 27) + "[${colors[c]}m${text}" + new String((char) 27) + "[0m"
 }
 
+// Single top-level handler (ADR-8); body kept un-indented to minimise the diff.
+try {
 println "docToolchain v4 — downloadTemplate"
 
 def lang = 'EN'
@@ -68,8 +75,7 @@ if (templateArg) {
     }
 }
 if (!templates.containsKey(template)) {
-    System.err.println "Unknown template '${template}'. Available: ${templates.keySet().join(', ')}"
-    System.exit(1)
+    throw DtcConfigException.newInstance("Unknown template '${template}'. Available: ${templates.keySet().join(', ')}")
 }
 
 if (template in ['arc42', 'req42']) {
@@ -112,7 +118,7 @@ conn.readTimeout = 60000
 conn.instanceFollowRedirects = true
 int status = conn.responseCode
 if (status != HttpURLConnection.HTTP_OK) {
-    throw new RuntimeException(
+    throw DtcApiException.newInstance(
         "Download failed: HTTP ${status} for ${url}\n" +
         "The server did not return a template archive. Check the template name and " +
         "language — an unknown language yields a 404 whose HTML error page is not a valid zip.")
@@ -249,3 +255,7 @@ if (configFileObj.exists()) {
 
 println ""
 println "Use 'generateHTML', 'generatePDF' or 'generateSite' to convert the template."
+
+} catch (Throwable t) {
+    System.exit(DtcError.report(t))
+}

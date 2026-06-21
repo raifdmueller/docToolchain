@@ -46,7 +46,7 @@ Probability and Impact are rated Low / Medium / High. Priority is derived from t
 |`lib/` directory with pinned JARs (ADR-7); Ch8 *Test* concept verifies script loading.
 
 |R-004
-|*Residual inconsistent error handling.* The `DtcException` carrier now exists (`scripts/lib/DtcException.groovy`, ADR-8) and five tasks are migrated (`generateHTML`, `generatePDF`, `publishToConfluence`, `copyThemes`, `lintAsciiDoc`), but the remaining task scripts still mix thrown exceptions and `System.exit`/`println` until the rollout completes (QS-4, QS-3, QS-17).
+|*Residual inconsistent error handling.* The `DtcException` carrier now exists (`scripts/lib/DtcException.groovy`, ADR-8) and seven tasks are migrated (`generateHTML`, `generatePDF`, `publishToConfluence`, `copyThemes`, `lintAsciiDoc`, `generateCICD`, `downloadTemplate`), but the remaining task scripts still mix thrown exceptions and `System.exit`/`println` until the rollout completes (QS-4, QS-3, QS-17).
 |Medium
 |Low
 |LOW
@@ -74,11 +74,11 @@ Probability and Impact are rated Low / Medium / High. Priority is derived from t
 |Ch8 *Security* concept — Trivy CVE scan of `lib/*.jar` (ADR-11); pinned, reproducible resolution (ADR-7).
 
 |R-008
-|*Incomplete secret redaction in output.* `DtcError.redact()` now masks secret-shaped values at script-level error output (ADR-8), but the compiled `DtcRestClient` still rethrows raw exceptions, and `redact()` is not yet wired into every `println`/error path. A credential can still leak into a public CI / PR build log via those paths.
+|*Incomplete secret redaction in output.* `DtcError.redact()` masks secret-shaped values at script-level error output (ADR-8), and `DtcRestClient` now redacts its own HTTP error output (`Secrets.redact()` — tokens, `Bearer`/`Basic`, URL user-info). Residual: `redact()` is not yet wired into every `println config`/error path across all scripts. A credential could still leak into a public CI / PR build log via an unwired path.
 |Low
 |Medium
 |LOW
-|Ch8 *Security* concept — `DtcError.redact()` implemented + unit-tested; remaining work is wiring it into `DtcRestClient` and the other `println` paths. Advances T-002.
+|Ch8 *Security* concept — `DtcError.redact()` and `DtcRestClient`'s `Secrets.redact()` implemented + unit-tested; remaining work is wiring redaction into the other `println` paths. Advances T-002.
 |===
 
 === 11.2 Technical Debt
