@@ -145,13 +145,6 @@ The scripts are organized into functional groups. Unlike v3 (where scripts were 
 |Loads `docToolchainConfig.groovy` via Groovy `ConfigSlurper`. Provides config access to all scripts.
 |===
 
-[[wrapper-function-map]]
-==== Wrapper Function Map
-
-The Wrapper Layer is itself a structured set of shell functions. The following map of `dtcw` functions documents its internal decomposition — environment detection, installation, and command building — and is the component view of the Wrapper building block referenced in the Level-1 table above.
-
-plantuml::../../027_arc42/dtcw.puml[format=png,id=dtcw-function-map]
-
 === Level 3: Whitebox Atlassian Integration
 
 The Atlassian integration scripts contain the richest business logic. In v3 this was the compiled `core/` module; in v4 it returns to script form.
