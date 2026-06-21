@@ -11,7 +11,7 @@ Since we almost always work on systems which already have git installed, docTool
 The solution we propose instead is just a simple bash script which does the magic for you.
 Here is how.
 
-Imagine you have a documentation repository set up with the docToolchain wrapper `dtcw` and some code documents.
+Imagine you have a documentation repository set up with the docToolchain wrapper `dtcw4` and some code documents.
 Now you would like to include the documents from another repository.
 
 === git clone solution

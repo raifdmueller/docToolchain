@@ -50,8 +50,8 @@ jBake also supports Markdown via https://github.com/vsch/flexmark-java[flexmark-
 .jBake
 [%collapsible]
 ====
-* https://jbake.org[jBake] — the static site generator behind `generateSite`
-* https://www.docsy.dev/[Docsy] — our standard theme
+* https://jbake.org[jBake] — drove `generateSite` in v3; v4 uses a built-in generator (`MicrositeBaker`)
+* https://www.docsy.dev/[Docsy] — the standard theme in v3; v4 ships Bootstrap 5 GSP templates
 * https://getbootstrap.com/[Bootstrap 5] — CSS framework
 ====
 

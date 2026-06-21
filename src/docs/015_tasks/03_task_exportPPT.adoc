@@ -19,8 +19,26 @@ The v3 version was Windows-only (VBScript).
 
 NOTE: Only `.pptx` files are supported. Legacy `.ppt` format is not supported.
 
-The tag `{slide}` in speaker notes is replaced with the corresponding image reference.
-Use https://docs.asciidoctor.org/asciidoc/latest/directives/include-tagged-regions/[tagged regions] to include specific slides.
+==== Generated Output
+
+For each `<name>.pptx` found under your input path, the task writes:
+
+* slide images to `src/docs/images/ppt/<name>/slide_NNN.png` (one PNG per slide),
+* speaker notes to `src/docs/ppt/<name>/slide_NNN_notes.adoc` (only for slides that have notes),
+* a ready-to-include AsciiDoc file at `src/docs/ppt/<name>/<name>.adoc`.
+
+The generated `<name>.adoc` contains one section per slide, each with the slide title as a `===` heading, the slide image, and an include of the slide's notes:
+
+[source, asciidoc]
+----
+=== <slide title>
+
+image::ppt/<name>/slide_001.png[<slide title>]
+
+\include::slide_001_notes.adoc[]
+----
+
+Include the generated `<name>.adoc` from your own document to embed the slides and notes.
 
 === Further Reading
 

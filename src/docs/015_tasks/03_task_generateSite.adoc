@@ -111,8 +111,19 @@ Templates and styles are bundled with docToolchain.
 
 === Landing Page
 
-Place an `index.gsp` in `src/site/templates` as your landing page.
-It is plain HTML5 styled with Bootstrap — the header and footer are added automatically.
+Configure the landing page in `docToolchainConfig.groovy` and ship the matching `.gsp` file in your theme's `doc/` folder:
+
+[source, groovy]
+----
+microsite.with {
+    landingPage = 'landingpage.gsp'   // file in src/site/doc/
+}
+----
+
+The landing page is plain HTML5 styled with Bootstrap — the header and footer are added automatically.
+If `microsite.landingPage` is not set, the site is generated without an `index.html` landing page.
+
+NOTE: `index.gsp` in `src/site/templates` is the internal master template, not your landing page. Put your landing-page content in `src/site/doc/<landingPage>` instead.
 
 === Blog
 

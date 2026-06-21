@@ -21,256 +21,58 @@ In this tutorial, you'll learn how to publish the arc42 template to a Confluence
 
 === Step 1. Set Up docToolchain
 
-If you  have completed instructions http://doctoolchain.org/docToolchain/v2.0.x/020_tutorial/010_Install.html[install docToolchain] and http://doctoolchain.org/docToolchain/v2.0.x/020_tutorial/020_arc42.html[get the arc42 template] you can skip this part.
+If you have already completed the xref:010_Install.adoc[install docToolchain] and xref:020_arc42.adoc[get the arc42 template] tutorials, you can skip this part.
 
-NOTE: For this tutorial, we assume that you work with a macOS/Linux-based system.
+NOTE: For this tutorial, we assume that you work with a macOS/Linux-based system. On Windows, use WSL2 — `dtcw4` is a Bash script.
 
-
-. In the Terminal, type the following:
+. In the Terminal, create a project folder and download the wrapper:
 +
 [source, console]
 ----
 $ mkdir publishToConfluenceDemo
 $ cd publishToConfluenceDemo
-$ curl -Lo dtcw doctoolchain.org/dtcw
+$ curl -Lo dtcw4 doctoolchain.org/dtcw4
+$ chmod +x dtcw4
 ----
-+
-.Show output
-[%collapsible]
-====
-....
-gitpod /workspace/publishToConfluenceDemo (main) $ curl -Lo dtcw doctoolchain.org/dtcw
-% Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-Dload  Upload   Total   Spent    Left  Speed
-100   162  100   162    0     0   1306      0 --:--:-- --:--:-- --:--:--  1317
-100 10724  100 10724    0     0  25903      0 --:--:-- --:--:-- --:--:-- 25903
-....
-====
 
-. Next, make the file `dtcw` executable.
-+
-[source, console]
-$ chmod +x dtcw
-
-. If you do not have docToolchain as a Docker image, type
-+
-[source, console]
-$ ./dtcw getJava
-+
-.Show output
-[%collapsible]
-====
-....
-./dtcw: line 28: !false: command not found
-dtcw - docToolchain wrapper V0.31
-docToolchain V2.0.5
-docker available
-this script assumes that you have linux as operating system (x64 / linux)
-it now tries to install Java for you
-downloading JDK Temurin 11 from adoptiom to /home/gitpod/.doctoolchain/jdk.tar.gz
-WARNING: combining -O with -r or -p will mean that all downloaded content
-will be placed in the single file you specified.
-
---2022-08-25 20:07:11--  https://api.adoptium.net/v3/binary/latest/11/ga/linux/x64/jdk/hotspot/normal/eclipse?project=jdk
-Resolving api.adoptium.net (api.adoptium.net)... 20.62.244.126
-Connecting to api.adoptium.net (api.adoptium.net)|20.62.244.126|:443... connected.
-HTTP request sent, awaiting response... 307 Temporary Redirect
-Location: https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.16.1%2B1/OpenJDK11U-jdk_x64_linux_hotspot_11.0.16.1_1.tar.gz [following]
---2022-08-25 20:07:12--  https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.16.1%2B1/OpenJDK11U-jdk_x64_linux_hotspot_11.0.16.1_1.tar.gz
-Resolving github.com (github.com)... 140.82.121.3
-Connecting to github.com (github.com)|140.82.121.3|:443... connected.
-HTTP request sent, awaiting response... 302 Found
-Location: https://objects.githubusercontent.com/github-production-release-asset-2e65be/372924883/70b80b22-3dc5-4824-bb2d-d0158a3b9b57?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20220825%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220825T200712Z&X-Amz-Expires=300&X-Amz-Signature=887a715fcbd2e2d6bf24496f57b168ba2204f0f81794a66615ab53a7b153ed37&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=372924883&response-content-disposition=attachment%3B%20filename%3DOpenJDK11U-jdk_x64_linux_hotspot_11.0.16.1_1.tar.gz&response-content-type=application%2Foctet-stream [following]
---2022-08-25 20:07:12--  https://objects.githubusercontent.com/github-production-release-asset-2e65be/372924883/70b80b22-3dc5-4824-bb2d-d0158a3b9b57?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20220825%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220825T200712Z&X-Amz-Expires=300&X-Amz-Signature=887a715fcbd2e2d6bf24496f57b168ba2204f0f81794a66615ab53a7b153ed37&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=372924883&response-content-disposition=attachment%3B%20filename%3DOpenJDK11U-jdk_x64_linux_hotspot_11.0.16.1_1.tar.gz&response-content-type=application%2Foctet-stream
-Resolving objects.githubusercontent.com (objects.githubusercontent.com)... 185.199.109.133, 185.199.111.133, 185.199.108.133, ...
-Connecting to objects.githubusercontent.com (objects.githubusercontent.com)|185.199.109.133|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 193754645 (185M) [application/octet-stream]
-Saving to: ‘/home/gitpod/.doctoolchain/jdk/jdk.tar.gz’
-
-/home/gitpod/.doctoolchain/jdk 100%[====================================================>] 184.78M   310MB/s    in 0.6s
-
-2022-08-25 20:07:13 (310 MB/s) - ‘/home/gitpod/.doctoolchain/jdk/jdk.tar.gz’ saved [193754645/193754645]
-
-FINISHED --2022-08-25 20:07:13--
-Total wall clock time: 1.7s
-Downloaded: 1 files, 185M in 0.6s (310 MB/s)
-expanding JDK
-....
-====
-
-. Answer the questions that appear during installation.
-+
-You will see lots of `.jar` files getting downloaded.
-
-. Initialise docToolchain by running your first task.
+. Initialise docToolchain by running your first task. The wrapper installs Java and docToolchain on first use and creates a default `docToolchainConfig.groovy` if none exists.
 +
 [source,console]
-$ ./dtcw tasks
-+
-.Show output
-[%collapsible]
-====
-....
-dtcw - docToolchain wrapper V0.31
-docToolchain V2.0.5
-local java JDK found
-use /home/gitpod/.doctoolchain/jdk as JDK
+$ ./dtcw4 local tasks
 
-docker available
-force use of local install
-docToolchain not installed.
-sdkman not found
-Do you wish to install doctoolchain to /home/gitpod/.doctoolchain?
-1) Yes
-2) No
-#? 1
-installing doctoolchain
-mkdir: cannot create directory ‘/home/gitpod/.doctoolchain’: File exists
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
-100 1783k  100 1783k    0     0  2857k      0 --:--:-- --:--:-- --:--:-- 2857k
-Archive:  /home/gitpod/.doctoolchain/source.zip
-   creating: /home/gitpod/.doctoolchain/./docToolchain-2.0.5/
-   creating: /home/gitpod/.doctoolchain/./docToolchain-2.0.5/bin/
-  inflating: /home/gitpod/.doctoolchain/./docToolchain-2.0.5/bin/autobuildSite.bash
-  inflating: /home/gitpod/.doctoolchain/./docToolchain-2.0.5/bin/doctoolchain
-
-[152 lines omitted]
-
-  inflating: /home/gitpod/.doctoolchain/./docToolchain-2.0.5/template_config/pdfTheme/custom-theme.yml
-   creating: /home/gitpod/.doctoolchain/./docToolchain-2.0.5/resources/
-   creating: /home/gitpod/.doctoolchain/./docToolchain-2.0.5/resources/asciidoctor-reveal.js/
-   creating: /home/gitpod/.doctoolchain/./docToolchain-2.0.5/resources/reveal.js/
-Picked up JAVA_TOOL_OPTIONS:  -Xmx3489m
-Downloading https://services.gradle.org/distributions/gradle-6.9.2-bin.zip
-..........10%..........20%..........30%...........40%..........50%..........60%..........70%...........80%..........90%..........100%
-
-Welcome to Gradle 6.9.2!
-
-Here are the highlights of this release:
- - This is a small backport release.
- - Java 16 can be used to compile when used with Java toolchains
- - Dynamic versions can be used within plugin declarations
- - Native support for Apple Silicon processors
-
-For more details see https://docs.gradle.org/6.9.2/release-notes.html
-
-To honour the JVM settings for this build a single-use Daemon process will be forked. See https://docs.gradle.org/6.9.2/userguide/gradle_daemon.html#sec:disabling_the_daemon.
-Daemon will be stopped at the end of the build
-
-> Configure project :
-
-Config file '/workspace/publishToConfluenceDemo/docToolchainConfig.groovy' does not exist'
-[ant:input]
-[ant:input] do you want me to create a default one for you? (y, n)
-<<-------------> 0% CONFIGURING [2m 55s]
-
-> Task :help
-
-Welcome to Gradle 6.9.2.
-
-To run a build, run gradlew <task> ...
-
-To see a list of available tasks, run gradlew tasks
-
-To see a list of command-line options, run gradlew --help
-
-To see more detail about a task, run gradlew help --task <task>
-
-For troubleshooting, visit https://help.gradle.org
-
-BUILD SUCCESSFUL in 3m 29s
-1 actionable task: 1 executed
-....
-====
-
-. Next download the arc42 template
+. Next, download the arc42 template:
 +
 [source,console]
-$ ./dtcw downloadTemplate
+$ ./dtcw4 local downloadTemplate
 +
-.Show output
-[%collapsible]
-====
-....
-
-dtcw - docToolchain wrapper V0.31
-docToolchain V2.0.5
-local java JDK found
-use /home/gitpod/.doctoolchain/jdk as JDK
-
-docker available
-home folder exists
-use local homefolder install /home/gitpod/.doctoolchain/
-Picked up JAVA_TOOL_OPTIONS:  -Xmx3489m
-To honour the JVM settings for this build a single-use Daemon process will be forked. See https://docs.gradle.org/6.9.2/userguide/gradle_daemon.html#sec:disabling_the_daemon.
-Daemon will be stopped at the end of the build
-
-> Task :downloadTemplate
-Install arc42 documentation template.
-For more information about arc42 see https://arc42.org
-[ant:input] Which language do you want to install? (EN, DE, ES, RU)
-<-<-------------> 0% EXECUTING [11s]
-[ant:input] Do you want the template with or without help? (withhelp, plain)
-<-<<-<--<-------------> 0% EXECUTING [17s]
-Download https://github.com/arc42/arc42-template/raw/master/dist/arc42-template-EN-withhelp-asciidoc.zip
-arc42 template unpacked into /workspace/publishToConfluenceDemo/src/docs/arc42
-added template to docToolchainConfig.groovy
-use 'generateHTML', 'generatePDF' or  'generateSite' to convert the template
-
-BUILD SUCCESSFUL in 22s
-1 actionable task: 1 executed
-....
-====
-+
-You should now have the following folder structure in your project:
+Answer the prompts for language and help text.
+You should now have an `src/docs/arc42` folder and the template registered in `docToolchainConfig.groovy`:
 +
 .Project Folder Structure
 ....
 .
 ├── docToolchainConfig.groovy
-├── dtcw
+├── dtcw4
 └── src
-└── docs
-├── arc42
-│   ├── arc42.adoc
-│   └── chapters
-│       ├── 01_introduction_and_goals.adoc
-│       ├── 02_architecture_constraints.adoc
-│       ├── 03_system_scope_and_context.adoc
-│       ├── 04_solution_strategy.adoc
-│       ├── 05_building_block_view.adoc
-│       ├── 06_runtime_view.adoc
-│       ├── 07_deployment_view.adoc
-│       ├── 08_concepts.adoc
-│       ├── 09_architecture_decisions.adoc
-│       ├── 10_quality_requirements.adoc
-│       ├── 11_technical_risks.adoc
-│       ├── 12_glossary.adoc
-│       ├── about-arc42.adoc
-│       └── config.adoc
-└── images
-├── 01_2_iso-25010-topics-EN.png
-├── 05_building_blocks-EN.png
-├── 08-Crosscutting-Concepts-Structure-EN.png
-└── arc42-logo.png
-
-5 directories, 21 files
+    └── docs
+        ├── arc42
+        │   ├── arc42.adoc
+        │   └── chapters
+        │       ├── 01_introduction_and_goals.adoc
+        │       ├── ...
+        │       └── 12_glossary.adoc
+        └── images
 ....
 
 === Step 2. Configure Publication to Confluence
 
-To configure authentication through the Confluence API, do the following.
+All configuration for `publishToConfluence` lives in the `confluence { ... }` section of `docToolchainConfig.groovy`.
+In v4 there are no Gradle `-P` parameters — credentials and settings are read from this config (or, where noted, from environment variables you reference in the config).
 
-. In the root of your project foler, open the file `docToolchainConfig.groovy`.
-
-. Find the text `confluence.with`.
+. In the root of your project folder, open `docToolchainConfig.groovy` and find the `confluence.with { ... }` block.
 +
-This is the start of the section where you configure publication to Confluence.
-As you can see, docToolchain is preconfigured to publish sample input (the arc42 template) to Confluence.
-The input for the publishToConfluence task is the output of the `generateHTML` task. You should see this:
+docToolchain is preconfigured to publish sample input (the arc42 template) to Confluence.
+The input for the `publishToConfluence` task is the HTML produced by the `generateHTML` task. Point `input` at the HTML file that `generateHTML` writes for your document:
 +
 [source, groovy]
 ----
@@ -278,22 +80,19 @@ input = [
     [ file: "build/html5/arc42/arc42.html" ],
 ]
 ----
-
-This corresponds to the following snippet from the start of the file
-
++
+This must match the `inputFiles` section at the top of the file, which tells `generateHTML` which source to render and where the HTML lands:
++
 [source, groovy]
 ----
 inputFiles = [
-        //[file: 'doctoolchain_demo.adoc',       formats: ['html','pdf']],
-        [file: 'arc42-template.adoc',    formats: ['html','pdf']],
+        [file: 'arc42.adoc', formats: ['html','pdf']],
         /** inputFiles **/
 ]
 ----
 
-the `inputFiles` section tells the `generateHTML` command to render the file as HTML, the `confluence.input` section tells the `publishToConfluence` command which file to publish. 
-
 . Set up the API endpoint.
-Get your Atlassian Confluence URL, such as https://arc42-template.atlassian.net.
+Get your Atlassian Confluence URL, such as `https://arc42-template.atlassian.net`.
 +
 .Endpoint Syntax
 [source, groovy]
@@ -301,12 +100,12 @@ Get your Atlassian Confluence URL, such as https://arc42-template.atlassian.net.
 api = 'https://[yourServer]/[context]'
 ----
 +
-In this case, the correct endpoint is `https://arc42-template.atlassian.net/wiki`.
+For Confluence Cloud the context is `wiki`, so the endpoint is `https://arc42-template.atlassian.net/wiki`.
 +
 [NOTE]
-The context is optional, unless it is something other that "wiki". If you would like to enforce a URL that has no context (only valid if you specified `useV1Api = true`) for Confluence Server you should specify the full API URL, like `https://confluence.example.com/rest/api`.
+For Confluence Server/Data Center the context may differ. You can verify your endpoint by browsing to `[your-api-endpoint]/rest/api/user/current`, which should return a JSON description of your current user.
 
-. In `docToolchainConfig.groovy`, add the space-key, such as `8FE`.
+. Set the space key, such as `8FE`:
 +
 [source, groovy]
 ----
@@ -315,32 +114,55 @@ spaceKey = '8FE'
 
 ==== Step 2.1. Configure Confluence Authentication
 
-===== Step 2.1a. CLI Authentication with username and password (insecure)
+docToolchain v4 reads credentials from the `confluence` config — never from CLI parameters.
+You have three options. Choose one.
 
-WARNING: This method is not recommended.
-Instead of passing your password,
-you can use a Personal Access Token,
-which can easily be revoked on the event of a compromise.
-See xref:personal-access-token[Authentication with Personal Access Token].
+WARNING: It is strongly recommended *not* to commit plain-text credentials to Git. Read them from environment variables in your config (as shown below) and set those variables locally or as CI/CD secrets.
 
-In the Terminal, type the following:
+===== Option A: Basic authentication (username + password or API token)
 
-[source,console]
-$ ./dtcw publishToConfluence -PconfluenceUser=<your username> -PconfluencePass=<your password>
+Set `credentials` to the Base64 encoding of `user:password` (for Confluence Cloud, use your account e-mail as the user and an API token as the password):
 
-===== Step 2.1b: CLI Authentication with username and API token
+[source, groovy]
+----
+// reads the env var CONFLUENCE_CREDENTIALS, expected to hold
+// the Base64 of "user:apiToken"
+credentials = System.getenv('CONFLUENCE_CREDENTIALS')
+----
 
-NOTE: This method only works for Confluence Cloud.
-I can use an API token.
-The key has to be generated from the central Atlassian account.
+To produce the value:
 
-[IMPORTANT]
-====
+[source, console]
+$ echo -n 'me@example.com:my-api-token' | base64
+
+NOTE: For Confluence Cloud, the API token method only works with a token generated from your central Atlassian account (see below). Plain passwords are not accepted by Confluence Cloud.
+
+===== Option B: Bearer token (Personal Access Token)
+
+For Confluence Server/Data Center you can use a Personal Access Token. Follow the
+https://confluence.atlassian.com/enterprise/using-personal-access-tokens-1026032365.html[Confluence documentation] to create one, then set:
+
+[source, groovy]
+----
+bearerToken = System.getenv('CONFLUENCE_BEARER_TOKEN')
+----
+
+When `bearerToken` is set, docToolchain sends `Authorization: Bearer <token>` and ignores `credentials`.
+
+===== Option C: API key header (apikey)
+
+Some setups require an additional API-key header. Set it alongside `credentials`:
+
+[source, groovy]
+----
+apikey = System.getenv('CONFLUENCE_APIKEY')
+----
+
+==== Creating a scoped API token (Confluence Cloud)
+
 Atlassian is deprecating unscoped (classic) API tokens.
-When creating a new API token, you must select specific scopes.
-If you receive a `403 - Forbidden` error, you likely need to create a new scoped API token.
-See the required scopes below.
-====
+When you create a new API token for Confluence Cloud, you must select specific scopes.
+If you receive a `403 - Forbidden` error, you likely need a new scoped token.
 
 . Navigate to your central Atlassian profile.
 +
@@ -359,7 +181,7 @@ image::070-third.png[width=80%]
 +
 NOTE: Here is the https://id.atlassian.com/manage-profile/security/api-tokens[shortcut] to this page.
 
-. Now, click **Create API token**.
+. Click **Create API token**.
 
 . When prompted to select scopes, choose the following scopes required by docToolchain:
 +
@@ -382,123 +204,35 @@ NOTE: Here is the https://id.atlassian.com/manage-profile/security/api-tokens[sh
 +
 NOTE: If you also use the `wipeConfluenceSpace` task, `write:confluence-content` already covers page deletion for API V1. For API V2, `delete:page:confluence` may also be needed.
 
-. Store your API token in a safe location.
+. Store your API token in a safe location and use it as described in Option A.
 
-. Add your API token e-mail address as username and password to the `./dtcw` command.
-+
-[source,console]
-$ ./dtcw publishToConfluence -PconfluenceUser=<your email> -PconfluencePass=<your api-token>
+=== Step 3. Publish Your Pages
 
-
-[[personal-access-token]]
-===== Step 2.1c: CLI Authentication with Personal Access Token
-
-If you do not want to pass your password and you are not an admin of your Confluence instance, you can use a Personal Access Token (PAT). Follow the
-https://confluence.atlassian.com/enterprise/using-personal-access-tokens-1026032365.html#UsingPersonalAccessTokens-CreatingPATsintheapplication[Confluence
-documentation] to generate one.
-
-In the Terminal, type the following to publish to Confluence with your PAT:
-
-[source,console]
-$ ./dtcw publishToConfluence -PconfluenceBearerToken=<your personal access token>
-
-=== Step 3: Verify Your Configuration
-
-To verify your configuration execute `./dtcw verifyConfluenceApiAccess` and pass the credentials to the task, depending on the setup you chose in the steps before.
-An example would be
-
-[source,console]
-$ ./dtcw verifyConfluenceApiAccess -PconfluenceUser=<your email> -PconfluencePass=<your api-token>
-
-If the API is accessible, the task will succeed and print the API version that is used. Otherwise, an error will be printed.
-
-....
-...
-Daemon will be stopped at the end of the build
-
-> Task :verifyConfluenceApiAccess
-Using Confluence API V1
-
-BUILD SUCCESSFUL in 15s
-3 actionable tasks: 3 executed
-....
-
-=== Step 4: Publish Your Pages
-
-To publish your pages to Confluence, type:
+Make sure the relevant environment variable is set, then publish:
 
 [source, console]
-$ ./dtcw publishToConfluence <extra arguments>
+----
+$ export CONFLUENCE_CREDENTIALS=$(echo -n 'me@example.com:my-api-token' | base64)
+$ ./dtcw4 local publishToConfluence
+----
 
-.Show output
-[%collapsible]
-====
-....
-dtcw - docToolchain wrapper V0.31
-docToolchain V2.0.5
-local java JDK found
-use /home/gitpod/.doctoolchain/jdk as JDK
+The task first runs `generateHTML` and then creates one Confluence page per arc42 chapter.
+The console reports the target API and each created page:
 
-docker available
-home folder exists
-use local homefolder install /home/gitpod/.doctoolchain/
-Picked up JAVA_TOOL_OPTIONS:  -Xmx3489m
-To honour the JVM settings for this build a single-use Daemon process will be forked. See https://docs.gradle.org/6.9.2/userguide/gradle_daemon.html#sec:disabling_the_daemon.
-Daemon will be stopped at the end of the build
+[source, console]
+----
+docToolchain v4 — publishToConfluence
+  target: https://arc42-template.atlassian.net/wiki
 
-> Task :publishToConfluence
-publish /workspace/publishToConfluenceDemo/build/html5/arc42/arc42.html
-arc42
-Start getting headers
 > created page 2033844225
 1. Introduction and Goals
-Start getting headers
-    image: ../images/01_2_iso-25010-topics-EN.png
-allPages already retrieved
 > created page 2033909761
-Start getting headers
 2. Architecture Constraints
-Start getting headers
-allPages already retrieved
-> created page 2033975297
-3. System Scope and Context
-Start getting headers
-allPages already retrieved
-> created page 2034008065
-4. Solution Strategy
-Start getting headers
-allPages already retrieved
-> created page 2034040833
-5. Building Block View
-Start getting headers
-    image: ../images/05_building_blocks-EN.png
-allPages already retrieved
-> created page 2034073601
-Start getting headers
-6. Runtime View
-Start getting headers
-allPages already retrieved
-> created page 2034139137
-7. Deployment View
-Start getting headers
-allPages already retrieved
-> created page 2034106374
-8. Cross-cutting Concepts
-Start getting headers
-    image: ../images/08-Crosscutting-Concepts-Structure-EN.png
-allPages already retrieved
-> created page 2034139152
-Start getting headers
-9. Architecture Decisions
-Start getting headers
-allPages already retrieved
-> created page 2034040848
-10. Quality Requirements
-Start getting headers
-....
-====
+...
+----
 
-This command will first run the task `generateHTML` and then create one Confluence page for each arc42-chapter.
+If the API URL is missing, the task prints the expected config shape and exits.
+If authentication fails, the error message names the cause (for example a `403 - Forbidden`), so you can check your credentials and token scopes.
 
 [.center]
 image::070-fourth.png[width=80%]
