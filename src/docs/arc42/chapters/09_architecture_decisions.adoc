@@ -80,6 +80,10 @@ Statuses follow Nygard values (Proposed / Accepted / Superseded / Deprecated). `
 |Task Discovery via `// @task` Marker
 |Accepted (inferred)
 
+|ADR-15
+|Structural Diagrams as Architecture-as-Code (Bausteinsicht model, PlantUML render)
+|Accepted (for v4) — export wiring deferred
+
 |ADR-TBD-1
 |Confluence API Version Strategy
 |Proposed
@@ -116,6 +120,8 @@ include::../adrs/adr-12-tasks-as-groovy-scripts.adoc[]
 include::../adrs/adr-13-dtcw-delegation.adoc[]
 
 include::../adrs/adr-14-task-discovery.adoc[]
+
+include::../adrs/adr-15-architecture-as-code-diagrams.adoc[]
 
 include::../adrs/adr-tbd-1-confluence-api.adoc[]
 

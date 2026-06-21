@@ -66,6 +66,11 @@ Rel(llm, prompts, "Uses prompts")
 @enduml
 ----
 
+[TIP]
+====
+*Source of truth (architecture-as-code).* This Level-1 view is also modelled as a versioned Bausteinsicht JSONC model at `models/level1-container.jsonc`. That model is the machine-readable source of truth; the C4-PlantUML above mirrors it and remains the *rendered* artifact (Bausteinsicht has no PlantUML exporter yet — see ADR-15). When you change the structure, edit **both** until an export path is wired (tracked as technical debt in <<section-technical-risks>>).
+====
+
 Motivation::
 v4 simplifies from four layers (Wrapper -> Gradle -> Script Plugins -> Core Module) to two layers (Wrapper -> Scripts). The Gradle orchestration layer and the compiled Core Module are eliminated. Business logic returns to scripts. Companion tools (daCLI, Bausteinsicht, LLM-Prompts) handle LLM integration as an ecosystem rather than embedding it into docToolchain itself.
 
