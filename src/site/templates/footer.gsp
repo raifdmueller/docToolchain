@@ -1,10 +1,4 @@
 
-    <!--footer class="footer mt-auto py-3 bg-light">
-        <div class="container">
-            <span class="text-muted">&copy; 2020 | based on <a href="https://arc42.org">arc42 7.0</a> | mixed with <a href="http://getbootstrap.com/">Bootstrap v5.0.0-beta</a> | Baked with <a href="http://jbake.org">JBake ${version}</a></span>
-        </div>
-    </footer-->
-
     <footer class="bg-dark py-5 row d-print-none">
         <div class="container-fluid mx-sm-5">
             <div class="row">

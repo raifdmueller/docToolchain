@@ -110,8 +110,8 @@ microsite.with {
     footerSlack = '##Slack-url##'
     //
     // Footer Text
-    // example: <small class="text-white">built with docToolchain and jBake <br /> theme: docsy</small>
-    footerText = '<small class="text-white">built with <a href="https://doctoolchain.org">docToolchain</a> and <a href="https://jbake.org">jBake</a> <br /> theme: <a href="https://www.docsy.dev/">docsy</a></small>'
+    // example: <small class="text-white">built with docToolchain &middot; powered by AsciiDoctor &amp; Bootstrap</small>
+    footerText = '<small class="text-white">built with <a href="https://doctoolchain.org">docToolchain</a> &middot; powered by <a href="https://asciidoctor.org">AsciiDoctor</a> &amp; <a href="https://getbootstrap.com/">Bootstrap</a></small>'
     //
     // site title if no other title is given
     title = 'docToolchain'
