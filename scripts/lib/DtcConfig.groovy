@@ -115,11 +115,22 @@ imageDirs  = []
      * Returns null if not found.
      */
     Object get(String propertyPath) {
-        def property = configObject.get(propertyPath)
-        if (!property) {
-            property = configObject.flatten().get(propertyPath)
+        // Prefer an exact leaf match so falsy values (false, 0, '', []) are
+        // returned as themselves rather than being mistaken for "missing"
+        // by Groovy-truth. flatten() exposes dotted leaf keys like
+        // 'confluence.api'; a first-level key like 'confluence' is not a leaf
+        // and falls through to the subtree lookup below.
+        def flat = configObject.flatten()
+        if (flat.containsKey(propertyPath)) {
+            return flat.get(propertyPath)
         }
-        return property
+        def nested = configObject.get(propertyPath)
+        // ConfigObject auto-vivifies a missing key to an empty ConfigObject;
+        // treat that as genuinely absent rather than returning an empty tree.
+        if (nested instanceof ConfigObject && nested.isEmpty()) {
+            return null
+        }
+        return nested
     }
 
     /**
@@ -128,9 +139,13 @@ imageDirs  = []
      * Returns empty map if path not found.
      */
     Map getSubTree(String propertyPath) {
+        // Match on a literal dotted prefix and strip it with substring, not a
+        // regex: propertyPath may contain regex metacharacters, and requiring
+        // the trailing '.' avoids matching sibling keys like 'confluenceX'.
+        def prefix = propertyPath + "."
         return configObject.flatten().inject([:]) { result, key, value ->
-            if (key.startsWith(propertyPath)) {
-                result.put(key.replaceFirst("${propertyPath}.", ""), value)
+            if (key.startsWith(prefix)) {
+                result.put(key.substring(prefix.length()), value)
             }
             return result
         }

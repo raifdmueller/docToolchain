@@ -55,7 +55,7 @@ switch (whatArg) {
             System.exit(1)
         }
         def pdfThemeDir = config.pdfThemeDir ?: './src/docs/pdfTheme'
-        def target = pdfThemeDir.startsWith('/') ? new File(pdfThemeDir) : new File(docDir, pdfThemeDir)
+        def target = new File(pdfThemeDir).isAbsolute() ? new File(pdfThemeDir) : new File(docDir, pdfThemeDir)
         copyDir(source, target)
         println "pdfTheme copied into ${target.canonicalPath}"
         if (!config.pdfThemeDir) {

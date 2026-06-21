@@ -33,7 +33,7 @@ class DtcRequestFailedException extends RuntimeException {
         String reasonLog = reason != null ? reason.message : "<none>"
         String possibleSolution
 
-        switch (response.code) {
+        switch (response?.code) {
             case 401:
                 possibleSolution = "please check your credentials in config file or passed parameters"
                 break

@@ -106,9 +106,17 @@ outputDir.mkdirs()
 
 def zipFile = new File(outputDir, 'template.zip')
 println "Downloading ${url}"
-def conn = new URL(url).openConnection()
+def conn = (HttpURLConnection) new URL(url).openConnection()
 conn.connectTimeout = 15000
 conn.readTimeout = 60000
+conn.instanceFollowRedirects = true
+int status = conn.responseCode
+if (status != HttpURLConnection.HTTP_OK) {
+    throw new RuntimeException(
+        "Download failed: HTTP ${status} for ${url}\n" +
+        "The server did not return a template archive. Check the template name and " +
+        "language — an unknown language yields a 404 whose HTML error page is not a valid zip.")
+}
 conn.inputStream.withCloseable { zipFile.bytes = it.bytes }
 
 // Unzip
