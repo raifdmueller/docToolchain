@@ -9,6 +9,27 @@ repositories {
     mavenCentral()
 }
 
+// v4 / ADR-12 (#1626): the Confluence publishing class graph
+// (Asciidoc2ConfluenceTask + its transitive org.docToolchain.* closure) was
+// moved out of core/src/main into scripts/lib so the self-contained
+// scripts/publishToConfluence.groovy task can load it from source via
+// GroovyClassLoader.addClasspath — with NO compiled core/ JAR on the
+// classpath. The classes still live in package org.docToolchain.*, so we add
+// scripts/lib as an extra source root for the core build. This keeps the
+// remaining core classes (Jira tasks, AbstractConfluenceTask,
+// WipeConfluenceSpaceTask) compiling against them and keeps the Confluence
+// Spock specs in core/src/test green. The filter excludes the default-package
+// runtime helper scripts in scripts/lib (DtcConfig, MicrositeBaker, ...) that
+// pull in dependencies not on the core classpath.
+sourceSets {
+    main {
+        groovy {
+            srcDir '../scripts/lib'
+            include 'org/docToolchain/**'
+        }
+    }
+}
+
 // Workaround to keep project.version in sync with gradle.properties but the modules isolated as hell
 def props = new Properties()
 file("../gradle.properties").withInputStream { props.load(it) }
