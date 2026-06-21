@@ -4,8 +4,11 @@
 # Helper functions used by more  than one test suite
 
 set_dtc_enviroment() {
-    # This will fail if the --version output changes
-    export DTCW_VERSION=$(./dtcw --version | sed -rn 's/dtcw (.*) - .*/\1/p')
+    # This will fail if the --version output changes.
+    # The wrapper hides the git hash when the '##DTCW_GIT_HASH##' placeholder is
+    # unsubstituted (dev/CI), printing just "dtcw <version>"; it appends " - <hash>"
+    # only on a released wrapper. Match the version token in both forms.
+    export DTCW_VERSION=$(./dtcw --version | sed -rn 's/dtcw ([^ ]+).*/\1/p')
     export DTC_VERSION=$(./dtcw --version | sed -rn 's/docToolchain (.*)$/\1/p')
     export DTC_ROOT="${HOME}/.doctoolchain"
     export DTC_HOME="${DTC_ROOT}/docToolchain-${DTC_VERSION}"
