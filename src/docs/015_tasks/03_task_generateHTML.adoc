@@ -65,3 +65,8 @@ NOTE: If Graphviz is not installed, add `!pragma layout smetana` as the first li
 
 * https://rdmueller.github.io/single-file-html/[Single-file HTML]
 * https://rdmueller.github.io/plantuml-without-graphviz/[PlantUML without Graphviz]
+
+=== Source
+
+:param_source_file: scripts/generateHTML.groovy
+include::_viewTaskSource.adoc[]

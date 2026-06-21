@@ -66,3 +66,8 @@ lintAsciiDoc = [
 
 * https://doctoolchain.org/asciidoc-linter[AsciiDoc Linter documentation]
 * https://github.com/docToolchain/asciidoc-linter[AsciiDoc Linter on GitHub]
+
+=== Source
+
+:param_source_file: scripts/lintAsciiDoc.groovy
+include::_viewTaskSource.adoc[]

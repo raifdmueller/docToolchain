@@ -47,3 +47,8 @@ After copying, the task reminds you to set the matching config property (`micros
 
 * xref:03_task_generateSite.adoc[generateSite] — uses the `jBakeTheme`
 * xref:03_task_generatePDF.adoc[generatePDF] — uses the `pdfTheme`
+
+=== Source
+
+:param_source_file: scripts/copyThemes.groovy
+include::_viewTaskSource.adoc[]

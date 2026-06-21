@@ -291,3 +291,8 @@ The following style definitions are Confluence-compatible, and will enable the u
 .yellow-background{background-color:#fafa00}
 ----
 
+
+=== Source
+
+:param_source_file: scripts/publishToConfluence.groovy
+include::_viewTaskSource.adoc[]

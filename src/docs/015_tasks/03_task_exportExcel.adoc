@@ -39,3 +39,8 @@ As CSV:
 === Further Reading
 
 * https://github.com/uniqueck/asciidoctorj-office-extension[asciidoctorj-office-extension] — an alternative approach
+
+=== Source
+
+:param_source_file: scripts/exportExcel.groovy
+include::_viewTaskSource.adoc[]

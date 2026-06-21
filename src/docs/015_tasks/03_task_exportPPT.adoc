@@ -25,3 +25,8 @@ Use https://docs.asciidoctor.org/asciidoc/latest/directives/include-tagged-regio
 === Further Reading
 
 * https://rdmueller.github.io/PPT-as-asciidoc-editor/[Do More with Slides]
+
+=== Source
+
+:param_source_file: scripts/exportPPT.groovy
+include::_viewTaskSource.adoc[]
