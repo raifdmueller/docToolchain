@@ -59,7 +59,10 @@ def exportSheet = { sheet, evaluator, targetFileName ->
             def width = []
             numCols = row.lastCellNum
             numCols.times { width << sheet.getColumnWidth((int) it) }
-            width = width.collect { Math.round(100 * it / width.sum()) }
+            // Guard against an empty/zero-width header row: a sum of 0 would
+            // divide-by-zero. Fall back to equal column weights.
+            def widthSum = (width.sum() ?: 0) as int
+            width = widthSum > 0 ? width.collect { Math.round(100 * it / widthSum) } : width.collect { 1 }
             targetFileAD.append('[options="header",cols="' + width.join(',') + '"]' + nl, 'UTF-8')
             targetFileAD.append('|===' + nl, 'UTF-8')
         }
