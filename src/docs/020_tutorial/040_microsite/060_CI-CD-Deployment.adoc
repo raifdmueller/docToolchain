@@ -10,3 +10,5 @@ So you need a way to publish your static site.
 
 In this tutorial, I will show you three ways how to do it with the three main systems: GitLab, GitHub and Netlify
 
+TIP: docToolchain can scaffold a ready-to-use pipeline for you. See the xref:../../015_tasks/03_task_generateCICD.adoc[`generateCICD`] task, which generates a GitHub Actions or GitLab CI configuration that builds and publishes your microsite.
+

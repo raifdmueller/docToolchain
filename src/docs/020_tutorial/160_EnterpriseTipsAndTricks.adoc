@@ -25,7 +25,7 @@ Set `DTC_HEADLESS=true` in your CI environment to skip interactive prompts.
 === Docker
 
 The docToolchain Docker image is self-contained with all dependencies.
-Run your build pipeline directly on this image — `dtcw` detects it and uses the bundled tools.
+Run your build pipeline directly on this image — `dtcw4` detects it and uses the bundled tools.
 
 [source, bash]
 ----
