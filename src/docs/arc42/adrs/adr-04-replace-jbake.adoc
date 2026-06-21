@@ -45,14 +45,10 @@
 |Gradle independence
 |–1 (needs custom runner or jBake Java API)
 |+1 (pure Groovy script)
-|0
-|–1
-|+1
-|+1
 
 |**Total**
 |**0**
-|**+6**
+|**+5**
 |===
 
 NOTE: With AsciiDoctor externalized (ADR-6), the custom SSG only needs to handle template rendering and content model — AsciiDoc processing is done by the external AsciiDoctor CLI. This reduces the estimated effort to ~300 LOC of new code. Metadata parsing (~50 LOC) and menu builder (167 LOC) are reused from v3's `generateSite.gradle` and `menu.groovy`.
