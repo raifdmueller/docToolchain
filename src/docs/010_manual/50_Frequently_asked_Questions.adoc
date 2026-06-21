@@ -96,3 +96,34 @@ Pass proxy settings as system properties:
 ./dtcw4 local generateSite -Dhttp.proxyHost=proxy.example.com -Dhttp.proxyPort=3128
 ----
 ====
+
+=== Q: Can I tune the JVM startup for faster v4 builds?
+
+.Answer
+[%collapsible]
+====
+docToolchain v4 runs every task in a fresh, short-lived JVM (no Gradle daemon).
+To make that startup cheap, the `dtcw` wrapper launches the v4 JVM with these
+flags by default: `-XX:TieredStopAtLevel=1 -XX:+UseSerialGC`.
+
+A run that lasts only seconds never recoups the cost of the C2 JIT compiler
+optimising hot methods it abandons moments later. Capping the JIT at level 1
+(C1) removes that wasted compilation, and `SerialGC` skips parallel-GC thread
+setup. On a typical site this roughly halves the wall-clock time.
+
+The flags are a default, not a hard-coded value. Override them with the
+`DTC_JAVA_STARTUP_OPTS` environment variable:
+
+[source,bash]
+----
+# Disable the defaults entirely:
+DTC_JAVA_STARTUP_OPTS= ./dtcw4 local generateSite
+
+# Replace them with your own choice:
+DTC_JAVA_STARTUP_OPTS="-XX:+UseParallelGC" ./dtcw4 local generateSite
+----
+
+TIP: For a *very* large documentation set whose render runs for minutes, the C2
+JIT does eventually pay off. There, disabling the defaults
+(`DTC_JAVA_STARTUP_OPTS=`) can be faster — measure both and keep the winner.
+====

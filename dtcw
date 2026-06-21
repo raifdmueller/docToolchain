@@ -763,7 +763,13 @@ build_command() {
             # v4 Docker: direct Groovy invocation inside container
             local task=${1}
             shift
-            local java_opts="-Xmx2048m -Dfile.encoding=UTF-8"
+            # Short-lived JVM: cap JIT at C1 (skip the C2 compiler, which never
+            # pays off in a seconds-long run) and use SerialGC. Roughly halves
+            # startup + render for typical docs. Override or disable via
+            # DTC_JAVA_STARTUP_OPTS (set it empty for very large docs where C2
+            # eventually amortises).
+            local startup_opts="${DTC_JAVA_STARTUP_OPTS--XX:TieredStopAtLevel=1 -XX:+UseSerialGC}"
+            local java_opts="-Xmx2048m -Dfile.encoding=UTF-8 ${startup_opts}"
             java_opts="${java_opts} -DdocDir=. -DmainConfigFile=\"${DTC_CONFIG_FILE}\""
             java_opts="${java_opts} -DDTC_HEADLESS=true -DDTC_PROJECT_BRANCH=\"${DTC_PROJECT_BRANCH}\""
             # Expansion must happen inside container, not locally
@@ -792,7 +798,13 @@ build_command() {
                 exit ${ERR_DTCW}
             fi
 
-            local java_opts="-Xmx2048m -Dfile.encoding=UTF-8"
+            # Short-lived JVM: cap JIT at C1 (skip the C2 compiler, which never
+            # pays off in a seconds-long run) and use SerialGC. Roughly halves
+            # startup + render for typical docs. Override or disable via
+            # DTC_JAVA_STARTUP_OPTS (set it empty for very large docs where C2
+            # eventually amortises).
+            local startup_opts="${DTC_JAVA_STARTUP_OPTS--XX:TieredStopAtLevel=1 -XX:+UseSerialGC}"
+            local java_opts="-Xmx2048m -Dfile.encoding=UTF-8 ${startup_opts}"
             java_opts="${java_opts} -DdocDir=. -DmainConfigFile=\"${DTC_CONFIG_FILE}\""
             java_opts="${java_opts} -DDTC_HEADLESS=${DTC_HEADLESS}"
             java_opts="${java_opts} -DDTC_PROJECT_BRANCH=\"${DTC_PROJECT_BRANCH}\""
