@@ -84,7 +84,7 @@ Contained Building Blocks::
 
 |Wrapper Layer
 |Cross-platform CLI entry point. Constructs classpath from `lib/` directory (or resolves via Grape). Manages Java installation. Invokes Groovy scripts directly — no build framework intermediary. Detects execution environment (local/Docker/SDKMAN).
-|CLI: `./dtcw [env] <task> [args]`; differentiated exit codes (0/1/2/3/99, ADR-8). See the wrapper function map in <<wrapper-function-map>>.
+|CLI: `./dtcw [env] <task> [args]`; differentiated exit codes (0/1/2/3/99, ADR-8).
 |`dtcw`, `dtcw.ps1`, `dtcw.bat`
 
 |Groovy Scripts
