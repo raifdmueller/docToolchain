@@ -108,6 +108,10 @@ Each item names the specific Chapter 5 building block it burdens.
 |No v4 Windows wrapper path
 |Wrapper Layer (`dtcw.ps1`, `dtcw.bat`)
 |The v4 `GroovyMain` execution path exists only in the Bash `dtcw`; `dtcw.ps1`/`dtcw.bat` carry no v4 path. Windows v4 works only via WSL2 today (see Chapter 1 goal scope). Burdens cross-platform portability (QS-2, Goal #3).
+
+|Hand-synchronised Bausteinsicht model and inline PlantUML
+|Building Block View (Ch5) — Level-1 container view (`05_building_block_view.adoc`, `models/level1-container.jsonc`)
+|The Level-1 view exists twice: as a Bausteinsicht JSONC model (source of truth) and as inline C4-PlantUML (rendered artifact). Because Bausteinsicht has no PlantUML exporter (ADR-15), the two are kept in sync by hand and can drift. Explicitly accepted as low-cost (one view, changed rarely); retires when a text-based export path is wired (ADR-15).
 |===
 
 === Resolved v3 Risks

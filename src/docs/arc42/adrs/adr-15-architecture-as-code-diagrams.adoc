@@ -1,0 +1,58 @@
+=== ADR-15: Structural Diagrams as Architecture-as-Code (Bausteinsicht model, PlantUML render)
+
+* **Status**: Accepted (for v4) — **model authored; inline C4-PlantUML kept as the rendered artifact; export wiring deferred**. The spike (#1641) confirmed that Bausteinsicht has **no PlantUML exporter**, so the hoped-for `model → PlantUML → microsite` round-trip does not exist yet. The Level-1 model lives at `src/docs/arc42/models/level1-container.jsonc`; it is authored against the published Bausteinsicht JSON schema and the `online-shop` reference example and parses as JSONC, but has not yet been validated by the Bausteinsicht binary (not available in the docs build environment) — a `bausteinsicht sync` validation pass is the open follow-up.
+* **Context**: The arc42 Chapter 5 building-block views are hand-written C4-PlantUML embedded directly in `05_building_block_view.adoc` (`level1-container-v4`, `level3-atlassian-v4`). They satisfy the Semantic Contract (PlantUML + C4-PlantUML stdlib `!include <C4/...>`), but every structural change means editing PlantUML by hand and there is no single, tool-readable source of truth. `Bausteinsicht` — our own Go architecture-as-code tool (JSONC model, bidirectional draw.io sync) — exists precisely for this, and the cross-repo relationship states *"Bausteinsicht generates architecture diagrams consumable by docToolchain."* We do not currently eat our own dog food for docToolchain's own architecture docs.
++
+The spike evaluated consuming a Bausteinsicht export as an AsciiDoc include. Finding: Bausteinsicht's structural exports are **draw.io (native)**, **PNG/SVG via the draw.io CLI**, and **Mermaid C4** — there is **no PlantUML output**. Mermaid is explicitly forbidden by the Semantic Contract ("Diagrams are PlantUML, not Mermaid"). PNG/SVG requires the draw.io CLI (a headless Electron binary; cf. Bausteinsicht issue #385) and replaces a text-rendered diagram with a committed binary, breaking the docs-as-code "diagram is reviewable text" property and the existing Kroki/`asciidoctor-diagram` render path (ADR-9, ADR-6 revised).
+
+* **Decision**: Maintain the **structural (C4 building-block) views as a versioned Bausteinsicht JSONC model** — the single, machine-readable, LLM-editable source of truth — **but keep the inline C4-PlantUML block as the rendered artifact** in the microsite for now. Start with the Level-1 container view; keep Level-3 (`level3-atlassian-v4`) inline-only until the model proves itself. Wire an automatic render path only once a clean text-based export exists (a Bausteinsicht PlantUML exporter — to be requested upstream — or an accepted draw.io-CLI image step). Until then, the model and the inline PlantUML are kept in sync by hand (tracked as technical debt in <<section-technical-risks>>).
+
+* **Alternatives considered**:
+
+[cols="3,1,1,1", options="header"]
+|===
+|Criterion |A: Hand-written PlantUML only (status quo) |B: Model + PNG via draw.io CLI |C: Model as SoT + PlantUML render (chosen)
+
+|Machine-readable single source of truth for structure (QS-12)
+|–1
+|+1
+|+1
+
+|Author can edit diagrams via draw.io (no PlantUML skill needed)
+|–1
+|+1
+|+1
+
+|Renders as reviewable text, no binary artifact in git (docs-as-code)
+|+1
+|–1
+|+1
+
+|Semantic-Contract render output (PlantUML + C4, not Mermaid/binary) (QS-13)
+|+1
+|0
+|+1
+
+|Build simplicity — no draw.io CLI / Electron dependency
+|+1
+|–1
+|+1
+
+|No manual model↔render synchronisation
+|+1
+|+1
+|–1
+
+|**Total**
+|**+2**
+|**+1**
+|**+4**
+|===
+
+* **Quality Tradeoffs**:
+** Supports **QS-12 (LLM friendliness)**: the architecture is now a machine-readable JSONC model an LLM or tool can read, diff, and edit — not prose embedded in PlantUML.
+** Supports **QS-13 (modern UI / rendered output)**: the microsite keeps rendering hand-tuned C4-PlantUML through the existing pipeline, so diagram quality and layout are unchanged (no auto-layout regression, no binary image).
+** Preserves the docs-as-code property: the rendered diagram stays reviewable text in git; no Electron/draw.io-CLI dependency enters the build.
+** Cost — **manual synchronisation**: until an export path is wired, the JSONC model and the inline PlantUML must be edited together, and they can drift. This is the one criterion option C loses on and is recorded as technical debt (below).
+
+* **Consequences**: `src/docs/arc42/models/level1-container.jsonc` becomes the source of truth for the Level-1 container view; `05_building_block_view.adoc` carries a NOTE linking the inline `level1-container-v4` block to that model and to this ADR. The decision creates a **technical-debt** item — *"Hand-synchronised Bausteinsicht model and inline PlantUML"* — recorded in <<section-technical-risks>> (11.2) against the Chapter 5 building-block view documentation; it is **explicitly accepted as low-cost** (one Level-1 view, changed rarely) rather than tracked as an `R-NNN` risk. The debt retires when either (a) Bausteinsicht ships a PlantUML/C4-PlantUML exporter — to be requested upstream — and `generateSite` consumes it as a generated include kept inside the rendered doc tree (a file-outside-tree include is fatal), or (b) the team accepts a draw.io-CLI PNG/SVG step in the build. Level-3 stays inline-only; rolling the model out to Level-3 is a follow-up gated on the same export path. Open follow-up: validate the model with `bausteinsicht sync` once the binary is available in the build environment, and add the `bausteinsicht` ecosystem tool note in Chapter 5 (already present).

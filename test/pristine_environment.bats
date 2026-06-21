@@ -20,7 +20,7 @@ teardown() {
     # Version information is only shown when we start something
 
     # Show how to use it
-    assert_line --index  0 "dtcw ${DTCW_VERSION} - ##DTCW_GIT_HASH##"
+    assert_line --index  0 "dtcw ${DTCW_VERSION}"
     assert_line --index  1 "docToolchain ${DTC_VERSION}"
     assert_line --index  2 "OS/arch: $(uname -s)/$(uname -m)"
     assert_line --index  3 "Error: argument missing"
@@ -54,7 +54,7 @@ teardown() {
 
 @test "show version info and exit" {
     run -0 ./dtcw --version
-    assert_line --index 0 "dtcw ${DTCW_VERSION} - ##DTCW_GIT_HASH##"
+    assert_line --index 0 "dtcw ${DTCW_VERSION}"
     assert_line --index 1 "docToolchain ${DTC_VERSION}"
     assert_line --index 2 "OS/arch: $(uname -s)/$(uname -m)"
 
@@ -64,7 +64,7 @@ teardown() {
 
 @test "show version info - additional arguments are ignored" {
     run -0 ./dtcw --version tasks
-    assert_line --index 0 "dtcw ${DTCW_VERSION} - ##DTCW_GIT_HASH##"
+    assert_line --index 0 "dtcw ${DTCW_VERSION}"
     assert_line --index 1 "docToolchain ${DTC_VERSION}"
 
     refute_output "Error: argument missing"
