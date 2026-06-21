@@ -37,3 +37,8 @@ export DTC_HEADLESS=true
 
 * https://arc42.org/[Arc42]
 * https://req42.de/[Req42]
+
+=== Source
+
+:param_source_file: scripts/downloadTemplate.groovy
+include::_viewTaskSource.adoc[]

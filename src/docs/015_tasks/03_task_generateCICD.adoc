@@ -63,3 +63,8 @@ The generated pipeline:
 * xref:03_task_generateSite.adoc[generateSite] — the task the pipeline runs
 * https://docs.github.com/en/pages[GitHub Pages]
 * https://docs.gitlab.com/ee/user/project/pages/[GitLab Pages]
+
+=== Source
+
+:param_source_file: scripts/generateCICD.groovy
+include::_viewTaskSource.adoc[]

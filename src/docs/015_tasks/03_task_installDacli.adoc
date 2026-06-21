@@ -59,3 +59,8 @@ If neither file exists, the hint is skipped and no agent file is created.
 * https://doctoolchain.org/dacli[daCLI documentation]
 * https://github.com/docToolchain/dacli[daCLI on GitHub]
 * https://docs.astral.sh/uv/[uv — the Python tool installer]
+
+=== Source
+
+:param_source_file: scripts/installDacli.groovy
+include::_viewTaskSource.adoc[]

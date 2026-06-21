@@ -48,3 +48,8 @@ If neither file exists, the task installs the tool and skips the hint (it never 
 
 * https://doctoolchain.org/Bausteinsicht/[Bausteinsicht documentation]
 * https://github.com/docToolchain/Bausteinsicht[Bausteinsicht on GitHub]
+
+=== Source
+
+:param_source_file: scripts/installBausteinsicht.groovy
+include::_viewTaskSource.adoc[]

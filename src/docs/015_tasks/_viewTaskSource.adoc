@@ -1,0 +1,14 @@
+// Reusable snippet: link to a task's source on GitHub.
+// Usage in a task doc:
+//   === Source
+//   :param_source_file: scripts/<task>.groovy
+//   include::_viewTaskSource.adoc[]
+
+ifndef::param_source_file[#please specify :param_source_file#]
+
+ifdef::param_source_file[]
+View the source of this task: https://github.com/docToolchain/docToolchain/blob/main-4.x/{param_source_file}[`{param_source_file}` on GitHub^]
+endif::[]
+
+// clear the parameter so it doesn't leak into the next include
+:param_source_file!:

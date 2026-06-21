@@ -46,3 +46,8 @@ To customize colors, fonts, headers, and footers, create a `custom-theme.yml` fi
 
 * https://docs.asciidoctor.org/pdf-converter/latest/theme/[AsciidoctorJ PDF Theming Guide]
 * https://rdmueller.github.io/pdf-output/[Beyond HTML — PDF Output]
+
+=== Source
+
+:param_source_file: scripts/generatePDF.groovy
+include::_viewTaskSource.adoc[]

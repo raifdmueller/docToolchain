@@ -141,3 +141,8 @@ The microsite includes a search input field that can be linked to an external se
 === CI/CD
 
 Set `DTC_HEADLESS=true` in automated builds to skip interactive prompts (e.g., theme installation).
+
+=== Source
+
+:param_source_file: scripts/generateSite.groovy
+include::_viewTaskSource.adoc[]
