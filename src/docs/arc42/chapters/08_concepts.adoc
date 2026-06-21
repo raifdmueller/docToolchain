@@ -68,15 +68,15 @@ Each mitigation below references the `T-IDs` it closes. Mitigations marked "alre
 |T-001, T-004
 
 |Secrets via environment, never config
-|Credentials are supplied through CLI arguments or environment variables, never stored in `docToolchainConfig.groovy`. Properties whose names contain `credential`, `token`, or `secret` are masked in all output (see the Configuration Management concept below). Stack traces are suppressed for user-recoverable errors (ADR-8), so tokens are not echoed.
+|*Partly planned — not yet enforced in code.* Credentials should be supplied through environment variables or external config rather than committed into `docToolchainConfig.groovy`. The intended controls — masking properties whose names contain `credential`, `token`, or `secret` in all output, and suppressing stack traces for user-recoverable errors (ADR-8) — are **not implemented yet**: no redaction code exists, and `DtcRestClient` currently rethrows raw exceptions that can carry a token-bearing URL or header. Tracked as **R-008** (and gated on the ADR-8 `DtcException` carrier, R-004). This matters mainly for the CI / public-build context below, not for the local-trust default.
 |T-002
 
 |Zip-slip / path-traversal guard
-|The custom site generator already guards against zip-slip when unpacking templates (carried into `generateSite`). Export paths are resolved against and constrained to `outputPath`; `include::` resolution is confined to the project tree.
+|*In code.* `downloadTemplate` and the custom site generator guard against zip-slip when unpacking archives (canonical-path containment check), and export paths are resolved against and constrained to `outputPath`. **Caveat:** `include::` resolution is *not* confined to the project tree — AsciiDoctor runs under `SafeMode.UNSAFE` with `allow-uri-read` (`generateHTML.groovy`), by design, so a document can include files outside the tree or over HTTP. That is consistent with the local-trust model (the project's own `docToolchainConfig.groovy` already executes arbitrary Groovy, T-005) and is an **accepted risk** for local rendering — see the trust-model note below.
 |T-003
 
 |Local-default diagram rendering
-|The default `diagramServer = 'docker'` (ADR-9) keeps diagram source text on the machine. Any external URL triggers a per-run warning (QS-16) so SSRF/exfiltration via a third-party host is an explicit, informed choice, not a silent default.
+|*Planned — not yet in code.* The intended control (default `diagramServer = 'docker'` keeping diagram source on the machine, plus a per-run warning whenever an external URL is configured — ADR-9, QS-16) does **not exist yet** (R-007). Today diagrams render via the embedded `asciidoctor-diagram`, and `DiagramToolHints.groovy` actively points users at the public `kroki.io` *without* a warning. Goal #1 (no implicit cloud processing) holds today only because the default path is local — not because the control is enforced.
 |T-004
 
 |Treat config and scripts as trusted code
@@ -87,6 +87,12 @@ Each mitigation below references the `T-IDs` it closes. Mitigations marked "alre
 |Trivy scans `lib/*.jar` for known CVEs on every PR and weekly (ADR-11), with results in the GitHub Security tab. Release-time dependency resolution is reproducible and pinned (ADR-7).
 |T-006
 |===
+
+==== Trust model and accepted risks
+
+docToolchain's primary use case is *a developer rendering their own trusted documentation locally*. In that model the user already runs their own code: `docToolchainConfig.groovy` is Groovy that executes (T-005), so `SafeMode.UNSAFE`, `allow-uri-read`, arbitrary `include::`, and config-supplied URLs grant an attacker nothing beyond what running one's own project already grants. These are therefore **accepted risks by design**, not defects: download checksum/signature pinning, SSRF via config URLs, `SafeMode.UNSAFE` as the default, and code execution via config/scripts. They are recorded here for honesty; no mitigation is planned for the local case.
+
+The one context where this model breaks is **CI / public-PR builds**: build logs can be public, and a pull request can introduce a malicious `include::https://…[]` or a credential-shaped value. There the gaps above become real-ish. The honest posture is **CI hardening, not "the tool is insecure"**: redact secret-shaped config keys before any `println config` / error output (R-008), and consider a non-`UNSAFE` safe mode for rendering untrusted PRs. The mitigations marked *planned* in the table above (T-002, T-004) are the ones that close this CI gap.
 
 === Test
 
@@ -160,8 +166,8 @@ The concrete authentication details behind the Security concept above (mitigatio
 
 * **Basic Auth**: Username + API token, encoded as Base64 for `Authorization` header.
 * **Bearer Token**: OAuth or personal access token.
-* Credentials supplied via CLI arguments or environment variables — never stored in config files.
-* Properties containing `credential`, `token`, or `secret` are masked in output.
+* Credentials should be supplied via environment variables or external config rather than committed into config files.
+* _Planned (R-008):_ properties containing `credential`, `token`, or `secret` are to be masked in output. **No redaction is implemented yet** — do not rely on masking today, especially in CI logs.
 * User-Agent header identifies docToolchain version for API calls.
 
 === Headless / CI Mode

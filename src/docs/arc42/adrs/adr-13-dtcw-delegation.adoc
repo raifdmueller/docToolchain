@@ -1,0 +1,38 @@
+=== ADR-13: `dtcw4` → `dtcw` Wrapper Delegation
+
+* **Status**: Accepted (inferred) — reconstructed from `dtcw4` and `dtcw`; no prior written decision.
+* **Context**: v4 is distributed as a git checkout that must be built (`packageLibs`) before use, and it coexists on developer machines with v3. A project needs *some* entry point checked into its repository, but that entry point should not pin a project to one machine's installation, nor require every project to carry the full wrapper logic. Two concerns pull apart: the **per-project bootstrap** (what lives in the repo) and the **installed runtime** (what actually runs tasks).
+* **Decision**: Ship only a thin `dtcw4` bootstrap in the project directory. It performs v4-specific installation — clone `main-4.x`, run `packageLibs` — into `~/.doctoolchain/docToolchain-<version>/`, then **delegates all task execution** to the installed `dtcw` there (`dtcw4` lines 5-9). The installed `dtcw` owns environment detection, classpath construction from `lib/`, and task dispatch. Only `dtcw4` needs to live in a project; upgrading the runtime does not touch the project.
+* **Alternatives considered**:
+
+[cols="1,1,1,1", options="header"]
+|===
+|Criterion |A: One fat wrapper in project |B: Thin `dtcw4` + delegate (chosen) |C: Global install only, no project wrapper
+
+|Per-project footprint
+|–1 (full wrapper copied into every repo)
+|+1 (one small bootstrap file)
+|+1 (nothing in repo)
+
+|Version isolation (v3/v4 coexist)
+|0 (project pins its copy)
+|+1 (runtime installed per version under `~/.doctoolchain`)
+|0 (one global version wins)
+
+|First-run install UX
+|0 (wrapper must still install)
+|+1 (bootstrap installs then delegates)
+|–1 (user must pre-install manually)
+
+|Maintenance (one place to fix wrapper logic)
+|–1 (logic duplicated across projects)
+|+1 (logic lives in the installed `dtcw`)
+|+1
+
+|**Total**
+|**–2**
+|**+4**
+|**+1**
+|===
+
+* **Consequences**: A project commits one small `dtcw4` file. The heavy wrapper logic lives once in the installed `dtcw`, so fixes ship with a runtime upgrade rather than requiring every project to re-copy a wrapper. The delegation seam means task-execution behaviour is identical whether invoked via `dtcw4` or the installed `dtcw` directly. The bootstrap depends on `git` and network access on first install; this is the same install-time dependency already accepted for Java/AsciiDoctor provisioning and is not separately risk-tracked.

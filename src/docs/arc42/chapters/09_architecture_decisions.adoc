@@ -34,31 +34,31 @@ Statuses follow Nygard values (Proposed / Accepted / Superseded / Deprecated). `
 
 |ADR-3
 |Remove Gradle — Direct Groovy Script Execution
-|Accepted
+|Accepted (for v4)
 
 |ADR-4
 |Replace jBake for Static Site Generation
-|Accepted
+|Accepted (for v4)
 
 |ADR-5
 |LLM-Native Architecture
-|Accepted
+|Accepted (for v4)
 
 |ADR-6
 |AsciiDoctor as External Tool with Versioned Auto-Installation
-|Accepted
+|Accepted (for v4) — revised (AsciidoctorJ embedded)
 
 |ADR-7
 |`lib/` Directory for Remaining Java Dependencies
-|Accepted
+|Accepted (for v4)
 
 |ADR-8
 |Actionable Error Guidance
-|Accepted
+|Accepted (for v4) — carrier pending (R-004)
 
 |ADR-9
 |Server-Based Diagram Rendering via Kroki-Compatible API
-|Accepted
+|Accepted (for v4) — not yet implemented (R-007)
 
 |ADR-10
 |Risk-Based Quality Assurance (Vibe-Coding Risk Radar)
@@ -71,6 +71,14 @@ Statuses follow Nygard values (Proposed / Accepted / Superseded / Deprecated). `
 |ADR-12
 |Tasks Are Self-Contained Groovy Scripts — No Compiled Core Module at Runtime
 |Accepted (port pending)
+
+|ADR-13
+|`dtcw4` → `dtcw` Wrapper Delegation
+|Accepted (inferred)
+
+|ADR-14
+|Task Discovery via `// @task` Marker
+|Accepted (inferred)
 
 |ADR-TBD-1
 |Confluence API Version Strategy
@@ -104,6 +112,10 @@ include::../adrs/adr-10-risk-based-qa.adoc[]
 include::../adrs/adr-11-tier2-mitigations.adoc[]
 
 include::../adrs/adr-12-tasks-as-groovy-scripts.adoc[]
+
+include::../adrs/adr-13-dtcw-delegation.adoc[]
+
+include::../adrs/adr-14-task-discovery.adoc[]
 
 include::../adrs/adr-tbd-1-confluence-api.adoc[]
 

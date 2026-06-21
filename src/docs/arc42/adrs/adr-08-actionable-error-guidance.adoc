@@ -1,10 +1,10 @@
 === ADR-8: Actionable Error Guidance
 
-* **Status**: Accepted (for v4)
+* **Status**: Accepted (for v4) — **decided; carrier not yet implemented**. No `DtcException` class exists in the codebase today; v4 scripts still use `System.exit` + `println` (including the library `DtcConfig.load()`). The hierarchy and top-level handler below are the committed design, pending implementation (risk **R-004**). This same carrier is the missing piece for the T-002 secret-redaction mitigation (Chapter 8) and the systemic `System.exit` finding (#1627).
 * **Context**: v3 error handling is inconsistent: `RuntimeException` in core, `GradleException` in scripts, `println` + silent continuation in some scripts. With Gradle removed, `GradleException` is gone. More importantly, the fundamental problem is not *how* errors are thrown, but *what* the user sees. v3 shows stack traces and technical error messages. Users cannot determine what to do next.
 +
 Real example from v3: PDF generation fails with a cryptic `IOException: Access denied` when the output PDF is still open in Adobe Acrobat. Users who know the tool recognize this — new users are stuck.
-* **Decision**: Every user-recoverable error must include an **actionable remediation step** — not what went wrong, but what the user should do to fix it. Implemented as a lightweight exception hierarchy with mandatory guidance messages:
+* **Decision**: Every user-recoverable error must include an **actionable remediation step** — not what went wrong, but what the user should do to fix it. To be implemented as a lightweight exception hierarchy with mandatory guidance messages:
 +
 [source,groovy]
 ----
@@ -36,14 +36,14 @@ if (!outputFile.canWrite()) {
 if (!configFile.exists()) {
     throw new DtcConfigException(
         "Config-Datei '${configFile.name}' nicht gefunden. " +
-        "Erstelle sie mit: ./dtcw downloadTemplate"
+        "Erstelle sie mit: ./dtcw4 downloadTemplate"
     )
 }
 
 if (response.statusCode == 401) {
     throw new DtcApiException(
         "Confluence-Authentifizierung fehlgeschlagen. " +
-        "Prüfe confluence.credentials in docToolchainConfig.groovy oder übergib -Pconfluence.credentials=user:token"
+        "Prüfe confluence.api/credentials in docToolchainConfig.groovy bzw. die passenden Umgebungsvariablen."
     )
 }
 

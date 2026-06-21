@@ -1,14 +1,16 @@
 === ADR-7: lib/ Directory for Remaining Java Dependencies
 
 * **Status**: Accepted (for v4)
-* **Context**: With AsciiDoctor externalized (ADR-6), the remaining Java dependencies are:
+* **Context**: AsciiDoctor is embedded as AsciidoctorJ (ADR-6, revised), so the Java dependencies that ship in `lib/` are:
+** AsciidoctorJ + `asciidoctor-diagram` + JRuby (~49 MB) — in-process rendering
 ** Groovy runtime (~15 JARs, ~10 MB)
 ** jsoup 1.18.1 (1 JAR, 0.5 MB) — HTML parsing for Confluence publishing
 ** Apache HttpClient 5.3 (~5 JARs, ~2 MB) — REST API calls to Confluence/Jira
 ** Apache POI 5.3.0 (~10 JARs, ~10 MB) — Excel export (only needed for exportExcel)
-** Total: ~30 JARs, ~23 MB
-* **Decision**: Ship all remaining JARs in a `lib/` directory. `dtcw` sets the classpath via `java -cp lib/*`. No runtime resolution, no Grape, no downloads.
-* **Rationale**: 23 MB is small enough to bundle. Zero resolution overhead supports QS-9. Fully offline-capable. Deterministic — every user gets the same JARs. The simplest possible solution.
+** plus transitive dependencies of all of the above
+** **Actual total: 177 JARs, ~126 MB** (`ls lib/*.jar | wc -l` = 177; `du -sh lib/` = 126M). The early estimate of ~30 JARs / 23 MB assumed AsciiDoctor would be externalized; embedding it (ADR-6, revised) is the dominant contributor.
+* **Decision**: Ship all JARs in a `lib/` directory. `dtcw` sets the classpath via `java -cp lib/*`. No runtime resolution, no Grape, no downloads.
+* **Rationale**: A bundled `lib/` gives zero resolution overhead (supports QS-9), full offline capability, and determinism — every user gets the exact same JARs. The simplest possible solution. The trade-off is size: the real footprint is ~126 MB (not the 23 MB first estimated), driven by embedding AsciidoctorJ/JRuby (ADR-6, revised) — recorded as technical debt in Chapter 11.
 * **Alternatives considered**:
 
 [cols="1,1,1,1", options="header"]
@@ -49,8 +51,8 @@
 ** Supports **QS-9 (Startup + Throughput)**: Zero dependency resolution overhead. Classpath construction is one glob: `lib/*`.
 ** Supports **QS-4 (Determinism)**: Exact JARs pinned at release time.
 ** Supports **QS-2 (Offline)**: Works without internet after installation.
-** Neutral on **QS-6 (Distribution size)**: 23 MB is acceptable (v3 with Gradle is ~50 MB).
-* **Consequences**: Release process must resolve all transitive dependencies and package them into `lib/`. A simple shell script or one-time Gradle/Maven call at release time handles this. POI JARs could be made optional in a future optimization (load only when `saveExcel=true`). This decision creates risk *R-005 (release-time dependency resolution)* — a tampered or vulnerable JAR (threat T-006) would reach every user — and contributes to *R-003 (script loading and classpath conflicts)*; both are tracked in <<section-technical-risks>>.
+** Risk on **QS-6 (Distribution size)**: the real footprint is ~126 MB — *larger* than v3's Gradle distribution (~50 MB), because AsciidoctorJ/JRuby are embedded rather than externalized. Making the POI and AsciidoctorJ JARs optional/lazy is a tracked future optimization (Chapter 11 debt).
+* **Consequences**: Release process must resolve all transitive dependencies and package them into `lib/` (177 JARs today). A simple shell script or one-time Gradle/Maven call at release time handles this. The ~126 MB footprint is the main downside; POI and AsciidoctorJ/JRuby JARs could be made optional/lazy in a future optimization (load only when the task needs them) — tracked as technical debt in <<section-technical-risks>>. This decision creates risk *R-005 (release-time dependency resolution)* — a tampered or vulnerable JAR (threat T-006) would reach every user — and contributes to *R-003 (script loading and classpath conflicts)*; both are tracked in <<section-technical-risks>>.
 ** Affects **QS-2 (Portability)**: All options work cross-platform. Docker image can pre-bundle JARs.
 ** Affects **QS-3 (Usability)**: lib/ is simplest to understand. Grape is most Groovy-idiomatic.
 ** Affects **QS-6 (Installability)**: Download-on-demand keeps the initial download small.
