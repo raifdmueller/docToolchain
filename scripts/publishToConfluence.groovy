@@ -19,28 +19,34 @@ def configFile = System.getProperty('mainConfigFile', 'docToolchainConfig.groovy
 // via groovy.ui.GroovyMain the codeSource location is the script file itself.
 def scriptDir = new File(getClass().protectionDomain.codeSource.location.toURI()).parentFile
 
-// Load configuration via DtcConfig (v4-S8)
-def DtcConfig = new GroovyClassLoader(this.class.classLoader).parseClass(new File(scriptDir, 'lib/DtcConfig.groovy'))
-def dtcConfig = DtcConfig.load(docDir, configFile)
-def config = dtcConfig.getRaw()
+def libGcl = new GroovyClassLoader(this.class.classLoader)
+def DtcConfig = libGcl.parseClass(new File(scriptDir, 'lib/DtcConfig.groovy'))
+libGcl.parseClass(new File(scriptDir, 'lib/DtcException.groovy'))
+def DtcError = libGcl.loadClass('DtcError')
+def DtcException = libGcl.loadClass('DtcException')
+def DtcConfigException = libGcl.loadClass('DtcConfigException')
+def DtcApiException = libGcl.loadClass('DtcApiException')
 
-// Validate Confluence settings
-if (!config.confluence?.api) {
-    System.err.println "Confluence API URL not configured."
-    System.err.println ""
-    System.err.println "Add to your ${configFile}:"
-    System.err.println "  confluence = ["
-    System.err.println "    api: 'https://your-wiki.atlassian.net/wiki/rest/api',"
-    System.err.println "    spaceKey: 'YOUR_SPACE',"
-    System.err.println "  ]"
-    System.exit(1)
-}
-
-println "docToolchain v4 — publishToConfluence"
-println "  target: ${config.confluence.api}"
-println ""
-
+// Single top-level handler (ADR-8): a config problem throws DtcConfigException
+// (exit 2); a publish/network failure becomes a DtcApiException (exit 3) whose
+// message is secret-redacted by DtcError.report() before it reaches the console.
 try {
+    def dtcConfig = DtcConfig.load(docDir, configFile)
+    def config = dtcConfig.getRaw()
+
+    if (!config.confluence?.api) {
+        throw DtcConfigException.newInstance(
+            "Confluence API URL not configured. Add to your ${configFile}:\n" +
+            "  confluence = [\n" +
+            "    api: 'https://your-wiki.atlassian.net/wiki/rest/api',\n" +
+            "    spaceKey: 'YOUR_SPACE',\n" +
+            "  ]")
+    }
+
+    println "docToolchain v4 — publishToConfluence"
+    println "  target: ${config.confluence.api}"
+    println ""
+
     // Load the Confluence publishing class graph from source. addClasspath points
     // the GroovyClassLoader at the scripts/lib source root; loadClass then triggers
     // on-demand compilation of Asciidoc2ConfluenceTask and every org.docToolchain.*
@@ -60,7 +66,9 @@ try {
     while (cause in java.lang.reflect.InvocationTargetException && cause.cause) {
         cause = cause.cause
     }
-    System.err.println ""
-    System.err.println "publishToConfluence failed: ${cause.class.simpleName}: ${cause.message}"
-    System.exit(1)
+    // A DtcException already carries the right exit code and guidance; anything
+    // else is wrapped as an API error so its message is redacted (exit 3).
+    def toReport = (cause in DtcException) ? cause : DtcApiException.newInstance(
+        "publishToConfluence failed: ${cause.class.simpleName}: ${cause.message}", cause)
+    System.exit(DtcError.report(toReport))
 }

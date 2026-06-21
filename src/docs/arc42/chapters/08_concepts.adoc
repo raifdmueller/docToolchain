@@ -68,7 +68,7 @@ Each mitigation below references the `T-IDs` it closes. Mitigations marked "alre
 |T-001, T-004
 
 |Secrets via environment, never config
-|*Partly planned — not yet enforced in code.* Credentials should be supplied through environment variables or external config rather than committed into `docToolchainConfig.groovy`. The intended controls — masking properties whose names contain `credential`, `token`, or `secret` in all output, and suppressing stack traces for user-recoverable errors (ADR-8) — are **not implemented yet**: no redaction code exists, and `DtcRestClient` currently rethrows raw exceptions that can carry a token-bearing URL or header. Tracked as **R-008** (and gated on the ADR-8 `DtcException` carrier, R-004). This matters mainly for the CI / public-build context below, not for the local-trust default.
+|*Partly in code.* Credentials should be supplied through environment variables or external config rather than committed into `docToolchainConfig.groovy`. Secret-shaped values (`credential`, `token`, `secret`, `Bearer`/`Basic`, `apikey`) are masked by `DtcError.redact()` (`scripts/lib/DtcException.groovy`), and the ADR-8 handler prints guidance instead of stack traces for user-recoverable errors — both **in code and unit-tested**, applied at script-level error output (e.g. `generateHTML`). **Still open (R-008):** the compiled `DtcRestClient` rethrows raw exceptions that can carry a token-bearing URL/header, and `redact()` is not yet wired into every `println`/error path. This matters mainly for the CI / public-build context below, not for the local-trust default.
 |T-002
 
 |Zip-slip / path-traversal guard
